@@ -1,0 +1,43 @@
+body {
+  font-family: 'Mitr';
+}
+
+code {
+  font-family: 'Mitr';
+}
+
+.dropdown-menu {
+  min-width: 4rem;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 300px;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 5px;
+}
+
+.search-bar button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.date-size {
+  font-size: 12px;
+}
+
+.Search-input:focus {
+  outline: none; 
+
+}
