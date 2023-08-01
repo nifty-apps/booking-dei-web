@@ -6,7 +6,13 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Avatar, Badge, Dropdown, Input, Space } from "antd";
-import { AiOutlineSearch } from "react-icons/ai";
+import {
+  AiOutlineSearch,
+  AiOutlineUser,
+  AiOutlineSetting,
+} from "react-icons/ai";
+import { BsGrid3X3Gap } from "react-icons/bs";
+import { FiHelpCircle } from "react-icons/fi";
 
 interface ToolbarProps {
   collapsed: boolean;
@@ -18,18 +24,36 @@ const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
 
   const items = [
     {
-      label: <a href="https://www.antgroup.com">1st menu item</a>,
+      label: (
+        <a href="/" className="flex items-center gap-2">
+          <span>
+            <AiOutlineUser />
+          </span>
+          My Account
+        </a>
+      ),
       key: "0",
     },
     {
-      label: <a href="https://www.aliyun.com">2nd menu item</a>,
+      label: (
+        <a href="/" className="flex items-center gap-2">
+          <span>
+            <AiOutlineSetting />
+          </span>
+          Settings
+        </a>
+      ),
       key: "1",
     },
     {
-      type: "divider",
-    },
-    {
-      label: "3rd menu item",
+      label: (
+        <a href="/" className="flex items-center gap-2">
+          <span>
+            <FiHelpCircle />
+          </span>
+          Help
+        </a>
+      ),
       key: "3",
     },
   ];
@@ -48,19 +72,21 @@ const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
           }}
         />
         <Input
-          className="w-3/6"
+          className="w-2/5"
           size="large"
-          placeholder="Search your booking"
+          placeholder=" Search your booking"
           prefix={<AiOutlineSearch />}
         />
         <div className="space-x-3 ml-auto mr-6 flex items-center">
-          <Badge count={notificationCount}>
+          <Badge count={notificationCount} className="cursor-pointer">
             <BellOutlined style={{ fontSize: "24px" }} />
-            <ExclamationCircleOutlined
-              className="text-red-500 absolute top-0 right-0 -mt-2 -mr-2"
-              style={{ fontSize: "12px" }}
-            />
+            <ExclamationCircleOutlined className="text-red-500 absolute top-0 right-0 -mt-2 -mr-2" />
           </Badge>
+          <div className="px-2 cursor-pointer">
+            <span className="text-xl">
+              <BsGrid3X3Gap />
+            </span>
+          </div>
           <Dropdown
             menu={{
               items: items as [],
@@ -74,8 +100,8 @@ const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
             </a>
           </Dropdown>
           <div className="text-left">
-            <p className="font-bold">Ahmad</p>
-            <p>Admin</p>
+            <p className="font-bold text-md">Ahmad (Nifty)</p>
+            <p className="font-semibold text-gray-600">Admin</p>
           </div>
         </div>
       </div>
