@@ -12,9 +12,8 @@ const Home = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        {/* title  and button part*/}
-        <h2 className="text-3xl font-semibold text-gray-600 my-4">Home</h2>
         {/* new booking btn */}
+        <div></div>
         <button className="bg-blue-900 text-white px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2">
           <span>
             <FaPlus />
