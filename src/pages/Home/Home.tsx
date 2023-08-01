@@ -12,8 +12,10 @@ const Home = () => {
     <>
       <div className="grid grid-cols-12">
         <div className="col-span-9 -mt-1">
-          {/* title */}
+          {/* title  and button part*/}
           <h2 className="text-3xl font-semibold text-gray-600 my-4">Home</h2>
+
+          {/* room number part */}
           <div className="grid grid-cols-4 gap-2">
             <div className=" bg-gray-100">
               <div className="capitalize border text-center py-3 bg-white rounded-lg border-gray-300 text-black font-semibold mb-4">
@@ -101,6 +103,10 @@ const Home = () => {
             </div>
           </div>
         </div>
+
+        {/* current selection part */}
+        {/* new booking btn */}
+
         <div className="col-span-3 bg-gray-200 p-4 rounded-sm mt-16 ml-4">
           <h3 className="text-lg capitalize font-semibold mb-5">
             Current Selection
@@ -114,7 +120,18 @@ const Home = () => {
                 Super Deluxe Tripel (Non-AC)
               </div>
             </div>
-            <div className="font-semibold text-lg">206</div>
+            <div className="font-semibold">206</div>
+          </div>
+
+          {/* edit btn  */}
+          <div className="mt-72">
+            <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold">
+              Edit Booking
+            </button>
+
+            <button className="w-full px-4 py-2 border-2 border-blue-900 text-blue-900 rounded-md hover:bg-blue-900 hover:text-white hover:border-blue-900 transition-colors duration-300 font-semibold">
+              View Booking Details
+            </button>
           </div>
         </div>
       </div>
