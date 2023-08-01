@@ -6,15 +6,24 @@ import {
   roomNumberThirdFloor,
 } from "../../data/data";
 import { AiOutlineClose } from "react-icons/ai";
+import { FaPlus } from "react-icons/fa";
 
 const Home = () => {
   return (
     <>
+      <div className="flex items-center justify-between">
+        {/* title  and button part*/}
+        <h2 className="text-3xl font-semibold text-gray-600 my-4">Home</h2>
+        {/* new booking btn */}
+        <button className="bg-blue-900 text-white px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2">
+          <span>
+            <FaPlus />
+          </span>
+          New Booking
+        </button>
+      </div>
       <div className="grid grid-cols-12">
-        <div className="col-span-9 -mt-1">
-          {/* title  and button part*/}
-          <h2 className="text-3xl font-semibold text-gray-600 my-4">Home</h2>
-
+        <div className="col-span-9">
           {/* room number part */}
           <div className="grid grid-cols-4 gap-2">
             <div className=" bg-gray-100">
@@ -105,9 +114,7 @@ const Home = () => {
         </div>
 
         {/* current selection part */}
-        {/* new booking btn */}
-
-        <div className="col-span-3 bg-gray-200 p-4 rounded-sm mt-16 ml-4">
+        <div className="col-span-3 bg-gray-200 p-4 rounded-sm ml-4">
           <h3 className="text-lg capitalize font-semibold mb-5">
             Current Selection
           </h3>
@@ -128,7 +135,7 @@ const Home = () => {
             <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold">
               Edit Booking
             </button>
-
+            {/* view booking btn */}
             <button className="w-full px-4 py-2 border-2 border-blue-900 text-blue-900 rounded-md hover:bg-blue-900 hover:text-white hover:border-blue-900 transition-colors duration-300 font-semibold">
               View Booking Details
             </button>
