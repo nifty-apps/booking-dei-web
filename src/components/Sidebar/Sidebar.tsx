@@ -12,8 +12,8 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div className="p-5 flex items-center gap-3 border-gray-300 border-b">
-        <img src={logo} alt="Sumudro bilash" />
-        <span className="font-semibold text-xl">
+        <img src={logo} alt="Sumudro bilash" className="cursor-pointer" />
+        <span className="font-semibold text-xl cursor-pointer">
           Somudra <br /> Bilash
         </span>
       </div>
