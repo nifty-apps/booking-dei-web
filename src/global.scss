@@ -31,3 +31,9 @@ ul {
 background-color: #fff;
     height: 100vh !important;
 }
+
+li.ant-menu-item.ant-menu-item-selected {
+   background: linear-gradient(135deg, #0059AA 0%, rgba(0, 89, 170, 0.75) 100%);
+   color: #fff;
+
+}

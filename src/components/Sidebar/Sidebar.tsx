@@ -11,12 +11,14 @@ interface SidebarProps {
 const Sidebar = ({ collapsed }: SidebarProps) => {
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
-      <div className="flex items-center gap-3 border border-orange-100">
+      <div className="p-5 flex items-center gap-3 border-gray-300 border-b">
         <img src={logo} alt="Sumudro bilash" />
-        <span>Somudra Bilash</span>
+        <span className="font-semibold text-xl">
+          Somudra <br /> Bilash
+        </span>
       </div>
       <div className="demo-logo-vertical" />
-      <p className="text-gray-400 mx-5">APPS & PAGES</p>
+      <p className="text-gray-400 text-center py-4">APPS & PAGES</p>
       <Menu
         theme="light"
         mode="inline"
