@@ -11,7 +11,7 @@ const Home = () => {
   return (
     <>
       <div className="grid grid-cols-12">
-        <div className="col-span-9">
+        <div className="col-span-9 -mt-1">
           {/* title */}
           <h2 className="text-3xl font-semibold text-gray-600 my-4">Home</h2>
           <div className="grid grid-cols-4 gap-2">
@@ -101,7 +101,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div className="col-span-3 bg-gray-200 p-4 my-16 rounded-xl">
+        <div className="col-span-3 bg-gray-200 p-4 rounded-sm mt-16 ml-4">
           <h3 className="text-lg capitalize font-semibold mb-5">
             Current Selection
           </h3>
