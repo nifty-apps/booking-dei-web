@@ -17,7 +17,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <Link
           to="/"
-          className="p-5 flex items-center gap-3 border-gray-300 border-b"
+          className="p-5 flex items-center gap-3 border-gray-300 border-b hover:text-black"
         >
           <img src={logo} alt="Sumudro bilash" className="cursor-pointer" />
           <span className="font-semibold text-xl cursor-pointer">
@@ -45,7 +45,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
         </Menu>
 
         {/* footer part for sidebar */}
-        <p className="mt-96 mb-0 text-gray-500 text-center pt-40 text-sm">
+        <p className="mt-48 mb-0 text-gray-500 text-center pt-40 text-sm">
           All Rights Reserved, {currentYear}
         </p>
       </Sider>
