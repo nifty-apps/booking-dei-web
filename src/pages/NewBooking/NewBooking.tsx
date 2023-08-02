@@ -2,7 +2,7 @@ import { useState } from "react";
 import { DatePicker, Modal, Select, Checkbox, Form, Input, Button } from "antd";
 // data
 
-import { AiOutlineClose, AiOutlineDown } from "react-icons/ai";
+import { AiOutlineDown } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
 import RoomNumber from "../../components/RoomNumber";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -41,9 +41,7 @@ const NewBooking = () => {
   // guest details form
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
-    console.log("Form values:", values);
-  };
+  const onFinish = () => {};
 
   return (
     <>
@@ -221,19 +219,27 @@ const NewBooking = () => {
           <h3 className="text-lg capitalize font-semibold mb-5">
             Booking Summary
           </h3>
-          <div className="flex justify-between text-md">
-            <div className="flex items-center">
-              <span className="cursor-pointer">
-                <AiOutlineClose />
-              </span>
-              <div className="mx-2 font-semibold">
-                Super Deluxe Tripel (Non-AC)
-              </div>
-            </div>
-            <div className="font-semibold">206</div>
+          <hr />
+          <p>Subtotal: </p>
+          <p>Discount</p>
+          <hr />
+
+          <p>Grand Total: </p>
+          <p>Inclusive of 15% value added tas (vat)</p>
+
+          <div>
+            <input type="text" placeholder="Enter Discount" />
+            <button>Apply</button>
           </div>
 
-          {/* edit btn  */}
+          {/* total payments */}
+          <p>Total: </p>
+
+          <hr />
+
+          <p>Due</p>
+
+          {/* payment btn  */}
           <div className="mt-72">
             <h1>Payments</h1>
             <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold">
