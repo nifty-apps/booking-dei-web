@@ -55,7 +55,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
           ]}
         />
         {/* footer part for sidebar */}
-        <p className="mt-80 mb-0 text-gray-500 text-center pt-5">
+        <p className="mt-96 mb-0 text-gray-500 text-center pt-40 text-sm">
           All Rights Reserverd, {currentYear}
         </p>
       </Sider>

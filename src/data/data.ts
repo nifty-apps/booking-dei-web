@@ -99,6 +99,7 @@ export const roomNumberSecondFloor = [
     roomNumber: 206,
     roomType: `Super Deluxe Triple (AC)`,
     bg: "#0059AA",
+    color: "#fff",
   },
   {
     id: 10,
