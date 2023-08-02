@@ -46,87 +46,103 @@ const NewBooking = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        {/* btn */}
-        <div className="text-3xl font-semibold">NewBooking</div>
+        {/* title */}
+        <div className="text-3xl font-semibold">New Booking</div>
+        {/* new booking btn top */}
         <div className="flex items-center gap-4">
           <button className="text-blue-700 px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 border border-blue-700 hover:bg-blue-900 hover:text-white">
             Reset
           </button>
-          <button className="bg-blue-900 text-white px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2">
+          <button className="text-gray-500 px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 bg-gray-200 hover:bg-gray-300">
             Confirm Booking
           </button>
         </div>
       </div>
+
       <div className="grid grid-cols-12 mt-5">
-        <div className="col-span-9 bg-gray-300">
+        <div className="col-span-9 bg-white shadow-sm p-5">
           {/* room details */}
-          <h1 className="font-semibold text-xl">Room details</h1>
-          <div className="flex">
+          <h1 className="font-semibold text-xl text-gray-500 mb-4 capitalize">
+            Room details
+          </h1>
+          <div className="flex font-semibold">
             <div>
-              <div className="flex items-center">
+              <div className="flex items-center gap-24 mb-2">
                 <div>Check in</div>
                 <div>Check out</div>
               </div>
               <DatePicker.RangePicker format="YYYY-MM-DD" />
             </div>
-            <div>
-              <div>Room Type</div>
+            <div className="mx-3">
+              <div className="mb-2">Room Type</div>
               <Button onClick={showModal}>
                 Select Room Type
-                <span>
+                <span className="mx-3 text-gray-400">
                   <AiOutlineDown />
                 </span>
               </Button>
             </div>
 
             <div>
-              <div>Room No</div>
+              <div className="mb-2">Room No</div>
               <Select defaultValue="302" />
             </div>
 
-            <div>
-              <div>Status</div>
+            <div className="mx-3">
+              <div className="mb-2">Status</div>
               <Select
-                defaultValue="Select status"
-                style={{ width: 120 }}
+                defaultValue="Select Status"
+                style={{ width: 140 }}
                 options={[
-                  { value: "booked", label: "booked" },
-                  { value: "check in", label: "check in" },
-                  { value: "check out", label: "check out" },
-                  { value: "partial payment", label: "partial payment" },
-                  { value: "cancel", label: "cancel" },
+                  { value: "Booked", label: "Booked" },
+                  { value: "Check In", label: "Check In" },
+                  { value: "Check Out", label: "Check Out" },
+                  { value: "Partial Payment", label: "Partial Payment" },
                 ]}
               />
             </div>
 
             {/* three dots click */}
-            <div>
-              <Button onClick={showModalForExtra}>
+            <div className="mt-9 cursor-pointer mr-4">
+              <span onClick={showModalForExtra}>
                 <span>
                   <BsThreeDotsVertical />
                 </span>
-              </Button>
+              </span>
             </div>
 
             {/* cancel row */}
-            <div>
+            <div className="cursor-pointer mt-8 text-gray-500 text-xl">
               <MdClose />
             </div>
           </div>
-          <h1>Guest details</h1>
+          {/* add room button */}
+          <div className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1 mt-2">
+            <button className="flex items-center gap-2">
+              <span>
+                <FaPlus />
+              </span>
+              <span className="font-semibold"> Add Room</span>
+            </button>
+          </div>
 
+          {/* guest detailas part */}
+          <div className="my-8">
+            <h1 className="font-semibold text-xl text-gray-500 mb-4 capitalize">
+              Guest details
+            </h1>
+          </div>
           <Form
             form={form}
             layout="vertical"
             onFinish={onFinish}
-            className="flex items-center"
+            className="flex items-center font-semibold"
           >
             <Form.Item
-              label="Name"
+              label="Full Name"
               name="name"
               rules={[
                 {
-                  required: true,
                   message: "Please enter your name",
                 },
               ]}
@@ -135,11 +151,11 @@ const NewBooking = () => {
             </Form.Item>
 
             <Form.Item
-              label="Phone"
+              className="mx-5"
+              label="Phone Number"
               name="phone"
               rules={[
                 {
-                  required: true,
                   message: "Please enter your phone number",
                 },
               ]}
@@ -148,27 +164,35 @@ const NewBooking = () => {
             </Form.Item>
 
             <Form.Item
-              label="NID"
+              label="NID/Passport"
               name="nid"
               rules={[
                 {
-                  required: true,
-                  message: "Please enter your National Identification Number",
+                  message: "Please enter your NID Number",
                 },
               ]}
             >
-              <Input placeholder="Enter your National Identification Number" />
+              <Input placeholder="Enter your NID Number" />
             </Form.Item>
           </Form>
-          <h1>Additional Guest</h1>
 
-          <Form form={form} layout="vertical" className="flex items-center">
+          {/* Additional Guest details info */}
+          <div className="my-8">
+            <h1 className="font-semibold text-xl text-gray-500 mb-4 capitalize">
+              Additional guests
+            </h1>
+          </div>
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            className="flex items-center font-semibold"
+          >
             <Form.Item
-              label="Name"
+              label="Full Name"
               name="name"
               rules={[
                 {
-                  required: true,
                   message: "Please enter your name",
                 },
               ]}
@@ -177,11 +201,11 @@ const NewBooking = () => {
             </Form.Item>
 
             <Form.Item
-              label="Phone"
+              className="mx-5"
+              label="Phone Number"
               name="phone"
               rules={[
                 {
-                  required: true,
                   message: "Please enter your phone number",
                 },
               ]}
@@ -190,26 +214,25 @@ const NewBooking = () => {
             </Form.Item>
 
             <Form.Item
-              label="NID"
+              label="NID/Passport"
               name="nid"
               rules={[
                 {
-                  required: true,
-                  message: "Please enter your National Identification Number",
+                  message: "Please enter your NID Number",
                 },
               ]}
             >
-              <Input placeholder="Enter your National Identification Number" />
+              <Input placeholder="Enter your NID Number" />
             </Form.Item>
           </Form>
 
-          {/* add extra guest */}
-          <div>
-            <button className="flex items-center">
+          {/* add extra guest btn */}
+          <div className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1 mt-2">
+            <button className="flex items-center gap-2">
               <span>
                 <FaPlus />
               </span>
-              Add Guest
+              <span className="font-semibold"> Add Guest</span>
             </button>
           </div>
         </div>
