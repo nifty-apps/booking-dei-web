@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Button, DatePicker, Modal } from "antd";
 // data
 import {
   roomNumberFirstFloor,
@@ -5,10 +7,26 @@ import {
   roomNumberSecondFloor,
   roomNumberThirdFloor,
 } from "../../data/data";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineDown } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
+import Home from "../Home/Home";
+import RoomNumber from "../../components/RoomNumber";
 
 const NewBooking = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -24,8 +42,36 @@ const NewBooking = () => {
         </div>
       </div>
       <div className="grid grid-cols-12 mt-5">
-        <div className="col-span-9">
-          <h1>Room details</h1>
+        <div className="col-span-9 bg-gray-300">
+          {/* room details */}
+          <h1 className="font-semibold text-xl">Room details</h1>
+          <div className="flex">
+            <div>
+              <div className="flex items-center">
+                <div>Check in</div>
+                <div>Check out</div>
+              </div>
+              <DatePicker.RangePicker format="YYYY-MM-DD" />
+            </div>
+            <div>
+              <div>Room Type</div>
+              <Button onClick={showModal}>
+                Select Room Type
+                <span>
+                  <AiOutlineDown />
+                </span>
+              </Button>
+              <Modal
+                title="Basic Modal"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                width={1000}
+              >
+                <RoomNumber />
+              </Modal>
+            </div>
+          </div>
           <h1>Guest details</h1>
           <h1>Additional Guest</h1>
         </div>
