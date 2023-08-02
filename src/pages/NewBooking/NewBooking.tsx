@@ -1,20 +1,18 @@
 import { useState } from "react";
-import { Button, DatePicker, Modal } from "antd";
+import { DatePicker, Modal, Select, Checkbox, Form, Input, Button } from "antd";
 // data
-import {
-  roomNumberFirstFloor,
-  roomNumberFourthFloor,
-  roomNumberSecondFloor,
-  roomNumberThirdFloor,
-} from "../../data/data";
+
 import { AiOutlineClose, AiOutlineDown } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
-import Home from "../Home/Home";
 import RoomNumber from "../../components/RoomNumber";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { MdClose } from "react-icons/md";
 
 const NewBooking = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [extra, setExtra] = useState(false);
 
+  // modal for Room type
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -25,6 +23,26 @@ const NewBooking = () => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  // modal for extra | discount
+  const showModalForExtra = () => {
+    setExtra(true);
+  };
+
+  const handleOkForExtra = () => {
+    setExtra(false);
+  };
+
+  const handleCancelForExtra = () => {
+    setExtra(false);
+  };
+
+  // guest details form
+  const [form] = Form.useForm();
+
+  const onFinish = (values) => {
+    console.log("Form values:", values);
   };
 
   return (
@@ -61,19 +79,141 @@ const NewBooking = () => {
                   <AiOutlineDown />
                 </span>
               </Button>
-              <Modal
-                title="Basic Modal"
-                open={isModalOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                width={1000}
-              >
-                <RoomNumber />
-              </Modal>
+            </div>
+
+            <div>
+              <div>Room No</div>
+              <Select defaultValue="302" />
+            </div>
+
+            <div>
+              <div>Status</div>
+              <Select
+                defaultValue="Select status"
+                style={{ width: 120 }}
+                options={[
+                  { value: "booked", label: "booked" },
+                  { value: "check in", label: "check in" },
+                  { value: "check out", label: "check out" },
+                  { value: "partial payment", label: "partial payment" },
+                  { value: "cancel", label: "cancel" },
+                ]}
+              />
+            </div>
+
+            {/* three dots click */}
+            <div>
+              <Button onClick={showModalForExtra}>
+                <span>
+                  <BsThreeDotsVertical />
+                </span>
+              </Button>
+            </div>
+
+            {/* cancel row */}
+            <div>
+              <MdClose />
             </div>
           </div>
           <h1>Guest details</h1>
+
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            className="flex items-center"
+          >
+            <Form.Item
+              label="Name"
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your name",
+                },
+              ]}
+            >
+              <Input placeholder="Enter your name" />
+            </Form.Item>
+
+            <Form.Item
+              label="Phone"
+              name="phone"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your phone number",
+                },
+              ]}
+            >
+              <Input placeholder="Enter your phone number" />
+            </Form.Item>
+
+            <Form.Item
+              label="NID"
+              name="nid"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your National Identification Number",
+                },
+              ]}
+            >
+              <Input placeholder="Enter your National Identification Number" />
+            </Form.Item>
+          </Form>
           <h1>Additional Guest</h1>
+
+          <Form form={form} layout="vertical" className="flex items-center">
+            <Form.Item
+              label="Name"
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your name",
+                },
+              ]}
+            >
+              <Input placeholder="Enter your name" />
+            </Form.Item>
+
+            <Form.Item
+              label="Phone"
+              name="phone"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your phone number",
+                },
+              ]}
+            >
+              <Input placeholder="Enter your phone number" />
+            </Form.Item>
+
+            <Form.Item
+              label="NID"
+              name="nid"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your National Identification Number",
+                },
+              ]}
+            >
+              <Input placeholder="Enter your National Identification Number" />
+            </Form.Item>
+          </Form>
+
+          {/* add extra guest */}
+          <div>
+            <button className="flex items-center">
+              <span>
+                <FaPlus />
+              </span>
+              Add Guest
+            </button>
+          </div>
         </div>
 
         {/* booking summary */}
@@ -102,6 +242,54 @@ const NewBooking = () => {
           </div>
         </div>
       </div>
+
+      {/* modal for room select */}
+      <Modal
+        title="Room Type"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        cancelText="Cancel"
+        okText="Apply"
+        width={1000}
+        cancelButtonProps={{
+          style: { background: "" },
+        }}
+        okButtonProps={{
+          style: { background: "gray" },
+        }}
+      >
+        <RoomNumber />
+      </Modal>
+
+      {/* modal for extra | discount */}
+      <Modal
+        title="Extra | Discount"
+        open={extra}
+        onOk={handleOkForExtra}
+        onCancel={handleCancelForExtra}
+        cancelText="Cancel"
+        okText="Apply"
+        width={1000}
+        cancelButtonProps={{
+          style: { background: "" },
+        }}
+        okButtonProps={{
+          style: { background: "gray" },
+        }}
+      >
+        <div className="flex items-center">
+          <div>
+            <h3>Extras</h3>
+            <Checkbox>Bed</Checkbox>
+            <br />
+            <Checkbox>Breakfast</Checkbox>
+          </div>
+          <div>
+            <h3>Discount</h3>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };
