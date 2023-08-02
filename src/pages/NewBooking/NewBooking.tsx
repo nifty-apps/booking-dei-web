@@ -299,9 +299,9 @@ const NewBooking = () => {
               <input
                 type="text"
                 placeholder="1000.00"
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                className="px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500"
               />
-              <button className="hover:bg-blue-600 text-blue-700 font-bold py-2 px-4 border border-blue-700">
+              <button className=" text-blue-700 font-bold py-2 px-4 border border-blue-900 hover:bg-blue-900 hover:text-white">
                 Apply
               </button>
             </div>
