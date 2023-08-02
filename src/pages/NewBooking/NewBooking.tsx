@@ -275,12 +275,12 @@ const NewBooking = () => {
             <div className="border border-gray-400 my-2"></div>
 
             <div className="flex items-center justify-between">
-              <p className="font-bold">Subtotal</p>
+              <p>Subtotal</p>
               <p>16000.00</p>
             </div>
 
             <div className="flex items-center justify-between">
-              <p className="font-bold">Grand Total</p>
+              <p>Discount</p>
               <p>16000.00</p>
             </div>
 
