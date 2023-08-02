@@ -239,7 +239,7 @@ const NewBooking = () => {
 
         {/* booking summary */}
 
-        <div className="col-span-3 bg-gray-200 p-4 rounded-sm ml-4">
+        <div className="col-span-3 bg-gray-200 p-4 rounded-sm">
           <h3 className="text-lg capitalize font-semibold mb-5">
             Booking Summary
           </h3>
@@ -322,7 +322,7 @@ const NewBooking = () => {
           </div>
 
           {/* payment btn  */}
-          <div className="mt-8">
+          <div className="mt-16">
             <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold flex items-center justify-center gap-2">
               <span>
                 <FaPlus />
