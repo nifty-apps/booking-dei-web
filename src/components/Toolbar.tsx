@@ -12,7 +12,7 @@ import {
   AiOutlineSetting,
 } from "react-icons/ai";
 import { FiHelpCircle } from "react-icons/fi";
-import gridots from "../../assets/gridots.png";
+import gridots from "../assets/gridots.png";
 
 interface ToolbarProps {
   collapsed: boolean;

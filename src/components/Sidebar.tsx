@@ -2,9 +2,8 @@ import { Layout, Menu } from "antd";
 const { Sider } = Layout;
 import { AiOutlineHome, AiOutlineCalendar } from "react-icons/ai";
 import { TbBed, TbUsers, TbBrandGoogleAnalytics } from "react-icons/tb";
-import logo from "../../assets/logo.png";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import logo from "../assets/logo.png";
+import { Link, useLocation } from "react-router-dom";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -27,7 +26,13 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     case "/new-booking":
       selectedKey = "3";
       break;
-    // Add other cases as needed
+    case "/guest-lookup":
+      selectedKey = "4";
+      break;
+    case "/financial-overview":
+      selectedKey = "5";
+      break;
+
     default:
       selectedKey = "1";
   }

@@ -6,10 +6,10 @@ const { Content } = Layout;
 // react router
 import { Routes, Route } from "react-router-dom";
 // components
-import Sidebar from "./components/Sidebar/Sidebar";
+import Sidebar from "./components/Sidebar";
 // pages
 import Home from "./pages/Home/Home";
-import Toolbar from "./components/Toolbar/Toolbar";
+import Toolbar from "./components/Toolbar";
 import NewBooking from "./pages/NewBooking/NewBooking";
 import Calender from "./pages/Calender/Calender";
 import GuestLookUp from "./pages/GuestLookUp/GuestLookUp";
