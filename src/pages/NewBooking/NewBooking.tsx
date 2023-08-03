@@ -228,7 +228,7 @@ const NewBooking = () => {
           </Form>
 
           {/* add extra guest btn */}
-          <div className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1 mt-2">
+          <div className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1 -mt-4">
             <button className="flex items-center gap-2">
               <span>
                 <FaPlus />

@@ -6,7 +6,7 @@ import logo from "../../assets/logo.png";
 import { Link } from "react-router-dom";
 
 interface SidebarProps {
-  collapsed: boolean;
+  collapsed: boolean; 
 }
 
 const Sidebar = ({ collapsed }: SidebarProps) => {
@@ -15,6 +15,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
   return (
     <>
       <Sider trigger={null} collapsible collapsed={collapsed}>
+
         <Link
           to="/"
           className="p-5 flex items-center gap-3 border-gray-300 border-b hover:text-black"
@@ -26,6 +27,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
             </span>
           )}
         </Link>
+
         <div className="demo-logo-vertical" />
         <p className="text-gray-400 text-center py-4">APPS & PAGES</p>
         <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]}>
