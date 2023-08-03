@@ -9,6 +9,9 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdClose } from "react-icons/md";
 
 const NewBooking = () => {
+  // guest details form
+  const [guestForm] = Form.useForm();
+  const [additionalGuestForm] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [extra, setExtra] = useState(false);
 
@@ -37,9 +40,6 @@ const NewBooking = () => {
   const handleCancelForExtra = () => {
     setExtra(false);
   };
-
-  // guest details form
-  const [form] = Form.useForm();
 
   const onFinish = () => {};
 
@@ -133,14 +133,14 @@ const NewBooking = () => {
             </h1>
           </div>
           <Form
-            form={form}
+            form={guestForm}
             layout="vertical"
             onFinish={onFinish}
             className="flex items-center font-semibold"
           >
             <Form.Item
               label="Full Name"
-              name="name"
+              name="guestName"
               rules={[
                 {
                   message: "Please enter your name",
@@ -153,7 +153,7 @@ const NewBooking = () => {
             <Form.Item
               className="mx-5"
               label="Phone Number"
-              name="phone"
+              name="guestPhone"
               rules={[
                 {
                   message: "Please enter your phone number",
@@ -165,7 +165,7 @@ const NewBooking = () => {
 
             <Form.Item
               label="NID/Passport"
-              name="nid"
+              name="guestNID"
               rules={[
                 {
                   message: "Please enter your NID Number",
@@ -183,14 +183,14 @@ const NewBooking = () => {
             </h1>
           </div>
           <Form
-            form={form}
+            form={additionalGuestForm}
             layout="vertical"
             onFinish={onFinish}
             className="flex items-center font-semibold"
           >
             <Form.Item
               label="Full Name"
-              name="name"
+              name="additionalGuestName"
               rules={[
                 {
                   message: "Please enter your name",
@@ -203,7 +203,7 @@ const NewBooking = () => {
             <Form.Item
               className="mx-5"
               label="Phone Number"
-              name="phone"
+              name="additionalGuestPhone"
               rules={[
                 {
                   message: "Please enter your phone number",
@@ -215,7 +215,7 @@ const NewBooking = () => {
 
             <Form.Item
               label="NID/Passport"
-              name="nid"
+              name="additionalGuestNID"
               rules={[
                 {
                   message: "Please enter your NID Number",
