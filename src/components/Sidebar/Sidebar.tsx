@@ -20,9 +20,11 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
           className="p-5 flex items-center gap-3 border-gray-300 border-b hover:text-black"
         >
           <img src={logo} alt="Sumudro bilash" className="cursor-pointer" />
-          <span className="font-semibold text-xl cursor-pointer">
-            Somudra <br /> Bilash
-          </span>
+          {!collapsed && (
+            <span className="font-semibold text-xl cursor-pointer">
+              Somudra <br /> Bilash
+            </span>
+          )}
         </Link>
         <div className="demo-logo-vertical" />
         <p className="text-gray-400 text-center py-4">APPS & PAGES</p>
