@@ -14,6 +14,7 @@ import NewBooking from "./pages/NewBooking/NewBooking";
 import Calender from "./pages/Calender/Calender";
 import GuestLookUp from "./pages/GuestLookUp/GuestLookUp";
 import FinancialOverview from "./pages/FinancialOverview/FinancialOverview";
+import EditBooking from "./pages/EditBooking.tsx/EditBooking";
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -29,6 +30,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/new-booking" element={<NewBooking />} />
+            <Route path="/edit-booking/:id" element={<EditBooking />} />
             <Route path="/calender" element={<Calender />} />
             <Route path="/guest-lookup" element={<GuestLookUp />} />
             <Route path="/financial-overview" element={<FinancialOverview />} />

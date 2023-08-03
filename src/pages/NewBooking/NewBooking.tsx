@@ -9,6 +9,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdClose } from "react-icons/md";
 import BookingSummary from "../../components/BookingSummary";
 import TitleText from "../../components/Title";
+import { useLocation } from "react-router-dom";
 
 const NewBooking = () => {
   // guest details form
@@ -16,6 +17,7 @@ const NewBooking = () => {
   const [additionalGuestForm] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [extra, setExtra] = useState(false);
+  const location = useLocation();
 
   // modal for Room type
   const showModal = () => {
@@ -48,8 +50,14 @@ const NewBooking = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        {/* title */}
-        <TitleText text="New Booking" />
+        {/* edit booking title */}
+        {location.pathname === "/new-booking" && (
+          <TitleText text="New Booking" />
+        )}
+
+        {location.pathname === "/edit-booking/:id" && (
+          <TitleText text="Edit Booking" />
+        )}
 
         {/* new booking btn top */}
         <div className="flex items-center gap-4">
