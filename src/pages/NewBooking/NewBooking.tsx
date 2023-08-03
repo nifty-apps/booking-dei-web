@@ -8,6 +8,7 @@ import RoomNumber from "../../components/RoomNumber";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdClose } from "react-icons/md";
 import BookingSummary from "../../components/BookingSummary";
+import TitleText from "../../components/Title";
 
 const NewBooking = () => {
   // guest details form
@@ -48,7 +49,8 @@ const NewBooking = () => {
     <>
       <div className="flex items-center justify-between">
         {/* title */}
-        <div className="text-3xl font-semibold">New Booking</div>
+        <TitleText text="New Booking" />
+
         {/* new booking btn top */}
         <div className="flex items-center gap-4">
           <button className="text-blue-700 px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 border border-blue-700 hover:bg-blue-900 hover:text-white">

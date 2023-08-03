@@ -2,13 +2,14 @@ import { AiOutlineClose } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import RoomNumber from "../../components/RoomNumber";
+import TitleText from "../../components/Title";
 
 const Home = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        {/* new booking btn */}
-        <div className="text-3xl font-semibold">Home</div>
+        {/* new booking title */}
+        <TitleText text="Home" />;
         <Link
           to="/new-booking"
           className="bg-blue-900 text-white px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 hover:text-white"

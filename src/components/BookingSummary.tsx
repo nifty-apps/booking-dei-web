@@ -145,7 +145,7 @@ const BookingSummary = () => {
 
           <div>
             <h3 className="font-semibold mb-1">Amount</h3>
-            <Input placeholder="Enter Amount" />
+            <Input placeholder="Enter Amount" type="number" />
           </div>
         </div>
       </Modal>
