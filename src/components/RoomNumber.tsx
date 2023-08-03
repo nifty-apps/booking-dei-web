@@ -104,6 +104,27 @@ const RoomNumber = () => {
             </div>
           </div>
         </div>
+
+        {/* rounding circle */}
+        <div className="flex items-center justify-center gap-2 mt-3">
+          <div className="w-5 h-5 rounded-full bg-white border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Available</span>
+
+          <div className="w-5 h-5 rounded-full bg-blue-100 border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Booked</span>
+
+          <div className="w-5 h-5 rounded-full bg-green-100 border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Check In</span>
+
+          <div className="w-5 h-5 rounded-full bg-gray-100 border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Check Out</span>
+
+          <div className="w-5 h-5 rounded-full bg-orange-100  border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Partial Payment</span>
+
+          <div className="w-5 h-5 rounded-full bg-red-100 border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Unavailable</span>
+        </div>
       </div>
     </>
   );
