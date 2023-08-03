@@ -61,7 +61,7 @@ const NewBooking = () => {
       </div>
 
       <div className="grid grid-cols-12 mt-5">
-        <div className="col-span-9 bg-white shadow-sm p-5">
+        <div className="col-span-9 bg-white shadow-sm p-5 mr-4">
           {/* room details */}
           <h1 className="font-semibold text-xl text-gray-500 mb-4 capitalize">
             Room details

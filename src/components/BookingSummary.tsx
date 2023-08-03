@@ -1,7 +1,27 @@
+import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
+import { Modal, Input, Radio } from "antd";
+const { TextArea } = Input;
 
 const BookingSummary = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const plainOptions = ["Bank", "Bkash", "Cash"];
+
+  // modal for new payment
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <div className="col-span-3 bg-gray-200 p-4 rounded-sm">
@@ -87,7 +107,7 @@ const BookingSummary = () => {
         </div>
 
         {/* payment btn  */}
-        <div className="mt-16">
+        <div className="mt-16" onClick={showModal}>
           <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold flex items-center justify-center gap-2">
             <span>
               <FaPlus />
@@ -96,6 +116,43 @@ const BookingSummary = () => {
           </button>
         </div>
       </div>
+
+      {/* modal for payment status */}
+      <Modal
+        title="Payment Status"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        cancelText="Delete"
+        okText="+ New Payment"
+        cancelButtonProps={{
+          style: { background: "" },
+        }}
+        okButtonProps={{
+          style: { background: "gray" },
+        }}
+      >
+        <div>
+          <h2>Payment</h2>
+          <div>
+            <h3>Description</h3>
+            <TextArea
+              placeholder="Controlled autosize"
+              autoSize={{ minRows: 3, maxRows: 5 }}
+            />
+          </div>
+
+          <div>
+            <h3>Payemnt Method</h3>
+            <Radio.Group options={plainOptions} />
+          </div>
+
+          <div>
+            <h3>Amount</h3>
+            <Input placeholder="Enter Amount" />
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };
