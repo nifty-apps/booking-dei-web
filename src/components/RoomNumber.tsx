@@ -8,7 +8,7 @@ import {
 const RoomNumber = () => {
   return (
     <>
-      <div className="col-span-9 bg-white p-8 rounded">
+      <div className="col-span-9 bg-white p-5 rounded">
         {/* room number part */}
         <div className="grid grid-cols-4 gap-2">
           <div className=" bg-gray-100">
