@@ -11,8 +11,8 @@ import {
   AiOutlineUser,
   AiOutlineSetting,
 } from "react-icons/ai";
-import { BsGrid3X3Gap } from "react-icons/bs";
 import { FiHelpCircle } from "react-icons/fi";
+import gridots from "../../assets/gridots.png";
 
 interface ToolbarProps {
   collapsed: boolean;
@@ -84,7 +84,7 @@ const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
           </Badge>
           <div className="px-2 cursor-pointer">
             <span className="text-xl">
-              <BsGrid3X3Gap />
+              <img src={gridots} alt="Dots" />
             </span>
           </div>
           <Dropdown
