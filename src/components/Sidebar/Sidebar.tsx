@@ -4,18 +4,37 @@ import { AiOutlineHome, AiOutlineCalendar } from "react-icons/ai";
 import { TbBed, TbUsers, TbBrandGoogleAnalytics } from "react-icons/tb";
 import logo from "../../assets/logo.png";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 interface SidebarProps {
-  collapsed: boolean; 
+  collapsed: boolean;
 }
 
 const Sidebar = ({ collapsed }: SidebarProps) => {
+  const location = useLocation();
   const dateTime = new Date();
   const currentYear = dateTime.getFullYear().toString();
+
+  // Determine the selected key based on the current path
+  let selectedKey;
+  switch (location.pathname) {
+    case "/":
+      selectedKey = "1";
+      break;
+    case "/calender":
+      selectedKey = "2";
+      break;
+    case "/new-booking":
+      selectedKey = "3";
+      break;
+    // Add other cases as needed
+    default:
+      selectedKey = "1";
+  }
+
   return (
     <>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-
         <Link
           to="/"
           className="p-5 flex items-center gap-3 border-gray-300 border-b hover:text-black"
@@ -30,7 +49,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
 
         <div className="demo-logo-vertical" />
         <p className="text-gray-400 text-center py-4">APPS & PAGES</p>
-        <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]}>
+        <Menu theme="light" mode="inline" selectedKeys={[selectedKey]}>
           <Menu.Item key="1" icon={<AiOutlineHome />}>
             <Link to="/">Home</Link>
           </Menu.Item>
