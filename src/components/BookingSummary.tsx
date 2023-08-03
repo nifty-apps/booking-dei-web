@@ -119,11 +119,11 @@ const BookingSummary = () => {
 
       {/* modal for payment status */}
       <Modal
-        title="Payment Status"
+        title="Payment"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
-        cancelText="Delete"
+        cancelText="Cancel"
         okText="+ New Payment"
         cancelButtonProps={{
           style: { background: "" },
@@ -133,22 +133,21 @@ const BookingSummary = () => {
         }}
       >
         <div>
-          <h2>Payment</h2>
           <div>
-            <h3>Description</h3>
+            <h3 className="font-semibold mb-1">Description</h3>
             <TextArea
               placeholder="Controlled autosize"
               autoSize={{ minRows: 3, maxRows: 5 }}
             />
           </div>
 
-          <div>
-            <h3>Payemnt Method</h3>
+          <div className="my-2">
+            <h3 className="font-semibold">Payment Method</h3>
             <Radio.Group options={plainOptions} />
           </div>
 
           <div>
-            <h3>Amount</h3>
+            <h3 className="font-semibold mb-1">Amount</h3>
             <Input placeholder="Enter Amount" />
           </div>
         </div>
