@@ -69,7 +69,6 @@ const NewBooking = () => {
           </button>
         </div>
       </div>
-
       <div className="grid grid-cols-12 mt-5">
         <div className="col-span-9 bg-white shadow-sm p-5 mr-4">
           {/* room details */}
@@ -251,7 +250,6 @@ const NewBooking = () => {
         {/* booking summary || Payment flow */}
         <BookingSummary />
       </div>
-
       {/* modal for room select */}
       <Modal
         title="Room Type"
@@ -270,7 +268,6 @@ const NewBooking = () => {
       >
         <RoomNumber />
       </Modal>
-
       {/* modal for extra | discount */}
       <Modal
         title="Extra | Discount"
