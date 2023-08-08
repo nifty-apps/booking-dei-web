@@ -56,19 +56,29 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
         <p className="text-gray-400 text-center py-4">APPS & PAGES</p>
         <Menu theme="light" mode="inline" selectedKeys={[selectedKey]}>
           <Menu.Item key="1" icon={<AiOutlineHome />}>
-            <Link to="/">Home</Link>
+            <Link to="/" className="menuLink">
+              Home
+            </Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<AiOutlineCalendar />}>
-            <Link to="/calender">Calendar</Link>
+            <Link to="/calender" className="menuLink">
+              Calendar
+            </Link>
           </Menu.Item>
           <Menu.Item key="3" icon={<TbBed />}>
-            <Link to="/new-booking">Booking</Link>
+            <Link to="/new-booking" className="menuLink">
+              Booking
+            </Link>
           </Menu.Item>
           <Menu.Item key="4" icon={<TbUsers />}>
-            <Link to="/guest-lookup">Guest Look-up</Link>
+            <Link to="/guest-lookup" className="menuLink">
+              Guest Look-up
+            </Link>
           </Menu.Item>
           <Menu.Item key="5" icon={<TbBrandGoogleAnalytics />}>
-            <Link to="/financial-overview">Financial Overview</Link>
+            <Link to="/financial-overview" className="menuLink">
+              Financial Overview
+            </Link>
           </Menu.Item>
         </Menu>
 
