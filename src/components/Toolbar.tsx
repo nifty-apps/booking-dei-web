@@ -13,6 +13,7 @@ import {
 } from "react-icons/ai";
 import { FiHelpCircle } from "react-icons/fi";
 import gridots from "../assets/gridots.png";
+import { Link } from "react-router-dom";
 
 interface ToolbarProps {
   collapsed: boolean;
@@ -25,34 +26,45 @@ const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
   const items = [
     {
       label: (
-        <a href="/" className="flex items-center gap-2">
+        <Link to="/profile" className="flex items-center gap-2">
           <span>
             <AiOutlineUser />
           </span>
           My Account
-        </a>
+        </Link>
       ),
       key: "0",
     },
     {
       label: (
-        <a href="/" className="flex items-center gap-2">
+        <Link to="/settings" className="flex items-center gap-2">
           <span>
             <AiOutlineSetting />
           </span>
           Settings
-        </a>
+        </Link>
       ),
       key: "1",
     },
     {
       label: (
-        <a href="/" className="flex items-center gap-2">
+        <Link to="/login" className="flex items-center gap-2">
+          <span>
+            <AiOutlineUser />
+          </span>
+          Login
+        </Link>
+      ),
+      key: "2",
+    },
+    {
+      label: (
+        <Link to="/help" className="flex items-center gap-2">
           <span>
             <FiHelpCircle />
           </span>
           Help
-        </a>
+        </Link>
       ),
       key: "3",
     },
