@@ -8,7 +8,6 @@ import { useQuery } from "@apollo/client";
 
 const Home = () => {
   const { data, error, loading } = useQuery(GET_ROOMS);
-  console.log("data: ", data);
   return (
     <>
       <div className="flex items-center justify-between">
