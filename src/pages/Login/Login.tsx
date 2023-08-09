@@ -1,4 +1,6 @@
+import { useMutation } from "@apollo/client";
 import { Form, Input } from "antd";
+import { LOGIN } from "../../graphql/mutations/loginMutations";
 
 interface LoginFormValues {
   phone: string;
@@ -6,8 +8,22 @@ interface LoginFormValues {
 }
 
 const Login = () => {
+  const [login] = useMutation(LOGIN);
+  // form submit
   const onFinish = (values: LoginFormValues) => {
-    console.log("Success:", values);
+    login({
+      variables: {
+        phone: values.phone,
+        password: values.password,
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        localStorage.setItem("token", res.data.login.access_token);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
