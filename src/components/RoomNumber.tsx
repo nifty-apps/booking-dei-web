@@ -22,7 +22,9 @@ const RoomNumber = () => {
                   <div
                     key={id}
                     className={`w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center`}
-                    style={{ background: bg }}
+                    style={{
+                      background: bg,
+                    }}
                   >
                     <h4 className="font-bold text-lg">{roomNumber}</h4>
                     <div>
@@ -40,12 +42,14 @@ const RoomNumber = () => {
             </div>
             <div className="grid grid-cols-2 gap-2">
               {roomNumberSecondFloor.map((room) => {
-                const { id, roomNumber, lift, roomType, bg, color } = room;
+                const { id, roomNumber, lift, roomType, bg } = room;
                 return (
                   <div
                     key={id}
                     className={`w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center`}
-                    style={{ background: bg, color: color }}
+                    style={{
+                      background: bg,
+                    }}
                   >
                     <h4 className="font-bold text-lg">{roomNumber}</h4>
                     <div>
@@ -67,8 +71,10 @@ const RoomNumber = () => {
                 return (
                   <div
                     key={id}
-                    className="w-full bg-white rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center"
-                    style={{ background: bg }}
+                    className={`w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center`}
+                    style={{
+                      background: bg,
+                    }}
                   >
                     <h4 className="font-bold text-lg">{roomNumber}</h4>
                     <div>
@@ -90,8 +96,10 @@ const RoomNumber = () => {
                 return (
                   <div
                     key={id}
-                    className="w-full bg-white rounded-lg shadow-sm p-2 border border-gray-500 cursor-pointer flex flex-col justify-center"
-                    style={{ background: bg }}
+                    className={`w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center`}
+                    style={{
+                      background: bg,
+                    }}
                   >
                     <h4 className="font-bold text-lg">{roomNumber}</h4>
                     <div>
