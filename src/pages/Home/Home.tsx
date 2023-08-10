@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import RoomNumber from "../../components/RoomNumber";
@@ -8,9 +9,14 @@ import { GET_ROOMS } from "../../graphql/queries/roomQueries";
 
 const Home = () => {
   const { data, error, loading } = useQuery(GET_ROOMS);
+  const [currentSelection, setCurrentSelection] = useState(null);
+
+  console.log(currentSelection);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) return <p className="text-red-400">Error: {error.message}</p>;
+
+  console.log(currentSelection);
 
   return (
     <>
@@ -29,7 +35,11 @@ const Home = () => {
       </div>
       <div className="grid grid-cols-12 mt-5">
         {/* room number part */}
-        <RoomNumber rooms={data?.rooms} />
+        <RoomNumber
+          rooms={data?.rooms}
+          currentSelection={currentSelection}
+          setCurrentSelection={setCurrentSelection}
+        />
         {/* current selection part */}
         <CurrentSelection />
       </div>

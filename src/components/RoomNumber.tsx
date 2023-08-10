@@ -13,18 +13,22 @@ interface RoomNumberProps {
 
 type FloorRoomsProps = Room[]; // This is now an array of Room objects
 
-const RoomNumber = ({ rooms }: RoomNumberProps) => {
+const RoomNumber = ({
+  rooms,
+  currentSelection,
+  setCurrentSelection,
+}: RoomNumberProps) => {
   // Separate the rooms based on floor
-  const firstFloorRooms = rooms.filter(
+  const firstFloorRooms = rooms?.filter(
     (room) => room.number >= 100 && room.number < 200
   );
-  const secondFloorRooms = rooms.filter(
+  const secondFloorRooms = rooms?.filter(
     (room) => room.number >= 200 && room.number < 300
   );
-  const thirdFloorRooms = rooms.filter(
+  const thirdFloorRooms = rooms?.filter(
     (room) => room.number >= 300 && room.number < 400
   );
-  const fourthFloorRooms = rooms.filter(
+  const fourthFloorRooms = rooms?.filter(
     (room) => room.number >= 400 && room.number < 500
   );
 
@@ -37,6 +41,7 @@ const RoomNumber = ({ rooms }: RoomNumberProps) => {
           <div
             key={_id}
             className={`w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center`}
+            onClick={() => setCurrentSelection(room)}
           >
             <h4 className="font-bold text-lg">{number}</h4>
             <p className="text-md">{type.title}</p>
