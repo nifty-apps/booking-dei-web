@@ -15,8 +15,8 @@ type FloorRoomsProps = Room[]; // This is now an array of Room objects
 
 const RoomNumber = ({
   rooms,
-  currentSelection,
-  setCurrentSelection,
+  selectedRooms,
+  setSelectedRooms,
 }: RoomNumberProps) => {
   // Separate the rooms based on floor
   const firstFloorRooms = rooms?.filter(
@@ -32,6 +32,16 @@ const RoomNumber = ({
     (room) => room.number >= 400 && room.number < 500
   );
 
+  const toggleRoomSelection = (room) => {
+    if (selectedRooms.includes(room)) {
+      setSelectedRooms(
+        selectedRooms.filter((selectedRoom) => selectedRoom !== room)
+      );
+    } else {
+      setSelectedRooms([...selectedRooms, room]);
+    }
+  };
+
   // Function to render rooms
   const renderRooms = (floorRooms: FloorRoomsProps) => (
     <div className="grid grid-cols-2 gap-2">
@@ -41,7 +51,7 @@ const RoomNumber = ({
           <div
             key={_id}
             className={`w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center`}
-            onClick={() => setCurrentSelection(room)}
+            onClick={() => toggleRoomSelection(room)}
           >
             <h4 className="font-bold text-lg">{number}</h4>
             <p className="text-md">{type.title}</p>

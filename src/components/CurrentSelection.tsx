@@ -1,22 +1,29 @@
 import { AiOutlineClose } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
-const CurrentSelection = () => {
+const CurrentSelection = ({ selectedRooms }) => {
+  console.log("hello", selectedRooms);
   return (
     <div className="col-span-3 bg-gray-200 p-4 rounded-sm ml-4">
       <h3 className="text-lg capitalize font-semibold mb-5">
         Current Selection
       </h3>
 
-      <div className="flex justify-between text-md">
-        <div className="flex items-center">
-          <span className="cursor-pointer">
-            <AiOutlineClose />
-          </span>
-          <div className="mx-2 font-semibold">Ac</div>
-        </div>
-        <div className="font-semibold">206</div>
-      </div>
+      {selectedRooms.length > 0 &&
+        selectedRooms.map((room) => {
+          console.log("room : ", room);
+          return (
+            <div className="flex justify-between text-md">
+              <div className="flex items-center">
+                <span className="cursor-pointer">
+                  <AiOutlineClose />
+                </span>
+                <div className="mx-2 font-semibold">{room.type.title}</div>
+              </div>
+              <div className="mx-2 font-semibold">{room.number}</div>
+            </div>
+          );
+        })}
 
       {/* edit btn  */}
       <div className="mt-72">

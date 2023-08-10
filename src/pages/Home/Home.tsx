@@ -9,14 +9,10 @@ import { GET_ROOMS } from "../../graphql/queries/roomQueries";
 
 const Home = () => {
   const { data, error, loading } = useQuery(GET_ROOMS);
-  const [currentSelection, setCurrentSelection] = useState(null);
-
-  console.log(currentSelection);
+  const [selectedRooms, setSelectedRooms] = useState([]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-400">Error: {error.message}</p>;
-
-  console.log(currentSelection);
 
   return (
     <>
@@ -37,11 +33,11 @@ const Home = () => {
         {/* room number part */}
         <RoomNumber
           rooms={data?.rooms}
-          currentSelection={currentSelection}
-          setCurrentSelection={setCurrentSelection}
+          selectedRooms={selectedRooms}
+          setSelectedRooms={setSelectedRooms}
         />
         {/* current selection part */}
-        <CurrentSelection />
+        <CurrentSelection selectedRooms={selectedRooms} />
       </div>
     </>
   );
