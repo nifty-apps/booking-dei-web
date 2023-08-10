@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { DatePicker, Modal, Select, Checkbox, Form, Input, Button } from "antd";
-// data
-
 import { AiOutlineDown } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
 import RoomNumber from "../../components/RoomNumber";
@@ -9,7 +7,8 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdClose } from "react-icons/md";
 import BookingSummary from "../../components/BookingSummary";
 import TitleText from "../../components/Title";
-import { useLocation } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+import { GET_ROOMS } from "../../graphql/queries/roomQueries";
 
 const NewBooking = () => {
   // guest details form
@@ -17,8 +16,12 @@ const NewBooking = () => {
   const [additionalGuestForm] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [extra, setExtra] = useState(false);
-  const location = useLocation();
 
+  const { data, error, loading } = useQuery(GET_ROOMS);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-400">Error: {error.message}</p>;
+
+  console.log("main data : ", data);
   // modal for Room type
   const showModal = () => {
     setIsModalOpen(true);
@@ -266,7 +269,7 @@ const NewBooking = () => {
           style: { background: "gray" },
         }}
       >
-        <RoomNumber />
+        <RoomNumber rooms={data.rooms} />
       </Modal>
       {/* modal for extra | discount */}
       <Modal
