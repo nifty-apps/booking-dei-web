@@ -37,7 +37,10 @@ const Home = () => {
           setSelectedRooms={setSelectedRooms}
         />
         {/* current selection part */}
-        <CurrentSelection selectedRooms={selectedRooms} />
+        <CurrentSelection
+          selectedRooms={selectedRooms}
+          setSelectedRooms={setSelectedRooms}
+        />
       </div>
     </>
   );

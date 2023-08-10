@@ -1,3 +1,5 @@
+import React from "react";
+
 interface Room {
   number: number;
   type: {
@@ -9,15 +11,15 @@ interface Room {
 
 interface RoomNumberProps {
   rooms: Room[];
+  selectedRooms: Room[];
+  setSelectedRooms: (rooms: Room[]) => void;
 }
 
-type FloorRoomsProps = Room[]; // This is now an array of Room objects
-
-const RoomNumber = ({
+const RoomNumber: React.FC<RoomNumberProps> = ({
   rooms,
   selectedRooms,
   setSelectedRooms,
-}: RoomNumberProps) => {
+}) => {
   // Separate the rooms based on floor
   const firstFloorRooms = rooms?.filter(
     (room) => room.number >= 100 && room.number < 200
@@ -32,7 +34,7 @@ const RoomNumber = ({
     (room) => room.number >= 400 && room.number < 500
   );
 
-  const toggleRoomSelection = (room) => {
+  const toggleRoomSelection = (room: Room) => {
     if (selectedRooms.includes(room)) {
       setSelectedRooms(
         selectedRooms.filter((selectedRoom) => selectedRoom !== room)
@@ -43,7 +45,7 @@ const RoomNumber = ({
   };
 
   // Function to render rooms
-  const renderRooms = (floorRooms: FloorRoomsProps) => (
+  const renderRooms = (floorRooms: Room[]) => (
     <div className="grid grid-cols-2 gap-2">
       {floorRooms?.map((room) => {
         const { number, type, _id } = room;
@@ -92,6 +94,7 @@ const RoomNumber = ({
           </div>
         </div>
         {/* rounding circle */}
+        {/* rounding circle */}
         <div className="flex items-center justify-center gap-2 mt-3">
           <div className="w-5 h-5 rounded-full bg-white border border-gray-500"></div>
           <span className="text-gray-500 font-semibold">Available</span>
@@ -111,6 +114,7 @@ const RoomNumber = ({
           <div className="w-5 h-5 rounded-full bg-red-100 border border-gray-500"></div>
           <span className="text-gray-500 font-semibold">Unavailable</span>
         </div>
+        ;
       </div>
     </>
   );

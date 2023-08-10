@@ -1,8 +1,31 @@
 import { AiOutlineClose } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
-const CurrentSelection = ({ selectedRooms }) => {
-  console.log("hello", selectedRooms);
+interface Room {
+  number: number;
+  type: {
+    title: string;
+    rent: number;
+  };
+  _id: string;
+}
+
+interface CurrentSelectionProps {
+  selectedRooms: Room[];
+  setSelectedRooms: (rooms: Room[]) => void;
+}
+
+const CurrentSelection = ({
+  selectedRooms,
+  setSelectedRooms,
+}: CurrentSelectionProps) => {
+  const removeItem = (room: Room) => {
+    const newRooms = selectedRooms.filter((item) => item._id !== room._id);
+    setSelectedRooms(newRooms);
+  };
+
+  console.log(selectedRooms);
+
   return (
     <div className="col-span-3 bg-gray-200 p-4 rounded-sm ml-4">
       <h3 className="text-lg capitalize font-semibold mb-5">
@@ -11,11 +34,13 @@ const CurrentSelection = ({ selectedRooms }) => {
 
       {selectedRooms.length > 0 &&
         selectedRooms.map((room) => {
-          console.log("room : ", room);
           return (
-            <div className="flex justify-between text-md">
+            <div key={room._id} className="flex justify-between text-md">
               <div className="flex items-center">
-                <span className="cursor-pointer">
+                <span
+                  className="cursor-pointer"
+                  onClick={() => removeItem(room)}
+                >
                   <AiOutlineClose />
                 </span>
                 <div className="mx-2 font-semibold">{room.type.title}</div>
