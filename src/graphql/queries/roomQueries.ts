@@ -1,12 +1,15 @@
-import { gql } from "../__generated__/gql";
+import { gql } from "@apollo/client";
 
 export const GET_ROOMS = gql(`
-  query Rooms {
+  query Hotels {
     rooms {
       _id
       number
       hotel
-      type
+      type {
+        title
+        rent
+      }
     }
   }
 `);

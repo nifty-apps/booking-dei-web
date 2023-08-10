@@ -3,11 +3,15 @@ import { Link } from "react-router-dom";
 import RoomNumber from "../../components/RoomNumber";
 import TitleText from "../../components/Title";
 import CurrentSelection from "../../components/CurrentSelection";
-import { GET_ROOMS } from "../../graphql/queries/roomQueries";
 import { useQuery } from "@apollo/client";
+import { GET_ROOMS } from "../../graphql/queries/roomQueries";
 
 const Home = () => {
   const { data, error, loading } = useQuery(GET_ROOMS);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -25,7 +29,7 @@ const Home = () => {
       </div>
       <div className="grid grid-cols-12 mt-5">
         {/* room number part */}
-        <RoomNumber />
+        <RoomNumber rooms={data?.rooms} />
         {/* current selection part */}
         <CurrentSelection />
       </div>

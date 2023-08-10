@@ -19,7 +19,7 @@ const Login = () => {
     })
       .then((res) => {
         console.log(res);
-        localStorage.setItem("token", res.data.login.access_token);
+        localStorage.setItem("token", res?.data?.login?.access_token);
       })
       .catch((err) => {
         console.log(err);

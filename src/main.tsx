@@ -24,6 +24,7 @@ const client = new ApolloClient({
   link: httpLink, // Use the http link with headers
   cache: new InMemoryCache(),
 });
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ApolloProvider client={client}>
