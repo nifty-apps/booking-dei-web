@@ -60,17 +60,20 @@ const CurrentSelection = ({
         })}
 
       {/* edit btn  */}
-      <div className="mt-72">
-        <Link to="/edit-booking/:id">
-          <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold">
-            Edit Booking
+
+      {selectedRooms.length > 0 && (
+        <div className="mt-72">
+          <Link to="/edit-booking/:id">
+            <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold">
+              Edit Booking
+            </button>
+          </Link>
+          {/* view booking btn */}
+          <button className="w-full px-4 py-2 border-2 border-blue-900 text-blue-900 rounded-md hover:bg-blue-900 hover:text-white hover:border-blue-900 transition-colors duration-300 font-semibold">
+            View Booking Details
           </button>
-        </Link>
-        {/* view booking btn */}
-        <button className="w-full px-4 py-2 border-2 border-blue-900 text-blue-900 rounded-md hover:bg-blue-900 hover:text-white hover:border-blue-900 transition-colors duration-300 font-semibold">
-          View Booking Details
-        </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };

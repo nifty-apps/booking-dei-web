@@ -123,6 +123,8 @@ export type CreateRoomInput = {
   hotel: Scalars['ID']['input'];
   /** Number or name of the room */
   number: Scalars['String']['input'];
+  /** Room status */
+  status?: Scalars['String']['input'];
   /** Type of the room */
   type?: InputMaybe<Scalars['ID']['input']>;
 };
@@ -324,6 +326,7 @@ export type Query = {
   roomBookings: Array<RoomBooking>;
   rooms: Array<Room>;
   transaction: Transaction;
+  transactionByFilter: Array<Transaction>;
   transactions: Array<Transaction>;
   transactionsByDateRange: Array<Transaction>;
   user: User;
@@ -357,7 +360,12 @@ export type QueryRoomBookingsArgs = {
 
 
 export type QueryTransactionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryTransactionByFilterArgs = {
+  transactionFilter: TransactionFilter;
 };
 
 
@@ -381,6 +389,8 @@ export type Room = {
   hotel: Scalars['ID']['output'];
   /** Number or name of the room */
   number: Scalars['String']['output'];
+  /** Room status */
+  status: Scalars['String']['output'];
   type: RoomType;
 };
 
@@ -461,6 +471,15 @@ export type Transaction = {
   subCategory?: Maybe<TransactionSubCategory>;
 };
 
+export type TransactionFilter = {
+  bookingId?: InputMaybe<Scalars['ID']['input']>;
+  contactId?: InputMaybe<Scalars['ID']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  hotelId?: InputMaybe<Scalars['ID']['input']>;
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
 /** Method of the transaction */
 export enum TransactionMethod {
   Bank = 'BANK',
@@ -532,6 +551,8 @@ export type UpdateRoomInput = {
   id: Scalars['ID']['input'];
   /** Number or name of the room */
   number?: InputMaybe<Scalars['String']['input']>;
+  /** Room status */
+  status?: InputMaybe<Scalars['String']['input']>;
   /** Type of the room */
   type?: InputMaybe<Scalars['ID']['input']>;
 };
