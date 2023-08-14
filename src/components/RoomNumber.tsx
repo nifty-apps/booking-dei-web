@@ -1,5 +1,3 @@
-import React from "react";
-
 interface Room {
   number: number;
   type: {
@@ -15,11 +13,12 @@ interface RoomNumberProps {
   setSelectedRooms: (rooms: Room[]) => void;
 }
 
-const RoomNumber: React.FC<RoomNumberProps> = ({
+const RoomNumber = ({
   rooms,
+  roomBookings,
   selectedRooms,
   setSelectedRooms,
-}) => {
+}: RoomNumberProps) => {
   // Separate the rooms based on floor
   const firstFloorRooms = rooms?.filter(
     (room) => room.number >= 100 && room.number < 200
@@ -49,14 +48,37 @@ const RoomNumber: React.FC<RoomNumberProps> = ({
     <div className="grid grid-cols-2 gap-2">
       {floorRooms?.map((room) => {
         const { number, type, _id } = room;
+        const roomStatus = roomBookings?.filter((status) => status.status);
+
+        const status = roomStatus ? roomStatus?.status : "available";
+
+        const getStatusColorClass = (status) => {
+          switch (status) {
+            case "available":
+              return "bg-white";
+            case "BOOKED":
+              return "bg-blue-100";
+            case "CHECKEDIN":
+              return "bg-green-100";
+            case "CHECKEDOUT":
+              return "bg-gray-100";
+            case "CANCELLED":
+              return "bg-orange-100";
+            default:
+              return "bg-gray-100";
+          }
+        };
+
+        const bgColorClass = getStatusColorClass(status);
+
         return (
           <div
             key={_id}
-            className={`w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center`}
+            className={`${bgColorClass} bg-red-100 w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center`}
             onClick={() => toggleRoomSelection(room)}
           >
             <h4 className="font-bold text-lg">{number}</h4>
-            <p className="text-md">{type.title}</p>
+            <p className={`text-md`}>{type.title}</p>
           </div>
         );
       })}

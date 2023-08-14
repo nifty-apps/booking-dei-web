@@ -5,10 +5,11 @@ import RoomNumber from "../../components/RoomNumber";
 import TitleText from "../../components/Title";
 import CurrentSelection from "../../components/CurrentSelection";
 import { useQuery } from "@apollo/client";
-import { GET_ROOMS } from "../../graphql/queries/roomQueries";
+import { GET_ROOMS, RoomBookings } from "../../graphql/queries/roomQueries";
 
 const Home = () => {
   const { data, error, loading } = useQuery(GET_ROOMS);
+  const { data: roomBookings } = useQuery(RoomBookings);
   const [selectedRooms, setSelectedRooms] = useState([]);
 
   if (loading) return <p>Loading...</p>;
@@ -33,6 +34,7 @@ const Home = () => {
         {/* room number part */}
         <RoomNumber
           rooms={data?.rooms}
+          roomBookings={roomBookings?.roomBookings}
           selectedRooms={selectedRooms}
           setSelectedRooms={setSelectedRooms}
         />

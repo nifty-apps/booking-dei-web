@@ -24,12 +24,23 @@ const CurrentSelection = ({
     setSelectedRooms(newRooms);
   };
 
+  if (selectedRooms.length === 0)
+    return (
+      <div className="col-span-3 bg-gray-200 p-4 rounded-sm ml-4">
+        <h3 className="text-lg capitalize font-semibold mb-5">
+          Current Selection
+        </h3>
+        <p className="text-gray-500">No current selection</p>
+      </div>
+    );
+
   return (
     <div className="col-span-3 bg-gray-200 p-4 rounded-sm ml-4">
       <h3 className="text-lg capitalize font-semibold mb-5">
         Current Selection
       </h3>
 
+      {/* selected rooms */}
       {selectedRooms.length > 0 &&
         selectedRooms.map((room) => {
           return (

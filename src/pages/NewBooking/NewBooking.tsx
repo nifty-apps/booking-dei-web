@@ -21,7 +21,6 @@ const NewBooking = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-400">Error: {error.message}</p>;
 
-  console.log("main data : ", data);
   // modal for Room type
   const showModal = () => {
     setIsModalOpen(true);
