@@ -41,19 +41,19 @@ const RoomNumber: React.FC<RoomNumberProps> = ({
     <div className="grid grid-cols-2 gap-2">
       {floorRooms.map((room) => {
         const { number, type, _id, status } = room;
-        // console.log(`status: `, status);
-        const roomBooking = roomBookings?.find(
+        // console.log(`Main status: `, status);
+        const roomBookingStatus = roomBookings?.find(
           (booking) => booking?.status === status
         );
 
-        console.log("status ", roomBooking?.status);
+        // console.log(`roomBookingStatus`, roomBookingStatus);
 
         const getStatusColorClass = (bookingStatus: string) => {
           switch (bookingStatus) {
             case "available":
               return "bg-red-50";
             case "BOOKED":
-              return "bg-blue-100";
+              return "bg-blue-400";
             case "CHECKEDIN":
               return "bg-green-100";
             case "CHECKEDOUT":
@@ -66,7 +66,7 @@ const RoomNumber: React.FC<RoomNumberProps> = ({
         };
 
         const bgColorClass = getStatusColorClass(
-          roomBooking?.status || "available"
+          roomBookingStatus?.status || "available"
         );
 
         return (
@@ -99,25 +99,25 @@ const RoomNumber: React.FC<RoomNumberProps> = ({
   return (
     <div className="col-span-9 bg-white p-5 rounded">
       <div className="grid grid-cols-4 gap-2">
-        <div className="bg-gray-100">
+        <div>
           <div className="capitalize border text-center py-3 bg-white rounded-lg border-gray-500 text-black font-semibold mb-4">
             First floor
           </div>
           {renderRooms(firstFloorRooms)}
         </div>
-        <div className="bg-gray-100">
+        <div>
           <div className="capitalize border text-center py-3 bg-white rounded-lg border-gray-500 text-black font-semibold mb-4">
             Second floor
           </div>
           {renderRooms(secondFloorRooms)}
         </div>
-        <div className="bg-gray-100">
+        <div>
           <div className="capitalize border text-center py-3 bg-white rounded-lg border-gray-500 text-black font-semibold mb-4">
             Third floor
           </div>
           {renderRooms(thirdFloorRooms)}
         </div>
-        <div className="bg-gray-100">
+        <div>
           <div className="capitalize border text-center py-3 bg-white rounded-lg border-gray-500 text-black font-semibold mb-4">
             Fourth floor
           </div>
@@ -125,8 +125,26 @@ const RoomNumber: React.FC<RoomNumberProps> = ({
         </div>
       </div>
       <div className="flex items-center justify-center gap-2 mt-3">
-        {/* Icons and color legends */}
-        {/* ... (previous icons and color legends code) */}
+        {/* rounding circle */}
+        <div className="flex items-center justify-center gap-2 mt-3">
+          <div className="w-5 h-5 rounded-full bg-white border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Available</span>
+
+          <div className="w-5 h-5 rounded-full bg-blue-100 border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Booked</span>
+
+          <div className="w-5 h-5 rounded-full bg-green-100 border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Check In</span>
+
+          <div className="w-5 h-5 rounded-full bg-gray-100 border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Check Out</span>
+
+          <div className="w-5 h-5 rounded-full bg-orange-100  border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Partial Payment</span>
+
+          <div className="w-5 h-5 rounded-full bg-red-100 border border-gray-500"></div>
+          <span className="text-gray-500 font-semibold">Unavailable</span>
+        </div>
       </div>
     </div>
   );

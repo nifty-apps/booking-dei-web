@@ -181,25 +181,42 @@ export type LoginResponseDto = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Create booking */
   createBooking: Booking;
+  /** Create contact */
   createContact: Contact;
   createHotel: Hotel;
   createRoom: Room;
+  /** Create transaction */
   createTransaction: Transaction;
+  /** Create user */
   createUser: User;
   login: LoginResponseDto;
+  /** Delete booking by ID */
   removeBooking: Booking;
+  /** Delete contact by ID */
   removeContact: Contact;
   removeHotel: Hotel;
   removeRoom: Room;
+  /** Delete room booking by ID */
+  removeRoomBooking: RoomBooking;
+  /** Delete transaction by ID */
   removeTransaction: Transaction;
+  /** Delete user by ID */
   removeUser: User;
+  /** Soft delete transaction by ID */
   softDeleteTransaction: Transaction;
+  /** Update booking */
   updateBooking: Booking;
+  /** Update contact */
   updateContact: Contact;
   updateHotel: Hotel;
   updateRoom: RoomType;
+  /** Update room booking by ID */
+  updateRoomBooking: Array<RoomBooking>;
+  /** Update transaction */
   updateTransaction: Transaction;
+  /** Update user */
   updateUser: User;
 };
 
@@ -260,13 +277,18 @@ export type MutationRemoveRoomArgs = {
 };
 
 
+export type MutationRemoveRoomBookingArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationRemoveTransactionArgs = {
   id: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveUserArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -276,6 +298,7 @@ export type MutationSoftDeleteTransactionArgs = {
 
 
 export type MutationUpdateBookingArgs = {
+  id: Scalars['ID']['input'];
   updateBookingInput: UpdateBookingInput;
 };
 
@@ -296,6 +319,12 @@ export type MutationUpdateRoomArgs = {
 };
 
 
+export type MutationUpdateRoomBookingArgs = {
+  id: Scalars['ID']['input'];
+  updateRoomBookingInput: UpdateRoomBookingInput;
+};
+
+
 export type MutationUpdateTransactionArgs = {
   id: Scalars['ID']['input'];
   updateTransactionInput: UpdateTransactionInput;
@@ -303,6 +332,7 @@ export type MutationUpdateTransactionArgs = {
 
 
 export type MutationUpdateUserArgs = {
+  id: Scalars['ID']['input'];
   updateUserInput: UpdateUserInput;
 };
 
@@ -315,21 +345,33 @@ export enum PaymentStatus {
 
 export type Query = {
   __typename?: 'Query';
+  /** Find all active transactions */
   activeTransactions: Array<Transaction>;
+  /** Find booking by ID */
   booking: Booking;
+  /** Find all bookings */
   bookings: Array<Booking>;
+  /** Find contact by ID */
   contact: Contact;
+  /** Find all contacts */
   contacts: Array<Contact>;
   hotel: Hotel;
   hotels: Array<Hotel>;
   room: Room;
+  /** Find all room bookings */
   roomBookings: Array<RoomBooking>;
   rooms: Array<Room>;
+  /** Find transaction by ID */
   transaction: Transaction;
+  /** Find Transactions by filter(s) */
   transactionByFilter: Array<Transaction>;
+  /** Find all transactions */
   transactions: Array<Transaction>;
+  /** Find transactions by date range */
   transactionsByDateRange: Array<Transaction>;
+  /** Get user by ID */
   user: User;
+  /** Get all users */
   users: Array<User>;
 };
 
@@ -473,11 +515,14 @@ export type Transaction = {
 
 export type TransactionFilter = {
   bookingId?: InputMaybe<Scalars['ID']['input']>;
+  category?: InputMaybe<TransactionType>;
   contactId?: InputMaybe<Scalars['ID']['input']>;
   deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
   hotelId?: InputMaybe<Scalars['ID']['input']>;
+  method?: InputMaybe<TransactionMethod>;
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  subCategory?: InputMaybe<TransactionSubCategory>;
 };
 
 /** Method of the transaction */
@@ -512,7 +557,8 @@ export type UpdateBookingInput = {
   due?: InputMaybe<Scalars['Float']['input']>;
   /** Hotel where the booking were generated */
   hotel?: InputMaybe<Scalars['ID']['input']>;
-  id: Scalars['Int']['input'];
+  /** Booking ID */
+  id: Scalars['ID']['input'];
   /** Payment status of the customer */
   paymentStatus?: InputMaybe<PaymentStatus>;
   /** Room bookings of the booking */
@@ -543,6 +589,27 @@ export type UpdateHotelInput = {
   id: Scalars['Int']['input'];
   /** Name of the hotel */
   name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateRoomBookingInput = {
+  /** Check-in date of the Room booking */
+  checkIn?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Check-out date of the Room booking */
+  checkOut?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Discount for the booking */
+  discount?: InputMaybe<Scalars['Float']['input']>;
+  /** Extra bed for the booking */
+  extraBed?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Extra breakfast for the booking */
+  extraBreakfast?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Room Booking ID */
+  id: Scalars['ID']['input'];
+  /** Room rent for the booking */
+  rent?: InputMaybe<Scalars['Float']['input']>;
+  /** Room where the booking were generated */
+  room?: InputMaybe<Scalars['ID']['input']>;
+  /** Room booking status of the Room booking */
+  status?: InputMaybe<RoomBookingStatus>;
 };
 
 export type UpdateRoomInput = {
@@ -584,7 +651,8 @@ export type UpdateTransactionInput = {
 export type UpdateUserInput = {
   /** Email of the user */
   email?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['Int']['input'];
+  /** User ID */
+  id: Scalars['ID']['input'];
   /** Name of the user */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Password of the user */

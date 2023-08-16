@@ -272,29 +272,35 @@ const NewBooking = () => {
       </Modal>
       {/* modal for extra | discount */}
       <Modal
-        title="Extra | Discount"
         open={extra}
         onOk={handleOkForExtra}
         onCancel={handleCancelForExtra}
         cancelText="Cancel"
         okText="Apply"
-        width={1000}
+        width={450}
         cancelButtonProps={{
           style: { background: "" },
         }}
         okButtonProps={{
-          style: { background: "gray" },
+          style: { background: "#005099" },
         }}
       >
-        <div className="flex items-center">
+        <div className="flex justify-between">
           <div>
-            <h3>Extras</h3>
-            <Checkbox>Bed</Checkbox>
-            <br />
-            <Checkbox>Breakfast</Checkbox>
+            <h3 className="font-semibold text-xl mb-2">Extras</h3>
+            <div className="flex items-center gap-2">
+              <Checkbox>Bed</Checkbox>
+              <br />
+              <Checkbox>Breakfast</Checkbox>
+            </div>
           </div>
-          <div>
-            <h3>Discount</h3>
+          <div className="mb-8">
+            <h3 className="font-semibold text-xl">Discount</h3>
+            <div className="flex items-center">
+              <div className="my-2">Final Room Rent</div>
+              <div className="mx-5">Amount</div>
+            </div>
+            <Input placeholder="Enter Discount" maxLength={16} />
           </div>
         </div>
       </Modal>
