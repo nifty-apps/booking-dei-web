@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DatePicker, Modal, Select, Checkbox, Form, Input, Button } from "antd";
 import { AiOutlineDown } from "react-icons/ai";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaRegCheckCircle } from "react-icons/fa";
 import RoomNumber from "../../components/RoomNumber";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdClose } from "react-icons/md";
@@ -9,6 +9,7 @@ import BookingSummary from "../../components/BookingSummary";
 import TitleText from "../../components/Title";
 import { useQuery } from "@apollo/client";
 import { GET_ROOMS } from "../../graphql/queries/roomQueries";
+import { FiDivideCircle } from "react-icons/fi";
 
 const NewBooking = () => {
   // guest details form
@@ -16,6 +17,7 @@ const NewBooking = () => {
   const [additionalGuestForm] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [extra, setExtra] = useState(false);
+  const [confirm, setConfirm] = useState(false);
 
   const { data, error, loading } = useQuery(GET_ROOMS);
   if (loading) return <p>Loading...</p>;
@@ -47,6 +49,19 @@ const NewBooking = () => {
     setExtra(false);
   };
 
+  // modal for booking confirm
+  const showModalForConfirm = () => {
+    setConfirm(true);
+  };
+
+  const handleOkForConfirm = () => {
+    setConfirm(false);
+  };
+
+  const handleCancelForConfirm = () => {
+    setConfirm(false);
+  };
+
   const onFinish = () => {};
 
   return (
@@ -63,10 +78,13 @@ const NewBooking = () => {
 
         {/* new booking btn top */}
         <div className="flex items-center gap-4">
-          <button className="text-blue-700 px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 border border-blue-700 hover:bg-blue-900 hover:text-white">
+          <button className="text-blue-700 px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 border border-blue-900 hover:bg-blue-900 hover:text-white">
             Reset
           </button>
-          <button className="text-gray-500 px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 bg-gray-200 hover:bg-gray-300">
+          <button
+            className="text-white px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2  bg-blue-900  w-full"
+            onClick={showModalForConfirm}
+          >
             Confirm Booking
           </button>
         </div>
@@ -110,6 +128,7 @@ const NewBooking = () => {
                   { value: "Check In", label: "Check In" },
                   { value: "Check Out", label: "Check Out" },
                   { value: "Partial Payment", label: "Partial Payment" },
+                  { value: "Cancel", label: "Cancel" },
                 ]}
               />
             </div>
@@ -301,6 +320,34 @@ const NewBooking = () => {
               <div className="mx-5">Amount</div>
             </div>
             <Input placeholder="Enter Discount" maxLength={16} />
+          </div>
+        </div>
+      </Modal>
+
+      {/* modal for confirm booking */}
+      <Modal
+        open={confirm}
+        onOk={handleOkForConfirm}
+        onCancel={handleCancelForConfirm}
+        cancelText="View Booking Details"
+        okText="Back To Home"
+        width={400}
+        cancelButtonProps={{
+          style: { background: "" },
+        }}
+        okButtonProps={{
+          style: { background: "#005099" },
+        }}
+      >
+        <div className="flex justify-evenly">
+          <div className="mt-2">
+            <span className="text-xl text-blue-300">
+              <FaRegCheckCircle />
+            </span>
+          </div>
+          <div className="mx-2 mb-2">
+            <h4 className="font-semibold text-xl">Booking Confirmed</h4>
+            <p>Yay! Your new booking was added successfully.</p>
           </div>
         </div>
       </Modal>
