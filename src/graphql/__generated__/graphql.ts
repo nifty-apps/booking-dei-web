@@ -24,10 +24,16 @@ export type Booking = {
   _id: Scalars['ID']['output'];
   /** Contact who made the booking */
   contact: Scalars['ID']['output'];
+  /** Discount for the booking */
+  discount?: Maybe<Scalars['Float']['output']>;
+  /** Total Due for the booking */
+  due?: Maybe<Scalars['Float']['output']>;
   /** Hotel where the booking were generated */
   hotel: Scalars['ID']['output'];
   /** Payment status of the booking */
   paymentStatus: PaymentStatus;
+  /** Rent for the booking */
+  totalBookingRent?: Maybe<Scalars['Float']['output']>;
 };
 
 export type Contact = {
@@ -58,12 +64,18 @@ export enum ContactTypes {
 export type CreateBookingInput = {
   /** Contact who made the booking */
   contact: Scalars['ID']['input'];
+  /** Discount for the booking */
+  discount?: InputMaybe<Scalars['Float']['input']>;
+  /** Total Due for the booking */
+  due?: InputMaybe<Scalars['Float']['input']>;
   /** Hotel where the booking were generated */
   hotel: Scalars['ID']['input'];
   /** Payment status of the customer */
-  paymentStatus: PaymentStatus;
+  paymentStatus?: InputMaybe<PaymentStatus>;
   /** Room bookings of the booking */
   roomBookings: Array<CreateRoomBookingInput>;
+  /** Total Rent for the booking */
+  totalBookingRent?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type CreateContactInput = {
@@ -94,20 +106,24 @@ export type CreateRoomBookingInput = {
   /** Check-out date of the Room booking */
   checkOut: Scalars['DateTime']['input'];
   /** Discount for the booking */
-  discount: Scalars['Float']['input'];
+  discount?: InputMaybe<Scalars['Float']['input']>;
+  /** Extra bed for the booking */
+  extraBed: Scalars['Boolean']['input'];
+  /** Extra breakfast for the booking */
+  extraBreakfast: Scalars['Boolean']['input'];
   /** Room rent for the booking */
   rent: Scalars['Float']['input'];
   /** Room where the booking were generated */
   room: Scalars['ID']['input'];
   /** Room booking status of the Room booking */
-  status: RoomBookingStatus;
+  status?: InputMaybe<RoomBookingStatus>;
 };
 
 export type CreateRoomInput = {
   /** Hotel where the room is located */
   hotel: Scalars['ID']['input'];
-  /** Number of the room */
-  number: Scalars['Float']['input'];
+  /** Number or name of the room */
+  number: Scalars['String']['input'];
   /** Type of the room */
   type: Scalars['ID']['input'];
 };
@@ -115,12 +131,24 @@ export type CreateRoomInput = {
 export type CreateTransactionInput = {
   /** Amount of the transaction */
   amount: Scalars['Float']['input'];
+  /** Unique identifier for the booking */
+  booking?: InputMaybe<Scalars['ID']['input']>;
+  /** Type of the transaction */
+  category?: InputMaybe<TransactionType>;
   /** Contact who made the booking */
   contact: Scalars['ID']['input'];
-  /** Source of the transaction */
-  source: TransactionSource;
-  /** Type of the transaction */
-  type: TransactionType;
+  /** Date of the transaction */
+  date: Scalars['DateTime']['input'];
+  /** Is the transaction deleted */
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Description of the transaction */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Hotel where the transaction was made */
+  hotel: Scalars['ID']['input'];
+  /** Method of the transaction */
+  method?: InputMaybe<TransactionMethod>;
+  /** Sub Category of the transaction */
+  subCategory?: InputMaybe<TransactionSubCategory>;
 };
 
 export type CreateUserInput = {
@@ -152,24 +180,42 @@ export type LoginResponseDto = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Create booking */
   createBooking: Booking;
+  /** Create contact */
   createContact: Contact;
   createHotel: Hotel;
   createRoom: Room;
+  /** Create transaction */
   createTransaction: Transaction;
+  /** Create user */
   createUser: User;
   login: LoginResponseDto;
+  /** Delete booking by ID */
   removeBooking: Booking;
+  /** Delete contact by ID */
   removeContact: Contact;
   removeHotel: Hotel;
   removeRoom: Room;
+  /** Delete room booking by ID */
+  removeRoomBooking: RoomBooking;
+  /** Delete transaction by ID */
   removeTransaction: Transaction;
+  /** Delete user by ID */
   removeUser: User;
+  /** Soft delete transaction by ID */
+  softDeleteTransaction: Transaction;
+  /** Update booking */
   updateBooking: Booking;
+  /** Update contact */
   updateContact: Contact;
   updateHotel: Hotel;
   updateRoom: Room;
+  /** Update room booking by ID */
+  updateRoomBooking: Array<RoomBooking>;
+  /** Update transaction */
   updateTransaction: Transaction;
+  /** Update user */
   updateUser: User;
 };
 
@@ -226,21 +272,32 @@ export type MutationRemoveHotelArgs = {
 
 
 export type MutationRemoveRoomArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationRemoveRoomBookingArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveTransactionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveUserArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationSoftDeleteTransactionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationUpdateBookingArgs = {
+  id: Scalars['ID']['input'];
   updateBookingInput: UpdateBookingInput;
 };
 
@@ -260,12 +317,20 @@ export type MutationUpdateRoomArgs = {
 };
 
 
+export type MutationUpdateRoomBookingArgs = {
+  id: Scalars['ID']['input'];
+  updateRoomBookingInput: UpdateRoomBookingInput;
+};
+
+
 export type MutationUpdateTransactionArgs = {
+  id: Scalars['ID']['input'];
   updateTransactionInput: UpdateTransactionInput;
 };
 
 
 export type MutationUpdateUserArgs = {
+  id: Scalars['ID']['input'];
   updateUserInput: UpdateUserInput;
 };
 
@@ -278,16 +343,34 @@ export enum PaymentStatus {
 
 export type Query = {
   __typename?: 'Query';
+  /** Find all active transactions */
+  activeTransactions: Array<Transaction>;
+  /** Find booking by ID */
   booking: Booking;
+  /** Find all bookings */
   bookings: Array<Booking>;
+  /** Find contact by ID */
   contact: Contact;
+  /** Find all contacts */
+  contacts: Array<Contact>;
   hotel: Hotel;
   hotels: Array<Hotel>;
   room: Room;
+  /** Find all room bookings */
+  roomBookings: Array<RoomBooking>;
+  roomBookingsOverview: Array<RoomBookingsOverviewResponse>;
   rooms: Array<Room>;
+  /** Find transaction by ID */
   transaction: Transaction;
+  /** Find Transactions by filter(s) */
+  transactionByFilter: Array<Transaction>;
+  /** Find all transactions */
   transactions: Array<Transaction>;
+  /** Find transactions by date range */
+  transactionsByDateRange: Array<Transaction>;
+  /** Get user by ID */
   user: User;
+  /** Get all users */
   users: Array<User>;
 };
 
@@ -298,7 +381,7 @@ export type QueryBookingArgs = {
 
 
 export type QueryContactArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -312,8 +395,38 @@ export type QueryRoomArgs = {
 };
 
 
+export type QueryRoomBookingsArgs = {
+  roomBookingFilter: RoomBookingFilter;
+};
+
+
+export type QueryRoomBookingsOverviewArgs = {
+  endDate: Scalars['DateTime']['input'];
+  hotel: Scalars['ID']['input'];
+  startDate: Scalars['DateTime']['input'];
+};
+
+
+export type QueryRoomsArgs = {
+  hotel: Scalars['ID']['input'];
+};
+
+
 export type QueryTransactionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryTransactionByFilterArgs = {
+  transactionFilter: TransactionFilter;
+};
+
+
+export type QueryTransactionsByDateRangeArgs = {
+  endDate: Scalars['DateTime']['input'];
+  hotelId: Scalars['ID']['input'];
+  includeDeleted?: InputMaybe<Scalars['Boolean']['input']>;
+  startDate: Scalars['DateTime']['input'];
 };
 
 
@@ -327,10 +440,53 @@ export type Room = {
   _id: Scalars['ID']['output'];
   /** Hotel where the room is located */
   hotel: Scalars['ID']['output'];
-  /** Number of the room */
-  number: Scalars['Float']['output'];
+  /** Number or name of the room */
+  number: Scalars['String']['output'];
   /** Type of the room */
   type: Scalars['ID']['output'];
+};
+
+export type RoomBooking = {
+  __typename?: 'RoomBooking';
+  /** Unique identifier for the room booking */
+  _id: Scalars['ID']['output'];
+  /** Unique identifier for the booking */
+  booking: Scalars['ID']['output'];
+  /** Check-in date of the Room booking */
+  checkIn: Scalars['DateTime']['output'];
+  /** Check-out date of the Room booking */
+  checkOut: Scalars['DateTime']['output'];
+  /** Discount for the booking */
+  discount?: Maybe<Scalars['Float']['output']>;
+  /** Extra bed for the booking */
+  extraBed: Scalars['Boolean']['output'];
+  /** Extra breakfast for the booking */
+  extraBreakfast: Scalars['Boolean']['output'];
+  /** Hotel where the booking were generated */
+  hotel: Scalars['ID']['output'];
+  /** Room rent for the booking */
+  rent: Scalars['Float']['output'];
+  /** Room where the booking were generated */
+  room: Scalars['ID']['output'];
+  /** Room booking status of the booking */
+  status: RoomBookingStatus;
+};
+
+export type RoomBookingDetails = {
+  __typename?: 'RoomBookingDetails';
+  _id: Scalars['ID']['output'];
+  booking: Scalars['String']['output'];
+  checkIn: Scalars['DateTime']['output'];
+  checkOut: Scalars['DateTime']['output'];
+  discount: Scalars['Float']['output'];
+  rent: Scalars['Float']['output'];
+  status: Scalars['String']['output'];
+};
+
+export type RoomBookingFilter = {
+  checkIn?: InputMaybe<Scalars['DateTime']['input']>;
+  checkOut?: InputMaybe<Scalars['DateTime']['input']>;
+  hotelId: Scalars['ID']['input'];
 };
 
 /** Room booking status for a booking */
@@ -341,6 +497,20 @@ export enum RoomBookingStatus {
   Checkedout = 'CHECKEDOUT'
 }
 
+export type RoomBookingsOverviewResponse = {
+  __typename?: 'RoomBookingsOverviewResponse';
+  _id: Scalars['ID']['output'];
+  bookings: Array<RoomBookingDetails>;
+  number: Scalars['String']['output'];
+  type: RoomTypeDetails;
+};
+
+export type RoomTypeDetails = {
+  __typename?: 'RoomTypeDetails';
+  rent: Scalars['Float']['output'];
+  title: Scalars['String']['output'];
+};
+
 export type Transaction = {
   __typename?: 'Transaction';
   /** Unique identifier for the transaction */
@@ -349,43 +519,75 @@ export type Transaction = {
   amount: Scalars['Float']['output'];
   /** Unique identifier for the booking */
   booking?: Maybe<Scalars['ID']['output']>;
-  /** Contact who made the booking */
-  contact: Scalars['ID']['output'];
+  /** Type of the transaction */
+  category?: Maybe<TransactionType>;
+  contact: Contact;
+  /** Date of the transaction */
+  date: Scalars['DateTime']['output'];
+  /** Is the transaction deleted */
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** Description of the transaction */
+  description?: Maybe<Scalars['String']['output']>;
   /** Hotel where the transaction were made */
   hotel: Scalars['ID']['output'];
-  /** Source of the transaction */
-  source: TransactionSource;
-  /** Type of the transaction */
-  type: TransactionType;
+  /** Method of the transaction */
+  method: TransactionMethod;
+  /** Sub Category of the transaction */
+  subCategory?: Maybe<TransactionSubCategory>;
 };
 
-/** Source of the transaction */
-export enum TransactionSource {
+export type TransactionFilter = {
+  bookingId?: InputMaybe<Scalars['ID']['input']>;
+  category?: InputMaybe<TransactionType>;
+  contactId?: InputMaybe<Scalars['ID']['input']>;
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  hotelId?: InputMaybe<Scalars['ID']['input']>;
+  method?: InputMaybe<TransactionMethod>;
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  subCategory?: InputMaybe<TransactionSubCategory>;
+};
+
+/** Method of the transaction */
+export enum TransactionMethod {
   Bank = 'BANK',
   Bkash = 'BKASH',
   Cash = 'CASH'
 }
 
-/** Type of the transaction */
-export enum TransactionType {
+/** Sub Category of the transaction */
+export enum TransactionSubCategory {
   Electricity = 'ELECTRICITY',
-  Income = 'INCOME',
   Otherexpense = 'OTHEREXPENSE',
   Rent = 'RENT',
+  Roomrent = 'ROOMRENT',
   Salary = 'SALARY',
   Water = 'WATER'
+}
+
+/** Type of the transaction */
+export enum TransactionType {
+  Expense = 'EXPENSE',
+  Income = 'INCOME'
 }
 
 export type UpdateBookingInput = {
   /** Contact who made the booking */
   contact?: InputMaybe<Scalars['ID']['input']>;
+  /** Discount for the booking */
+  discount?: InputMaybe<Scalars['Float']['input']>;
+  /** Total Due for the booking */
+  due?: InputMaybe<Scalars['Float']['input']>;
   /** Hotel where the booking were generated */
   hotel?: InputMaybe<Scalars['ID']['input']>;
-  id: Scalars['Int']['input'];
+  /** Booking ID */
+  id: Scalars['ID']['input'];
   /** Payment status of the customer */
   paymentStatus?: InputMaybe<PaymentStatus>;
   /** Room bookings of the booking */
   roomBookings?: InputMaybe<Array<CreateRoomBookingInput>>;
+  /** Total Rent for the booking */
+  totalBookingRent?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type UpdateContactInput = {
@@ -412,12 +614,33 @@ export type UpdateHotelInput = {
   name?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateRoomBookingInput = {
+  /** Check-in date of the Room booking */
+  checkIn?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Check-out date of the Room booking */
+  checkOut?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Discount for the booking */
+  discount?: InputMaybe<Scalars['Float']['input']>;
+  /** Extra bed for the booking */
+  extraBed?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Extra breakfast for the booking */
+  extraBreakfast?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Room Booking ID */
+  id: Scalars['ID']['input'];
+  /** Room rent for the booking */
+  rent?: InputMaybe<Scalars['Float']['input']>;
+  /** Room where the booking were generated */
+  room?: InputMaybe<Scalars['ID']['input']>;
+  /** Room booking status of the Room booking */
+  status?: InputMaybe<RoomBookingStatus>;
+};
+
 export type UpdateRoomInput = {
+  _id: Scalars['ID']['input'];
   /** Hotel where the room is located */
   hotel?: InputMaybe<Scalars['ID']['input']>;
-  id: Scalars['Int']['input'];
-  /** Number of the room */
-  number?: InputMaybe<Scalars['Float']['input']>;
+  /** Number or name of the room */
+  number?: InputMaybe<Scalars['String']['input']>;
   /** Type of the room */
   type?: InputMaybe<Scalars['ID']['input']>;
 };
@@ -425,19 +648,32 @@ export type UpdateRoomInput = {
 export type UpdateTransactionInput = {
   /** Amount of the transaction */
   amount?: InputMaybe<Scalars['Float']['input']>;
+  /** Unique identifier for the booking */
+  booking?: InputMaybe<Scalars['ID']['input']>;
+  /** Type of the transaction */
+  category?: InputMaybe<TransactionType>;
   /** Contact who made the booking */
   contact?: InputMaybe<Scalars['ID']['input']>;
-  id: Scalars['Int']['input'];
-  /** Source of the transaction */
-  source?: InputMaybe<TransactionSource>;
-  /** Type of the transaction */
-  type?: InputMaybe<TransactionType>;
+  /** Date of the transaction */
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Is the transaction deleted */
+  deletedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Description of the transaction */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Hotel where the transaction was made */
+  hotel?: InputMaybe<Scalars['ID']['input']>;
+  id: Scalars['ID']['input'];
+  /** Method of the transaction */
+  method?: InputMaybe<TransactionMethod>;
+  /** Sub Category of the transaction */
+  subCategory?: InputMaybe<TransactionSubCategory>;
 };
 
 export type UpdateUserInput = {
   /** Email of the user */
   email?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['Int']['input'];
+  /** User ID */
+  id: Scalars['ID']['input'];
   /** Name of the user */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Password of the user */
@@ -460,10 +696,19 @@ export type User = {
   phone: Scalars['String']['output'];
 };
 
-export type RoomsQueryVariables = Exact<{ [key: string]: never; }>;
+export type LoginMutationVariables = Exact<{
+  phone: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
 
 
-export type RoomsQuery = { __typename?: 'Query', rooms: Array<{ __typename?: 'Room', _id: string, number: number, hotel: string, type: string }> };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponseDto', access_token: string } };
+
+export type RoomBookingsOverviewQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export const RoomsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Rooms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rooms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<RoomsQuery, RoomsQueryVariables>;
+export type RoomBookingsOverviewQuery = { __typename?: 'Query', roomBookingsOverview: Array<{ __typename?: 'RoomBookingsOverviewResponse', _id: string, number: string, type: { __typename?: 'RoomTypeDetails', title: string, rent: number }, bookings: Array<{ __typename?: 'RoomBookingDetails', _id: string, rent: number, booking: string, discount: number, checkIn: any, checkOut: any, status: string }> }> };
+
+
+export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phone"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"phone"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phone"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
+export const RoomBookingsOverviewDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RoomBookingsOverview"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roomBookingsOverview"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"hotel"},"value":{"kind":"StringValue","value":"64d0a1d008291a484b015d0b","block":false}},{"kind":"Argument","name":{"kind":"Name","value":"startDate"},"value":{"kind":"StringValue","value":"2023-07-1","block":false}},{"kind":"Argument","name":{"kind":"Name","value":"endDate"},"value":{"kind":"StringValue","value":"2023-07-30","block":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}}]}},{"kind":"Field","name":{"kind":"Name","value":"bookings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}},{"kind":"Field","name":{"kind":"Name","value":"booking"}},{"kind":"Field","name":{"kind":"Name","value":"discount"}},{"kind":"Field","name":{"kind":"Name","value":"checkIn"}},{"kind":"Field","name":{"kind":"Name","value":"checkOut"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]} as unknown as DocumentNode<RoomBookingsOverviewQuery, RoomBookingsOverviewQueryVariables>;

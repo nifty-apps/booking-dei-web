@@ -1,9 +1,9 @@
 import { Layout, Menu } from "antd";
-const { Sider } = Layout;
-import { AiOutlineHome, AiOutlineCalendar } from "react-icons/ai";
-import { TbBed, TbUsers, TbBrandGoogleAnalytics } from "react-icons/tb";
-import logo from "../assets/logo.png";
+import { AiOutlineCalendar, AiOutlineHome } from "react-icons/ai";
+import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
 import { Link, useLocation } from "react-router-dom";
+import logo from "../assets/logo.png";
+const { Sider } = Layout;
 
 interface SidebarProps {
   collapsed: boolean;

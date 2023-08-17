@@ -1,27 +1,19 @@
 import { AiOutlineClose } from "react-icons/ai";
 import { Link } from "react-router-dom";
-
-interface Room {
-  number: number;
-  type: {
-    title: string;
-    rent: number;
-  };
-  _id: string;
-}
+import { Room } from "./FloorPlan";
 
 interface CurrentSelectionProps {
   selectedRooms: Room[];
-  setSelectedRooms: (rooms: Room[]) => void;
+  onChange: (rooms: Room[]) => void;
 }
 
-const CurrentSelection = ({
+const SelectionSummary = ({
   selectedRooms,
-  setSelectedRooms,
+  onChange,
 }: CurrentSelectionProps) => {
   const removeItem = (room: Room) => {
     const newRooms = selectedRooms.filter((item) => item._id !== room._id);
-    setSelectedRooms(newRooms);
+    onChange(newRooms);
   };
 
   if (selectedRooms.length === 0)
@@ -78,4 +70,4 @@ const CurrentSelection = ({
   );
 };
 
-export default CurrentSelection;
+export default SelectionSummary;

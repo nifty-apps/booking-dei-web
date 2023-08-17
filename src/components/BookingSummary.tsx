@@ -124,9 +124,9 @@ const BookingSummary = () => {
         onOk={handleOk}
         onCancel={handleCancel}
         cancelText="Cancel"
-        okText="+ New Payment"
+        okText="Confirm"
         okButtonProps={{
-          style: { background: "gray" },
+          style: { background: "#005099" },
         }}
       >
         <div>

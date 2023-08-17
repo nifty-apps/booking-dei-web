@@ -14,7 +14,7 @@ import {
 const token = localStorage.getItem("token"); // Retrieve token from local storage
 
 const httpLink = new HttpLink({
-  uri: "http://localhost:3000/api",
+  uri: import.meta.env.VITE_GRAPHQL_ENDPOINT,
   headers: {
     authorization: token ? `Bearer ${token}` : "", // Include the token in the headers
   },

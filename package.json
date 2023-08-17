@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
- "dev": "concurrently \"vite --host\" \"npm run gql-watch\"",
+    "dev": "concurrently \"vite --host\" \"npm run gql-watch\"",
     "build": "npm run gql-compile && tsc && vite build",
     "preview": "vite preview --base=./",
     "gql-compile": "graphql-codegen",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@apollo/client": "^3.8.0",
     "antd": "^5.7.3",
+    "classnames": "^2.3.2",
     "concurrently": "^8.2.0",
     "date-fns": "^2.30.0",
     "graphql": "^16.7.1",

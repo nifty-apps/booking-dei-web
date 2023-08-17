@@ -1,22 +1,22 @@
 import { useState } from "react";
 // global css
-import "./global.scss";
 import { Layout } from "antd";
+import "./global.scss";
 const { Content } = Layout;
 // react router
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 // components
 import Sidebar from "./components/Sidebar";
 // pages
-import Home from "./pages/Home/Home";
 import Toolbar from "./components/Toolbar";
-import NewBooking from "./pages/NewBooking/NewBooking";
 import Calender from "./pages/Calender/Calender";
-import GuestLookUp from "./pages/GuestLookUp/GuestLookUp";
-import FinancialOverview from "./pages/FinancialOverview/FinancialOverview";
 import EditBooking from "./pages/EditBooking.tsx/EditBooking";
 import Error from "./pages/Error/Error";
+import FinancialOverview from "./pages/FinancialOverview/FinancialOverview";
+import GuestLookUp from "./pages/GuestLookUp/GuestLookUp";
+import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
+import NewBooking from "./pages/NewBooking/NewBooking";
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
