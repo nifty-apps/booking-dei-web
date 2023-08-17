@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  mutation Login($phone: String!, $password: String!) {\n    login(phone: $phone, password: $password) {\n      access_token\n    }\n  }\n": types.LoginDocument,
-    "\n  query RoomBookingsOverview {\n    roomBookingsOverview(\n        hotel: \"64d0a1d008291a484b015d0b\"\n        startDate: \"2023-07-1\"\n        endDate: \"2023-07-30\"\n    ) {\n        _id\n        number\n        type {\n            title\n            rent\n        }\n        bookings {\n            _id\n            rent\n            booking\n            discount\n            checkIn\n            checkOut\n            status\n        }\n    }\n}\n": types.RoomBookingsOverviewDocument,
+    "\nquery RoomBookingsOverview {\n    roomBookingsOverview(\n        hotel: \"64d0a1d008291a484b015d0b\"\n        startDate: \"2023-07-1\"\n        endDate: \"2023-07-30\"\n    ) {\n        number\n        type {\n            title\n            rent\n        }\n        bookings {\n            _id\n            rent\n            booking\n            discount\n            checkIn\n            checkOut\n            status\n        }\n        _id\n    }\n}\n": types.RoomBookingsOverviewDocument,
 };
 
 /**
@@ -38,7 +38,7 @@ export function gql(source: "\n  mutation Login($phone: String!, $password: Stri
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query RoomBookingsOverview {\n    roomBookingsOverview(\n        hotel: \"64d0a1d008291a484b015d0b\"\n        startDate: \"2023-07-1\"\n        endDate: \"2023-07-30\"\n    ) {\n        _id\n        number\n        type {\n            title\n            rent\n        }\n        bookings {\n            _id\n            rent\n            booking\n            discount\n            checkIn\n            checkOut\n            status\n        }\n    }\n}\n"): (typeof documents)["\n  query RoomBookingsOverview {\n    roomBookingsOverview(\n        hotel: \"64d0a1d008291a484b015d0b\"\n        startDate: \"2023-07-1\"\n        endDate: \"2023-07-30\"\n    ) {\n        _id\n        number\n        type {\n            title\n            rent\n        }\n        bookings {\n            _id\n            rent\n            booking\n            discount\n            checkIn\n            checkOut\n            status\n        }\n    }\n}\n"];
+export function gql(source: "\nquery RoomBookingsOverview {\n    roomBookingsOverview(\n        hotel: \"64d0a1d008291a484b015d0b\"\n        startDate: \"2023-07-1\"\n        endDate: \"2023-07-30\"\n    ) {\n        number\n        type {\n            title\n            rent\n        }\n        bookings {\n            _id\n            rent\n            booking\n            discount\n            checkIn\n            checkOut\n            status\n        }\n        _id\n    }\n}\n"): (typeof documents)["\nquery RoomBookingsOverview {\n    roomBookingsOverview(\n        hotel: \"64d0a1d008291a484b015d0b\"\n        startDate: \"2023-07-1\"\n        endDate: \"2023-07-30\"\n    ) {\n        number\n        type {\n            title\n            rent\n        }\n        bookings {\n            _id\n            rent\n            booking\n            discount\n            checkIn\n            checkOut\n            status\n        }\n        _id\n    }\n}\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

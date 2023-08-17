@@ -49,6 +49,7 @@ const FloorPlan = ({
           bookings.length > 0 ? RoomBookingStatus.Booked : "AVAILABLE";
 
         const bgClass = classNames({
+          // "bg-white": status === "AVAILABLE",
           "bg-red-100": status === "BOOKED",
           "bg-blue-600 text-white": selectedRooms.includes(room),
         });
