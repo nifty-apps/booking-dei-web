@@ -1,4 +1,6 @@
 import { DatePicker } from "antd";
+import dayjs from "dayjs";
+import { RangeValue } from "rc-picker/lib/interface";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -8,6 +10,9 @@ import TitleText from "../../components/Title";
 
 const Home = () => {
   const [selectedRooms, setSelectedRooms] = useState<Room[]>([]);
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    RangeValue<dayjs.Dayjs>
+  >([dayjs(), dayjs().add(1, "day")]);
 
   return (
     <>
@@ -16,7 +21,12 @@ const Home = () => {
         <TitleText text="Home" />
         {/* Date range picker */}
         <div>
-          <DatePicker.RangePicker format="YYYY-MM-DD" />
+          <DatePicker.RangePicker
+            allowClear={false}
+            format="YYYY-MM-DD"
+            value={selectedDateRange}
+            onChange={(value) => setSelectedDateRange(value)}
+          />
         </div>
 
         <Link
@@ -34,6 +44,8 @@ const Home = () => {
         <FloorPlan
           selectedRooms={selectedRooms}
           onSelectionChange={(rooms) => setSelectedRooms(rooms)}
+          startDate={selectedDateRange?.[0]?.toDate() as Date}
+          endDate={selectedDateRange?.[1]?.toDate() as Date}
         />
         {/* current selection part */}
         <SelectionSummary

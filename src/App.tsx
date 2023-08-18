@@ -12,7 +12,7 @@ import Toolbar from "./components/Toolbar";
 import Calender from "./pages/Calender/Calender";
 import EditBooking from "./pages/EditBooking.tsx/EditBooking";
 import Error from "./pages/Error/Error";
-import FinancialOverview from "./pages/FinancialOverview/FinancialOverview";
+import FinancialOverview from "./pages/Transactions/Transactions";
 import GuestLookUp from "./pages/GuestLookUp/GuestLookUp";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
@@ -35,7 +35,7 @@ const App = () => {
             <Route path="/edit-booking/:id" element={<EditBooking />} />
             <Route path="/calender" element={<Calender />} />
             <Route path="/guest-lookup" element={<GuestLookUp />} />
-            <Route path="/financial-overview" element={<FinancialOverview />} />
+            <Route path="/transactions" element={<FinancialOverview />} />
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<Error />} />
           </Routes>

@@ -29,7 +29,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     case "/guest-lookup":
       selectedKey = "4";
       break;
-    case "/financial-overview":
+    case "/transactions":
       selectedKey = "5";
       break;
 
@@ -76,8 +76,8 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
             </Link>
           </Menu.Item>
           <Menu.Item key="5" icon={<TbBrandGoogleAnalytics />}>
-            <Link to="/financial-overview" className="menuLink">
-              Financial Overview
+            <Link to="/transactions" className="menuLink">
+              Transactions
             </Link>
           </Menu.Item>
         </Menu>

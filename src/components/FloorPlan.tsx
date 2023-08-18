@@ -20,16 +20,26 @@ export type Room = {
 interface FloorPlanProps {
   selectedRooms?: Room[];
   onSelectionChange: (rooms: Room[]) => void;
+  startDate: Date;
+  endDate: Date;
 }
 
 const FloorPlan = ({
   selectedRooms = [],
   onSelectionChange: setSelectedRooms,
+  startDate,
+  endDate,
 }: FloorPlanProps) => {
-  const { data, loading, error } = useQuery(GET_ROOM_BOOKING_OVERVIEW);
+  const { loading, error, data } = useQuery(GET_ROOM_BOOKING_OVERVIEW, {
+    variables: {
+      hotel: "64d0a1d008291a484b015d0b",
+      startDate,
+      endDate,
+    },
+  });
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error</p>;
+  if (error) return <p>Error :</p>;
 
   const toggleRoomSelection = (room: Room) => {
     if (selectedRooms.includes(room)) {
