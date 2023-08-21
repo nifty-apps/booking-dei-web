@@ -32,8 +32,6 @@ const FloorPlan = ({
   endDate,
 }: FloorPlanProps) => {
   const [open, setOpen] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Content of the modal");
 
   const { data, loading, error } = useQuery(GET_ROOMS_BY_FLOOR, {
     variables: {
@@ -52,16 +50,10 @@ const FloorPlan = ({
   };
 
   const handleOk = () => {
-    setModalText("The modal will be closed after two seconds");
-    setConfirmLoading(true);
-    setTimeout(() => {
-      setOpen(false);
-      setConfirmLoading(false);
-    }, 2000);
+    setOpen(false);
   };
 
   const handleCancel = () => {
-    console.log("Clicked cancel button");
     setOpen(false);
   };
 
@@ -102,13 +94,15 @@ const FloorPlan = ({
                   return (
                     <div
                       key={_id}
-                      className={`w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center ${bgClass}`}
-                      // onClick={() => toggleRoomSelection(room)}
+                      className={`h-28 w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center ${bgClass}`}
+                      onClick={() => toggleRoomSelection(room)}
                     >
                       <h4 className="font-bold text-lg">{number}</h4>
-                      <div>
-                        <span>{type.title}</span>
-                      </div>
+                      {number !== "Lift" && number !== "Staff" && (
+                        <div>
+                          <span>{type.title}</span>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -140,13 +134,12 @@ const FloorPlan = ({
 
       {/* modal for booking details */}
       <Modal
-        title="Title"
+        title="Booking Details"
         open={open}
         onOk={handleOk}
-        confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-        <p>{modalText}</p>
+        <div>modal content here to show</div>
       </Modal>
     </>
   );
