@@ -6,12 +6,12 @@ import { BrowserRouter as Router } from "react-router-dom";
 // apollo client
 import {
   ApolloClient,
-  InMemoryCache,
   ApolloProvider,
   HttpLink,
+  InMemoryCache,
 } from "@apollo/client";
 
-const token = localStorage.getItem("token"); // Retrieve token from local storage
+const token = JSON.parse(localStorage.getItem("user") || "").access_token; // Retrieve token from local storage
 
 const httpLink = new HttpLink({
   uri: import.meta.env.VITE_GRAPHQL_ENDPOINT,

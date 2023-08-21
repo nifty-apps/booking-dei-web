@@ -1,14 +1,14 @@
 import { useMutation } from "@apollo/client";
 import { Form, Input } from "antd";
-import { LOGIN } from "../../graphql/mutations/loginMutations";
-
+import { LOGIN_USER } from "../../graphql/mutations/loginMutations";
 interface LoginFormValues {
   phone: string;
   password: string;
 }
 
 const Login = () => {
-  const [login] = useMutation(LOGIN);
+  const [login] = useMutation(LOGIN_USER);
+
   // form submit
   const onFinish = (values: LoginFormValues) => {
     login({
@@ -18,13 +18,14 @@ const Login = () => {
       },
     })
       .then((res) => {
-        console.log(res);
-        localStorage.setItem("token", res?.data?.login?.access_token);
+        localStorage.setItem("user", JSON.stringify(res?.data?.login));
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
+  // console.log(JSON.parse(localStorage.getItem("user") || "{}").user.hotels[0]);
 
   return (
     <div className="flex items-center justify-center h-[500px]">

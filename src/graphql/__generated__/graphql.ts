@@ -120,12 +120,16 @@ export type CreateRoomBookingInput = {
 };
 
 export type CreateRoomInput = {
+  /** Floor where the room is located */
+  floor: Scalars['String']['input'];
   /** Hotel where the room is located */
   hotel: Scalars['ID']['input'];
   /** Number or name of the room */
   number: Scalars['String']['input'];
+  /** Position of the room */
+  position: Scalars['String']['input'];
   /** Type of the room */
-  type: Scalars['ID']['input'];
+  type?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type CreateTransactionInput = {
@@ -175,7 +179,7 @@ export type Hotel = {
 export type LoginResponseDto = {
   __typename?: 'LoginResponseDto';
   access_token: Scalars['String']['output'];
-  user: User;
+  user: UserResponseDto;
 };
 
 export type Mutation = {
@@ -358,8 +362,8 @@ export type Query = {
   room: Room;
   /** Find all room bookings */
   roomBookings: Array<RoomBooking>;
-  roomBookingsOverview: Array<RoomBookingsOverviewResponse>;
   rooms: Array<Room>;
+  roomsByFloor: Array<RoomsByFloorResponse>;
   /** Find transaction by ID */
   transaction: Transaction;
   /** Find Transactions by filter(s) */
@@ -400,15 +404,15 @@ export type QueryRoomBookingsArgs = {
 };
 
 
-export type QueryRoomBookingsOverviewArgs = {
-  endDate: Scalars['DateTime']['input'];
-  hotel: Scalars['ID']['input'];
-  startDate: Scalars['DateTime']['input'];
+export type QueryRoomsArgs = {
+  findByFilter: RoomFilterInput;
 };
 
 
-export type QueryRoomsArgs = {
+export type QueryRoomsByFloorArgs = {
+  endDate: Scalars['DateTime']['input'];
   hotel: Scalars['ID']['input'];
+  startDate: Scalars['DateTime']['input'];
 };
 
 
@@ -431,19 +435,23 @@ export type QueryTransactionsByDateRangeArgs = {
 
 
 export type QueryUserArgs = {
-  phone: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
 };
 
 export type Room = {
   __typename?: 'Room';
   /** Unique identifier of the room */
   _id: Scalars['ID']['output'];
+  /** Floor where the room is located */
+  floor: Scalars['String']['output'];
   /** Hotel where the room is located */
   hotel: Scalars['ID']['output'];
   /** Number or name of the room */
   number: Scalars['String']['output'];
+  /** Position of the room */
+  position: Scalars['String']['output'];
   /** Type of the room */
-  type: Scalars['ID']['output'];
+  type?: Maybe<Scalars['ID']['output']>;
 };
 
 export type RoomBooking = {
@@ -497,18 +505,41 @@ export enum RoomBookingStatus {
   Checkedout = 'CHECKEDOUT'
 }
 
-export type RoomBookingsOverviewResponse = {
-  __typename?: 'RoomBookingsOverviewResponse';
+export type RoomBookingsOverview = {
+  __typename?: 'RoomBookingsOverview';
   _id: Scalars['ID']['output'];
   bookings: Array<RoomBookingDetails>;
+  floor: Scalars['String']['output'];
   number: Scalars['String']['output'];
+  position: Scalars['String']['output'];
   type: RoomTypeDetails;
+};
+
+export type RoomFilterInput = {
+  /** Unique identifier of the room */
+  _id?: InputMaybe<Scalars['ID']['input']>;
+  /** Floor where the room is located */
+  floor?: InputMaybe<Scalars['String']['input']>;
+  hotel: Scalars['ID']['input'];
+  /** Number or name of the room */
+  number?: InputMaybe<Scalars['String']['input']>;
+  /** Position of the room */
+  position?: InputMaybe<Scalars['String']['input']>;
+  /** Type of the room */
+  type?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type RoomTypeDetails = {
   __typename?: 'RoomTypeDetails';
   rent: Scalars['Float']['output'];
   title: Scalars['String']['output'];
+};
+
+/** Response for rooms by floor with bookings */
+export type RoomsByFloorResponse = {
+  __typename?: 'RoomsByFloorResponse';
+  floor: Scalars['String']['output'];
+  rooms: Array<RoomBookingsOverview>;
 };
 
 export type Transaction = {
@@ -637,10 +668,14 @@ export type UpdateRoomBookingInput = {
 
 export type UpdateRoomInput = {
   _id: Scalars['ID']['input'];
+  /** Floor where the room is located */
+  floor?: InputMaybe<Scalars['String']['input']>;
   /** Hotel where the room is located */
   hotel?: InputMaybe<Scalars['ID']['input']>;
   /** Number or name of the room */
   number?: InputMaybe<Scalars['String']['input']>;
+  /** Position of the room */
+  position?: InputMaybe<Scalars['String']['input']>;
   /** Type of the room */
   type?: InputMaybe<Scalars['ID']['input']>;
 };
@@ -688,13 +723,39 @@ export type User = {
   _id: Scalars['ID']['output'];
   /** Email of the user */
   email?: Maybe<Scalars['String']['output']>;
+  /** Hotels of the user */
+  hotels: Array<Scalars['ID']['output']>;
   /** Name of the user */
   name: Scalars['String']['output'];
   /** Password of the user */
   password: Scalars['String']['output'];
   /** Phone number of the user */
   phone: Scalars['String']['output'];
+  /** Type of the user */
+  type: UserType;
 };
+
+export type UserResponseDto = {
+  __typename?: 'UserResponseDto';
+  /** Unique identifier of the user */
+  _id: Scalars['ID']['output'];
+  /** Email of the user */
+  email?: Maybe<Scalars['String']['output']>;
+  /** Hotels of the user */
+  hotels: Array<Scalars['ID']['output']>;
+  /** Name of the user */
+  name: Scalars['String']['output'];
+  /** Phone number of the user */
+  phone: Scalars['String']['output'];
+  /** Type of the user */
+  type: UserType;
+};
+
+/** Type of the user */
+export enum UserType {
+  Admin = 'ADMIN',
+  Staff = 'STAFF'
+}
 
 export type LoginMutationVariables = Exact<{
   phone: Scalars['String']['input'];
@@ -702,17 +763,17 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponseDto', access_token: string } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponseDto', access_token: string, user: { __typename?: 'UserResponseDto', _id: string, name: string, email?: string | null, phone: string, hotels: Array<string>, type: UserType } } };
 
-export type RoomBookingsOverviewQueryVariables = Exact<{
+export type RoomsByFloorQueryVariables = Exact<{
   hotel: Scalars['ID']['input'];
   startDate: Scalars['DateTime']['input'];
   endDate: Scalars['DateTime']['input'];
 }>;
 
 
-export type RoomBookingsOverviewQuery = { __typename?: 'Query', roomBookingsOverview: Array<{ __typename?: 'RoomBookingsOverviewResponse', number: string, _id: string, type: { __typename?: 'RoomTypeDetails', title: string, rent: number }, bookings: Array<{ __typename?: 'RoomBookingDetails', _id: string, rent: number, booking: string, discount: number, checkIn: any, checkOut: any, status: string }> }> };
+export type RoomsByFloorQuery = { __typename?: 'Query', roomsByFloor: Array<{ __typename?: 'RoomsByFloorResponse', floor: string, rooms: Array<{ __typename?: 'RoomBookingsOverview', _id: string, number: string, floor: string, position: string, type: { __typename?: 'RoomTypeDetails', title: string, rent: number }, bookings: Array<{ __typename?: 'RoomBookingDetails', _id: string, rent: number, booking: string, discount: number, checkIn: any, checkOut: any, status: string }> }> }> };
 
 
-export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phone"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"phone"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phone"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
-export const RoomBookingsOverviewDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RoomBookingsOverview"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hotel"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roomBookingsOverview"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"hotel"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hotel"}}},{"kind":"Argument","name":{"kind":"Name","value":"startDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}}},{"kind":"Argument","name":{"kind":"Name","value":"endDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}}]}},{"kind":"Field","name":{"kind":"Name","value":"bookings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}},{"kind":"Field","name":{"kind":"Name","value":"booking"}},{"kind":"Field","name":{"kind":"Name","value":"discount"}},{"kind":"Field","name":{"kind":"Name","value":"checkIn"}},{"kind":"Field","name":{"kind":"Name","value":"checkOut"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}},{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}}]}}]} as unknown as DocumentNode<RoomBookingsOverviewQuery, RoomBookingsOverviewQueryVariables>;
+export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phone"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"phone"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phone"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"hotels"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
+export const RoomsByFloorDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RoomsByFloor"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hotel"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roomsByFloor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"hotel"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hotel"}}},{"kind":"Argument","name":{"kind":"Name","value":"startDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}}},{"kind":"Argument","name":{"kind":"Name","value":"endDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"floor"}},{"kind":"Field","name":{"kind":"Name","value":"rooms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"floor"}},{"kind":"Field","name":{"kind":"Name","value":"position"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}}]}},{"kind":"Field","name":{"kind":"Name","value":"bookings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}},{"kind":"Field","name":{"kind":"Name","value":"booking"}},{"kind":"Field","name":{"kind":"Name","value":"discount"}},{"kind":"Field","name":{"kind":"Name","value":"checkIn"}},{"kind":"Field","name":{"kind":"Name","value":"checkOut"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]}}]} as unknown as DocumentNode<RoomsByFloorQuery, RoomsByFloorQueryVariables>;

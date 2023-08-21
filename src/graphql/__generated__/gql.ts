@@ -13,8 +13,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  mutation Login($phone: String!, $password: String!) {\n    login(phone: $phone, password: $password) {\n      access_token\n    }\n  }\n": types.LoginDocument,
-    "\n  query RoomBookingsOverview(\n    $hotel: ID!\n    $startDate: DateTime!\n    $endDate: DateTime!\n  ) {\n    roomBookingsOverview(\n      hotel: $hotel\n      startDate: $startDate\n      endDate: $endDate\n    ) {\n      number\n      type {\n        title\n        rent\n      }\n      bookings {\n        _id\n        rent\n        booking\n        discount\n        checkIn\n        checkOut\n        status\n      }\n      _id\n    }\n  }\n": types.RoomBookingsOverviewDocument,
+    "\nmutation Login($phone: String!, $password: String!) {\n    login(phone: $phone, password: $password) {\n      access_token\n      user {\n        _id\n        name\n        email\n        phone\n        hotels\n        type\n      }\n    }\n  }\n\n": types.LoginDocument,
+    "\n  query RoomsByFloor($hotel: ID!, $startDate: DateTime!, $endDate: DateTime!) {\n    roomsByFloor(hotel: $hotel, startDate: $startDate, endDate: $endDate) {\n      floor\n      rooms {\n        _id\n        number\n        floor\n        position\n        type {\n          title\n          rent\n        }\n        bookings {\n          _id\n          rent\n          booking\n          discount\n          checkIn\n          checkOut\n          status\n        }\n      }\n    }\n  }\n": types.RoomsByFloorDocument,
 };
 
 /**
@@ -34,11 +34,11 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation Login($phone: String!, $password: String!) {\n    login(phone: $phone, password: $password) {\n      access_token\n    }\n  }\n"): (typeof documents)["\n  mutation Login($phone: String!, $password: String!) {\n    login(phone: $phone, password: $password) {\n      access_token\n    }\n  }\n"];
+export function gql(source: "\nmutation Login($phone: String!, $password: String!) {\n    login(phone: $phone, password: $password) {\n      access_token\n      user {\n        _id\n        name\n        email\n        phone\n        hotels\n        type\n      }\n    }\n  }\n\n"): (typeof documents)["\nmutation Login($phone: String!, $password: String!) {\n    login(phone: $phone, password: $password) {\n      access_token\n      user {\n        _id\n        name\n        email\n        phone\n        hotels\n        type\n      }\n    }\n  }\n\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query RoomBookingsOverview(\n    $hotel: ID!\n    $startDate: DateTime!\n    $endDate: DateTime!\n  ) {\n    roomBookingsOverview(\n      hotel: $hotel\n      startDate: $startDate\n      endDate: $endDate\n    ) {\n      number\n      type {\n        title\n        rent\n      }\n      bookings {\n        _id\n        rent\n        booking\n        discount\n        checkIn\n        checkOut\n        status\n      }\n      _id\n    }\n  }\n"): (typeof documents)["\n  query RoomBookingsOverview(\n    $hotel: ID!\n    $startDate: DateTime!\n    $endDate: DateTime!\n  ) {\n    roomBookingsOverview(\n      hotel: $hotel\n      startDate: $startDate\n      endDate: $endDate\n    ) {\n      number\n      type {\n        title\n        rent\n      }\n      bookings {\n        _id\n        rent\n        booking\n        discount\n        checkIn\n        checkOut\n        status\n      }\n      _id\n    }\n  }\n"];
+export function gql(source: "\n  query RoomsByFloor($hotel: ID!, $startDate: DateTime!, $endDate: DateTime!) {\n    roomsByFloor(hotel: $hotel, startDate: $startDate, endDate: $endDate) {\n      floor\n      rooms {\n        _id\n        number\n        floor\n        position\n        type {\n          title\n          rent\n        }\n        bookings {\n          _id\n          rent\n          booking\n          discount\n          checkIn\n          checkOut\n          status\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query RoomsByFloor($hotel: ID!, $startDate: DateTime!, $endDate: DateTime!) {\n    roomsByFloor(hotel: $hotel, startDate: $startDate, endDate: $endDate) {\n      floor\n      rooms {\n        _id\n        number\n        floor\n        position\n        type {\n          title\n          rent\n        }\n        bookings {\n          _id\n          rent\n          booking\n          discount\n          checkIn\n          checkOut\n          status\n        }\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
