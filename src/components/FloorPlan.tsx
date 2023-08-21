@@ -55,7 +55,6 @@ const FloorPlan = ({
   endDate,
 }: FloorPlanProps) => {
   const [modalDetail, setModalDetail] = useState(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const { data, loading, error } = useQuery(GET_ROOMS_BY_FLOOR, {
     variables: {
@@ -68,19 +67,7 @@ const FloorPlan = ({
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  // room booking details in modal
-
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
-
-  const hasSelected = selectedRowKeys.length > 0;
-
+  // table data
   const dataTable: DataType[] = [];
   for (let i = 0; i < 5; i++) {
     dataTable.push({
@@ -196,25 +183,23 @@ const FloorPlan = ({
 
       {/* modal for booking details */}
       <Modal
-        title="Booking Details"
+        title="Room booking overview"
         open={modalDetail}
         onOk={handleOk}
         onCancel={handleCancel}
         width={800}
       >
-        <div>modal content here to show</div>
+        <div className="my-4">
+          <p>
+            <span className="font-semibold">Room Type : </span> Family Delux AC.
+          </p>
+          <p>
+            <span className="font-semibold">Room Number :</span> 103
+          </p>
+        </div>
 
         {/* table */}
-        <div className="my-4">
-          <span>
-            {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
-          </span>
-        </div>
-        <Table
-          rowSelection={rowSelection}
-          columns={columns}
-          dataSource={dataTable}
-        />
+        <Table columns={columns} dataSource={dataTable} />
       </Modal>
     </>
   );
