@@ -26,26 +26,15 @@ interface FloorPlanProps {
   endDate: Date;
 }
 
-// for room booking details
-interface DataType {
-  key: React.Key;
-  name: string;
-  phone: string;
-  rent: string;
-  discount: string;
-  method: string;
-  checkin: string;
-  checkout: string;
-}
-
-const columns: ColumnsType<DataType> = [
-  { title: "Name", dataIndex: "name" },
-  { title: "Phone", dataIndex: "phone" },
+const columns: ColumnsType<RoomBookingDetails> = [
+  // { title: "Name", dataIndex: "name" },
+  // { title: "Phone", dataIndex: "phone" },
   { title: "Rent", dataIndex: "rent" },
   { title: "Discount", dataIndex: "discount" },
-  { title: "Method", dataIndex: "method" },
-  { title: "Check In", dataIndex: "checkin" },
-  { title: "Check Out", dataIndex: "checkout" },
+  // { title: "Method", dataIndex: "method" },
+  { title: "Check In", dataIndex: "checkIn" },
+  { title: "Check Out", dataIndex: "checkOut" },
+  { title: "Status", dataIndex: "status" },
 ];
 
 const FloorPlan = ({
@@ -54,7 +43,13 @@ const FloorPlan = ({
   startDate,
   endDate,
 }: FloorPlanProps) => {
-  const [modalDetail, setModalDetail] = useState(false);
+  const [detailsModalInfo, setDetailsModalInfo] = useState<{
+    room: Room | null;
+    open: boolean;
+  }>({
+    room: null,
+    open: false,
+  });
 
   const { data, loading, error } = useQuery(GET_ROOMS_BY_FLOOR, {
     variables: {
@@ -67,51 +62,19 @@ const FloorPlan = ({
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  // table data
-  const dataTable: DataType[] = [];
-  for (let i = 0; i < 5; i++) {
-    dataTable.push({
-      key: i,
-      name: `Edward King`,
-      phone: `016253852412`,
-      rent: `10500`,
-      discount: `500`,
-      method: `bank`,
-      checkin: `2023-04-15`,
-      checkout: `2023-04-18`,
-    });
-  }
-
-  // modal for booking details
-  const showModal = () => {
-    // Check if any selected room has the number "Lift" or "Staff"
-    const shouldShowModal = !selectedRooms.some(
-      (room) => room.number === "Lift" || room.number === "Staff"
-    );
-
-    if (shouldShowModal) {
-      setModalDetail(true); // Show the modal if not Lift or Staff
-    } else {
-      setModalDetail(false); // Don't show the modal if Lift or Staff
+  const handleRoomClick = (room: Room) => {
+    if (room.bookings.length > 0) {
+      return setDetailsModalInfo({
+        room,
+        open: true,
+      });
     }
-  };
-
-  const handleOk = () => {
-    setModalDetail(false);
-  };
-
-  const handleCancel = () => {
-    setModalDetail(false);
-  };
-
-  // toggle room selection
-  const toggleRoomSelection = (room: Room) => {
-    if (room.number === "Lift" || room.number === "Staff") {
-      setSelectedRooms(
-        selectedRooms.filter((selectedRoom) => selectedRoom !== room)
-      );
-    } else {
-      setSelectedRooms([...selectedRooms, room]);
+    if (room.number !== "Lift" && room.number !== "Staff") {
+      if (selectedRooms.includes(room)) {
+        setSelectedRooms(selectedRooms.filter((r) => r !== room));
+      } else {
+        setSelectedRooms([...selectedRooms, room]);
+      }
     }
   };
 
@@ -125,7 +88,7 @@ const FloorPlan = ({
               <div className="capitalize border text-center py-3 bg-white rounded-lg border-gray-500 text-black font-semibold mb-4">
                 Floor {floorDetails.floor}
               </div>
-              <div className="grid grid-cols-2 gap-2" onClick={showModal}>
+              <div className="grid grid-cols-2 gap-2">
                 {floorDetails.rooms.map((room) => {
                   const { _id, number, type, bookings } = room;
                   const status =
@@ -146,7 +109,7 @@ const FloorPlan = ({
                     <div
                       key={_id}
                       className={`h-28 w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center ${bgClass}`}
-                      onClick={() => toggleRoomSelection(room)}
+                      onClick={() => handleRoomClick(room)}
                     >
                       <h4 className="font-bold text-lg">{number}</h4>
                       {number !== "Lift" && number !== "Staff" && (
@@ -183,23 +146,30 @@ const FloorPlan = ({
 
       {/* modal for booking details */}
       <Modal
-        title="Room booking overview"
-        open={modalDetail}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        title={<h2 className="text-xl capitalize">Room booking overview</h2>}
+        open={detailsModalInfo.open}
+        onCancel={() =>
+          setDetailsModalInfo({
+            room: null,
+            open: false,
+          })
+        }
         width={800}
+        footer={null}
       >
         <div className="my-4">
           <p>
-            <span className="font-semibold">Room Type : </span> Family Delux AC.
+            <span className="font-semibold">Room Type : </span>{" "}
+            {detailsModalInfo.room?.type.title}
           </p>
           <p>
-            <span className="font-semibold">Room Number :</span> 103
+            <span className="font-semibold">Room Number :</span>{" "}
+            {detailsModalInfo.room?.number}
           </p>
         </div>
 
         {/* table */}
-        <Table columns={columns} dataSource={dataTable} />
+        <Table columns={columns} dataSource={detailsModalInfo.room?.bookings} />
       </Modal>
     </>
   );
