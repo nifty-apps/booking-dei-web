@@ -15,65 +15,6 @@ const NewBooking = () => {
   const [numOfRows, setNumOfRows] = useState(1);
   const [addGuestRow, setAddGuestRow] = useState(1);
 
-  // add row when click on add room button
-  const addRow = () => {
-    setNumOfRows(numOfRows + 1);
-  };
-
-  // add row when click on add guest button
-  const addExtraGuest = () => {
-    setAddGuestRow(addGuestRow + 1);
-  };
-
-  // cancel row for room details
-  const cancelRow = () => {
-    setNumOfRows(numOfRows - 1);
-  };
-
-  // cancel row for extra guest
-  const cancelExtranGuestRow = () => {
-    setAddGuestRow(addGuestRow - 1);
-  };
-
-  // modal for Room type
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  // modal for extra | discount
-  const showModalForExtra = () => {
-    setExtra(true);
-  };
-
-  const handleOkForExtra = () => {
-    setExtra(false);
-  };
-
-  const handleCancelForExtra = () => {
-    setExtra(false);
-  };
-
-  // modal for booking confirm
-  const showModalForConfirm = () => {
-    setConfirm(true);
-  };
-
-  const handleOkForConfirm = () => {
-    setConfirm(false);
-  };
-
-  const handleCancelForConfirm = () => {
-    setConfirm(false);
-  };
-
   return (
     <>
       <div className="flex items-center justify-between">
@@ -93,7 +34,7 @@ const NewBooking = () => {
           </button>
           <button
             className="text-white px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2  bg-blue-900 w-full"
-            onClick={showModalForConfirm}
+            onClick={() => setConfirm(true)}
           >
             Confirm Booking
           </button>
@@ -124,7 +65,7 @@ const NewBooking = () => {
                 <DatePicker.RangePicker format="YYYY-MM-DD" />
               </div>
               <div className="mx-3">
-                <Button onClick={showModal}>
+                <Button onClick={() => setIsModalOpen(true)}>
                   Select Room Type
                   <span className="mx-3 text-gray-400">
                     <AiOutlineDown />
@@ -150,7 +91,7 @@ const NewBooking = () => {
 
               {/* three dots click */}
               <div className="mt-1 cursor-pointer mr-4">
-                <span onClick={showModalForExtra}>
+                <span onClick={() => setExtra(true)}>
                   <span>
                     <BsThreeDotsVertical />
                   </span>
@@ -160,7 +101,7 @@ const NewBooking = () => {
               {/* cancel row */}
               <div
                 className="cursor-pointer text-gray-500 text-xl"
-                onClick={cancelRow}
+                onClick={() => setNumOfRows(numOfRows - 1)}
               >
                 <MdClose />
               </div>
@@ -169,7 +110,10 @@ const NewBooking = () => {
 
           {/* add room button */}
           <div className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1 mt-2">
-            <button className="flex items-center gap-2" onClick={addRow}>
+            <button
+              className="flex items-center gap-2"
+              onClick={() => setNumOfRows(numOfRows + 1)}
+            >
               <span>
                 <FaPlus />
               </span>
@@ -252,7 +196,7 @@ const NewBooking = () => {
               {/* cancel row */}
               <div
                 className="cursor-pointer text-gray-500 text-xl ml-2"
-                onClick={cancelExtranGuestRow}
+                onClick={() => setAddGuestRow(addGuestRow - 1)}
               >
                 <MdClose />
               </div>
@@ -262,7 +206,7 @@ const NewBooking = () => {
           {/* add extra guest btn */}
           <div
             className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1"
-            onClick={addExtraGuest}
+            onClick={() => setAddGuestRow(addGuestRow + 1)}
           >
             <button className="flex items-center gap-2">
               <span>
@@ -281,8 +225,8 @@ const NewBooking = () => {
       <Modal
         title="Room Type"
         open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        onOk={() => setIsModalOpen(false)}
+        onCancel={() => setIsModalOpen(false)}
         cancelText="Cancel"
         okText="Apply"
         width={1000}
@@ -293,14 +237,18 @@ const NewBooking = () => {
           style: { background: "gray" },
         }}
       >
-        <FloorPlan onSelectionChange={(rooms) => console.log(rooms)} />
+        <FloorPlan
+          onSelectionChange={(rooms) => console.log(rooms)}
+          startDate={new Date()}
+          endDate={new Date()}
+        />
       </Modal>
 
       {/* modal for extra | discount */}
       <Modal
         open={extra}
-        onOk={handleOkForExtra}
-        onCancel={handleCancelForExtra}
+        onOk={() => setExtra(false)}
+        onCancel={() => setExtra(false)}
         cancelText="Cancel"
         okText="Apply"
         width={450}
@@ -334,8 +282,8 @@ const NewBooking = () => {
       {/* modal for confirm booking */}
       <Modal
         open={confirm}
-        onOk={handleOkForConfirm}
-        onCancel={handleCancelForConfirm}
+        onOk={() => setConfirm(false)}
+        onCancel={() => setConfirm(false)}
         cancelText="View Booking Details"
         okText="Back To Home"
         width={400}
