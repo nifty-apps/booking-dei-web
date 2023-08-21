@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
-import { Modal } from "antd";
+import { Modal, Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import classNames from "classnames";
 import { useState } from "react";
 import {
@@ -25,13 +26,36 @@ interface FloorPlanProps {
   endDate: Date;
 }
 
+// for room booking details
+interface DataType {
+  key: React.Key;
+  name: string;
+  phone: string;
+  rent: string;
+  discount: string;
+  method: string;
+  checkin: string;
+  checkout: string;
+}
+
+const columns: ColumnsType<DataType> = [
+  { title: "Name", dataIndex: "name" },
+  { title: "Phone", dataIndex: "phone" },
+  { title: "Rent", dataIndex: "rent" },
+  { title: "Discount", dataIndex: "discount" },
+  { title: "Method", dataIndex: "method" },
+  { title: "Check In", dataIndex: "checkin" },
+  { title: "Check Out", dataIndex: "checkout" },
+];
+
 const FloorPlan = ({
   selectedRooms = [],
   onSelectionChange: setSelectedRooms,
   startDate,
   endDate,
 }: FloorPlanProps) => {
-  const [open, setOpen] = useState(false);
+  const [modalDetail, setModalDetail] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const { data, loading, error } = useQuery(GET_ROOMS_BY_FLOOR, {
     variables: {
@@ -44,22 +68,58 @@ const FloorPlan = ({
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
+  // room booking details in modal
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  const hasSelected = selectedRowKeys.length > 0;
+
+  const dataTable: DataType[] = [];
+  for (let i = 0; i < 5; i++) {
+    dataTable.push({
+      key: i,
+      name: `Edward King`,
+      phone: `016253852412`,
+      rent: `10500`,
+      discount: `500`,
+      method: `bank`,
+      checkin: `2023-04-15`,
+      checkout: `2023-04-18`,
+    });
+  }
+
   // modal for booking details
   const showModal = () => {
-    setOpen(true);
+    // Check if any selected room has the number "Lift" or "Staff"
+    const shouldShowModal = !selectedRooms.some(
+      (room) => room.number === "Lift" || room.number === "Staff"
+    );
+
+    if (shouldShowModal) {
+      setModalDetail(true); // Show the modal if not Lift or Staff
+    } else {
+      setModalDetail(false); // Don't show the modal if Lift or Staff
+    }
   };
 
   const handleOk = () => {
-    setOpen(false);
+    setModalDetail(false);
   };
 
   const handleCancel = () => {
-    setOpen(false);
+    setModalDetail(false);
   };
 
   // toggle room selection
   const toggleRoomSelection = (room: Room) => {
-    if (selectedRooms.includes(room)) {
+    if (room.number === "Lift" || room.number === "Staff") {
       setSelectedRooms(
         selectedRooms.filter((selectedRoom) => selectedRoom !== room)
       );
@@ -89,6 +149,10 @@ const FloorPlan = ({
                   const bgClass = classNames({
                     "bg-red-100": status === RoomBookingStatus.Booked,
                     "bg-blue-600 text-white": selectedRooms.includes(room),
+                    "cursor-pointer":
+                      room.number !== "Lift" && room.number !== "Staff",
+                    "cursor-not-allowed bg-gray-100":
+                      room.number === "Lift" || room.number === "Staff",
                   });
 
                   return (
@@ -99,9 +163,7 @@ const FloorPlan = ({
                     >
                       <h4 className="font-bold text-lg">{number}</h4>
                       {number !== "Lift" && number !== "Staff" && (
-                        <div>
-                          <span>{type.title}</span>
-                        </div>
+                        <span>{type.title}</span>
                       )}
                     </div>
                   );
@@ -135,11 +197,24 @@ const FloorPlan = ({
       {/* modal for booking details */}
       <Modal
         title="Booking Details"
-        open={open}
+        open={modalDetail}
         onOk={handleOk}
         onCancel={handleCancel}
+        width={800}
       >
         <div>modal content here to show</div>
+
+        {/* table */}
+        <div className="my-4">
+          <span>
+            {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
+          </span>
+        </div>
+        <Table
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={dataTable}
+        />
       </Modal>
     </>
   );
