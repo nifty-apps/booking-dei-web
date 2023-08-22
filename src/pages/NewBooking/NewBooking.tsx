@@ -1,16 +1,11 @@
-import { useMutation } from "@apollo/client";
-import { Button, Checkbox, DatePicker, Form, Input, Modal, Select } from "antd";
-import dayjs from "dayjs";
-import { RangeValue } from "rc-picker/lib/interface";
+import { Checkbox, DatePicker, Form, Input, Modal, Select, Table } from "antd";
 import { useState } from "react";
-import { AiOutlineDown } from "react-icons/ai";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaPlus, FaRegCheckCircle } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 import BookingSummary from "../../components/BookingSummary";
 import FloorPlan from "../../components/FloorPlan";
 import TitleText from "../../components/Title";
-import { CREATE_BOOKING } from "../../graphql/mutations/bookingMutations";
 
 const NewBooking = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,46 +13,72 @@ const NewBooking = () => {
   const [confirm, setConfirm] = useState(false);
   const [addGuestRow, setAddGuestRow] = useState(1);
   const [numOfRows, setNumOfRows] = useState(1);
-  const [selectedDateRange, setSelectedDateRange] = useState<
-    RangeValue<dayjs.Dayjs>
-  >([dayjs(), dayjs().add(1, "day")]);
 
-  const [createBooking] = useMutation(CREATE_BOOKING);
+  const dataSource = [
+    {
+      key: "1",
+      checkin: "2021-07-08",
+      checkout: "2021-07-08",
+      roomType: "family ac.",
+      roomNo: "302",
+      status: (
+        <div className="flex">
+          <Select
+            defaultValue="Select Status"
+            style={{ width: 140 }}
+            options={[
+              { value: "BOOKED", label: "Booked" },
+              { value: "CHECKEDIN", label: "Check In" },
+              { value: "CHECKEDOUT", label: "Check Out" },
+              { value: "PARTIALPAYMENT", label: "Partial Payment" },
+            ]}
+          />
+          <div className="mt-1 cursor-pointer ml-4">
+            <span onClick={() => setExtra(true)}>
+              <span>
+                <BsThreeDotsVertical />
+              </span>
+            </span>
+          </div>
 
-  const handleCreateBooking = () => {
-    const createBookingInput = {
-      contact: "64d22306cb903c900cee91e4",
-      hotel: "64d0a1d008291a484b015d0b",
-      totalBookingRent: 7000,
-      discount: 300,
-      due: 57,
-      roomBookings: {
-        room: "64d20f443669abcf64a6caa2",
-        checkIn: "2020-08-21",
-        checkOut: "2020-08-22",
-        rent: 2000,
-        discount: 200,
-        extraBed: true,
-        extraBreakfast: true,
-        status: "CHECKEDIN",
-      },
-      paymentStatus: "UNPAID",
-    };
+          <div
+            className="cursor-pointer text-gray-500 text-xl"
+            onClick={() => setNumOfRows(numOfRows - 1)}
+          >
+            <MdClose />
+          </div>
+        </div>
+      ),
+    },
+  ];
 
-    createBooking({
-      variables: {
-        createBookingInput,
-      },
-    })
-      .then((result) => {
-        // Handle successful response
-        console.log(result);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error(error);
-      });
-  };
+  const columns = [
+    {
+      title: "Check In",
+      dataIndex: "checkin",
+      key: "checkin",
+    },
+    {
+      title: "Check Out",
+      dataIndex: "checkout",
+      key: "checkout",
+    },
+    {
+      title: "Room Type",
+      dataIndex: "roomType",
+      key: "room",
+    },
+    {
+      title: "Room No",
+      dataIndex: "roomNo",
+      key: "roomNo",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+    },
+  ];
 
   return (
     <>
@@ -91,86 +112,25 @@ const NewBooking = () => {
             Room details
           </h1>
 
-          {/* room details labels */}
-          <div className="flex items-center">
-            <div className="flex items-center gap-24 mb-2">
-              <div className="font-semibold">Check in</div>
-              <div className="font-semibold">Check out</div>
-            </div>
-            <div className="mb-2 font-semibold mx-28">Room Type</div>
-            <div className="mb-2 font-semibold">Room No</div>
-            <div className="mb-2 font-semibold mx-5">Status</div>
-          </div>
-
-          {/* room details input */}
-          {Array.from({ length: numOfRows }).map((_, index) => (
-            <div className="flex font-semibold mb-2" key={index}>
-              <div>
-                <DatePicker.RangePicker
-                  allowClear={true}
-                  format="YYYY-MM-DD"
-                  value={selectedDateRange}
-                  onChange={(value) => setSelectedDateRange(value)}
-                />
-              </div>
-              <div className="mx-3">
-                <Button onClick={() => setIsModalOpen(true)}>
-                  Select Room Type
-                  <span className="mx-3 text-gray-400">
-                    <AiOutlineDown />
-                  </span>
-                </Button>
-              </div>
-
-              <div>
-                <Select />
-              </div>
-
-              <div className="mx-3">
-                <Select
-                  defaultValue="Select Status"
-                  style={{ width: 140 }}
-                  options={[
-                    { value: "BOOKED", label: "Booked" },
-                    { value: "CHECKEDIN", label: "Check In" },
-                    { value: "CHECKEDOUT", label: "Check Out" },
-                    { value: "PARTIALPAYMENT", label: "Partial Payment" },
-                  ]}
-                />
-              </div>
-
-              {/* three dots click */}
-              <div className="mt-1 cursor-pointer mr-4">
-                <span onClick={() => setExtra(true)}>
-                  <span>
-                    <BsThreeDotsVertical />
-                  </span>
-                </span>
-              </div>
-
-              {/* cancel row */}
-              <div
-                className="cursor-pointer text-gray-500 text-xl"
-                onClick={() => setNumOfRows(numOfRows - 1)}
-              >
-                <MdClose />
-              </div>
-            </div>
-          ))}
+          <Table
+            dataSource={dataSource}
+            columns={columns}
+            size="small"
+            pagination={false}
+          />
 
           {/* add room button */}
-          <div className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1 mt-2">
-            <button
-              className="flex items-center gap-2"
-              onClick={() => setNumOfRows(numOfRows + 1)}
-            >
+          <div
+            className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1 mt-2"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <button className="flex items-center gap-2">
               <span>
                 <FaPlus />
               </span>
               <span className="font-semibold"> Add Room</span>
             </button>
           </div>
-
           {/* guest detailas part */}
           <div className="mt-8">
             <h1 className="font-semibold text-xl text-gray-500 mb-4 capitalize">
@@ -215,12 +175,10 @@ const NewBooking = () => {
               <Input placeholder="Enter your NID Number" />
             </Form.Item>
           </Form>
-
           {/* Additional Guest details info */}
           <h1 className="font-semibold text-xl text-gray-500 mb-4 capitalize">
             Additional Guests
           </h1>
-
           {/* Additional Guest details info labels */}
           <div className="flex items-center mb-2">
             <div className="font-semibold">Full Name</div>
@@ -231,7 +189,6 @@ const NewBooking = () => {
               NID/Passport <span className="text-gray-400">(Optional)</span>
             </div>
           </div>
-
           {/* Additional Guest details info input */}
           {Array.from({ length: addGuestRow }).map((_, index) => (
             <Form
@@ -252,7 +209,6 @@ const NewBooking = () => {
               </div>
             </Form>
           ))}
-
           {/* add extra guest btn */}
           <div
             className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1"
@@ -266,14 +222,12 @@ const NewBooking = () => {
             </button>
           </div>
         </div>
-
         {/* booking summary || Payment flow */}
         <BookingSummary />
       </div>
 
       {/* modal for room select */}
       <Modal
-        title="Room Type"
         open={isModalOpen}
         onOk={() => setIsModalOpen(false)}
         onCancel={() => setIsModalOpen(false)}
@@ -287,10 +241,14 @@ const NewBooking = () => {
           style: { background: "gray" },
         }}
       >
+        <div>
+          <DatePicker.RangePicker allowClear={false} format="YYYY-MM-DD" />
+        </div>
+
         <FloorPlan
-          onSelectionChange={(rooms) => console.log(rooms)}
-          startDate={selectedDateRange?.[0]?.toDate() as Date}
-          endDate={selectedDateRange?.[1]?.toDate() as Date}
+          startDate={new Date()}
+          endDate={new Date()}
+          onSelectionChange={() => console.log("")}
         />
       </Modal>
 
@@ -364,10 +322,6 @@ const NewBooking = () => {
           </div>
         </div>
       </Modal>
-
-      <button className="bg-red-400" onClick={handleCreateBooking}>
-        Create Booking
-      </button>
     </>
   );
 };
