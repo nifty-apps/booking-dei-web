@@ -85,6 +85,7 @@ const NewBooking = () => {
                     { value: "BOOKED", label: "Booked" },
                     { value: "CHECKEDIN", label: "Check In" },
                     { value: "CHECKEDOUT", label: "Check Out" },
+                    { value: "PARTIALPAYMENT", label: "Partial Payment" },
                   ]}
                 />
               </div>
@@ -177,7 +178,7 @@ const NewBooking = () => {
             <div className="font-semibold ml-64">
               Phone Number <span className="text-gray-400">(Optional)</span>
             </div>
-            <div className="font-semibold ml-52">
+            <div className="font-semibold ml-32">
               NID/Passport <span className="text-gray-400">(Optional)</span>
             </div>
           </div>
@@ -230,9 +231,6 @@ const NewBooking = () => {
         cancelText="Cancel"
         okText="Apply"
         width={1000}
-        cancelButtonProps={{
-          style: { background: "" },
-        }}
         okButtonProps={{
           style: { background: "gray" },
         }}
@@ -251,7 +249,7 @@ const NewBooking = () => {
         onCancel={() => setExtra(false)}
         cancelText="Cancel"
         okText="Apply"
-        width={450}
+        width={600}
         cancelButtonProps={{
           style: { background: "" },
         }}
@@ -259,22 +257,30 @@ const NewBooking = () => {
           style: { background: "#005099" },
         }}
       >
-        <div className="flex justify-between">
-          <div>
-            <h3 className="font-semibold text-xl mb-2">Extras</h3>
-            <div className="flex items-center gap-2">
-              <Checkbox>Bed</Checkbox>
-              <br />
-              <Checkbox>Breakfast</Checkbox>
-            </div>
+        <div>
+          <h3 className="font-semibold text-xl mb-2">Extras & Discount</h3>
+          <div className="flex items-center gap-2 mb-3">
+            <Checkbox>Bed</Checkbox>
+            <br />
+            <Checkbox>Breakfast</Checkbox>
           </div>
-          <div className="mb-8">
-            <h3 className="font-semibold text-xl">Discount</h3>
-            <div className="flex items-center">
-              <div className="my-2">Final Room Rent</div>
-              <div className="mx-5">Amount</div>
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <div className="font-semibold">Room Rent : </div>
+              <div className="font-semibold my-2">Discount : </div>
+              <div className="font-semibold">
+                Final Room Rent (Including Extras & Discount) :
+              </div>
             </div>
-            <Input placeholder="Enter Discount" maxLength={16} />
+            <div>
+              <div>3000</div>
+              <input
+                type="number"
+                placeholder="Enter Discount"
+                className="border border-gray-400 rounded-md p-2 my-2"
+              />
+              <div>1321313</div>
+            </div>
           </div>
         </div>
       </Modal>
