@@ -13,6 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        contact\n        hotel\n        totalBookingRent\n        discount\n        due\n        paymentStatus\n  }\n}\n": types.CreateBookingDocument,
     "\nmutation Login($phone: String!, $password: String!) {\n    login(phone: $phone, password: $password) {\n      access_token\n      user {\n        _id\n        name\n        email\n        phone\n        hotels\n        type\n      }\n    }\n  }\n\n": types.LoginDocument,
     "\n  query RoomsByFloor($hotel: ID!, $startDate: DateTime!, $endDate: DateTime!) {\n    roomsByFloor(hotel: $hotel, startDate: $startDate, endDate: $endDate) {\n      floor\n      rooms {\n        _id\n        number\n        floor\n        position\n        type {\n          title\n          rent\n        }\n        bookings {\n          _id\n          rent\n          booking\n          discount\n          checkIn\n          checkOut\n          status\n        }\n      }\n    }\n  }\n": types.RoomsByFloorDocument,
 };
@@ -31,6 +32,10 @@ const documents = {
  */
 export function gql(source: string): unknown;
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        contact\n        hotel\n        totalBookingRent\n        discount\n        due\n        paymentStatus\n  }\n}\n"): (typeof documents)["\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        contact\n        hotel\n        totalBookingRent\n        discount\n        due\n        paymentStatus\n  }\n}\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

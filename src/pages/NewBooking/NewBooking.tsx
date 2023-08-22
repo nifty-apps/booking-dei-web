@@ -1,4 +1,7 @@
+import { useMutation } from "@apollo/client";
 import { Button, Checkbox, DatePicker, Form, Input, Modal, Select } from "antd";
+import dayjs from "dayjs";
+import { RangeValue } from "rc-picker/lib/interface";
 import { useState } from "react";
 import { AiOutlineDown } from "react-icons/ai";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -7,13 +10,54 @@ import { MdClose } from "react-icons/md";
 import BookingSummary from "../../components/BookingSummary";
 import FloorPlan from "../../components/FloorPlan";
 import TitleText from "../../components/Title";
+import { CREATE_BOOKING } from "../../graphql/mutations/bookingMutations";
 
 const NewBooking = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [extra, setExtra] = useState(false);
   const [confirm, setConfirm] = useState(false);
-  const [numOfRows, setNumOfRows] = useState(1);
   const [addGuestRow, setAddGuestRow] = useState(1);
+  const [numOfRows, setNumOfRows] = useState(1);
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    RangeValue<dayjs.Dayjs>
+  >([dayjs(), dayjs().add(1, "day")]);
+
+  const [createBooking] = useMutation(CREATE_BOOKING);
+
+  const handleCreateBooking = () => {
+    const createBookingInput = {
+      contact: "64d22306cb903c900cee91e4",
+      hotel: "64d0a1d008291a484b015d0b",
+      totalBookingRent: 7000,
+      discount: 300,
+      due: 57,
+      roomBookings: {
+        room: "64d20f443669abcf64a6caa2",
+        checkIn: "2020-08-21",
+        checkOut: "2020-08-22",
+        rent: 2000,
+        discount: 200,
+        extraBed: true,
+        extraBreakfast: true,
+        status: "CHECKEDIN",
+      },
+      paymentStatus: "UNPAID",
+    };
+
+    createBooking({
+      variables: {
+        createBookingInput,
+      },
+    })
+      .then((result) => {
+        // Handle successful response
+        console.log(result);
+      })
+      .catch((error) => {
+        // Handle error
+        console.error(error);
+      });
+  };
 
   return (
     <>
@@ -62,7 +106,12 @@ const NewBooking = () => {
           {Array.from({ length: numOfRows }).map((_, index) => (
             <div className="flex font-semibold mb-2" key={index}>
               <div>
-                <DatePicker.RangePicker format="YYYY-MM-DD" />
+                <DatePicker.RangePicker
+                  allowClear={true}
+                  format="YYYY-MM-DD"
+                  value={selectedDateRange}
+                  onChange={(value) => setSelectedDateRange(value)}
+                />
               </div>
               <div className="mx-3">
                 <Button onClick={() => setIsModalOpen(true)}>
@@ -74,7 +123,7 @@ const NewBooking = () => {
               </div>
 
               <div>
-                <Select defaultValue="302" />
+                <Select />
               </div>
 
               <div className="mx-3">
@@ -231,14 +280,17 @@ const NewBooking = () => {
         cancelText="Cancel"
         okText="Apply"
         width={1000}
+        cancelButtonProps={{
+          style: { background: "" },
+        }}
         okButtonProps={{
           style: { background: "gray" },
         }}
       >
         <FloorPlan
           onSelectionChange={(rooms) => console.log(rooms)}
-          startDate={new Date()}
-          endDate={new Date()}
+          startDate={selectedDateRange?.[0]?.toDate() as Date}
+          endDate={selectedDateRange?.[1]?.toDate() as Date}
         />
       </Modal>
 
@@ -312,6 +364,10 @@ const NewBooking = () => {
           </div>
         </div>
       </Modal>
+
+      <button className="bg-red-400" onClick={handleCreateBooking}>
+        Create Booking
+      </button>
     </>
   );
 };

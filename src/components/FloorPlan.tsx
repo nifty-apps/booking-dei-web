@@ -15,7 +15,7 @@ export type Room = {
   type: {
     title: string;
     rent: number;
-  };
+  } | null;
   bookings: RoomBookingDetails[];
 };
 
@@ -160,7 +160,7 @@ const FloorPlan = ({
         <div className="my-4">
           <p>
             <span className="font-semibold">Room Type : </span>
-            {detailsModalInfo.room?.type.title}
+            {detailsModalInfo.room?.type?.title}
           </p>
           <p>
             <span className="font-semibold">Room Number :</span>
