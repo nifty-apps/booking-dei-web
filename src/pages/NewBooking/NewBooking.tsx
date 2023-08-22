@@ -1,10 +1,12 @@
 import { Checkbox, DatePicker, Form, Input, Modal, Select, Table } from "antd";
+import dayjs from "dayjs";
+import { RangeValue } from "rc-picker/lib/interface";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaPlus, FaRegCheckCircle } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 import BookingSummary from "../../components/BookingSummary";
-import FloorPlan from "../../components/FloorPlan";
+import FloorPlan, { Room } from "../../components/FloorPlan";
 import TitleText from "../../components/Title";
 
 const NewBooking = () => {
@@ -13,6 +15,10 @@ const NewBooking = () => {
   const [confirm, setConfirm] = useState(false);
   const [addGuestRow, setAddGuestRow] = useState(1);
   const [numOfRows, setNumOfRows] = useState(1);
+  const [selectedRooms, setSelectedRooms] = useState<Room[]>([]);
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    RangeValue<dayjs.Dayjs>
+  >([dayjs(), dayjs().add(1, "day")]);
 
   const dataSource = [
     {
@@ -25,7 +31,7 @@ const NewBooking = () => {
         <div className="flex">
           <Select
             defaultValue="Select Status"
-            style={{ width: 140 }}
+            className="w-40"
             options={[
               { value: "BOOKED", label: "Booked" },
               { value: "CHECKEDIN", label: "Check In" },
@@ -33,7 +39,7 @@ const NewBooking = () => {
               { value: "PARTIALPAYMENT", label: "Partial Payment" },
             ]}
           />
-          <div className="mt-1 cursor-pointer ml-4">
+          <div className="mt-1 cursor-pointer mx-4">
             <span onClick={() => setExtra(true)}>
               <span>
                 <BsThreeDotsVertical />
@@ -234,21 +240,25 @@ const NewBooking = () => {
         cancelText="Cancel"
         okText="Apply"
         width={1000}
-        cancelButtonProps={{
-          style: { background: "" },
-        }}
         okButtonProps={{
           style: { background: "gray" },
         }}
       >
-        <div>
-          <DatePicker.RangePicker allowClear={false} format="YYYY-MM-DD" />
+        <div className="flex justify-around">
+          <h3 className="font-semibold">Select Date : </h3>
+          <DatePicker.RangePicker
+            allowClear={true}
+            format="YYYY-MM-DD"
+            value={selectedDateRange}
+            onChange={(value) => setSelectedDateRange(value)}
+          />
         </div>
 
         <FloorPlan
-          startDate={new Date()}
-          endDate={new Date()}
-          onSelectionChange={() => console.log("")}
+          selectedRooms={selectedRooms}
+          onSelectionChange={(rooms) => setSelectedRooms(rooms)}
+          startDate={selectedDateRange?.[0]?.toDate() as Date}
+          endDate={selectedDateRange?.[1]?.toDate() as Date}
         />
       </Modal>
 
@@ -260,9 +270,6 @@ const NewBooking = () => {
         cancelText="Cancel"
         okText="Apply"
         width={600}
-        cancelButtonProps={{
-          style: { background: "" },
-        }}
         okButtonProps={{
           style: { background: "#005099" },
         }}
@@ -303,9 +310,6 @@ const NewBooking = () => {
         cancelText="View Booking Details"
         okText="Back To Home"
         width={400}
-        cancelButtonProps={{
-          style: { background: "" },
-        }}
         okButtonProps={{
           style: { background: "#005099" },
         }}
