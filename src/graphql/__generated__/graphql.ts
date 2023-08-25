@@ -24,16 +24,10 @@ export type Booking = {
   _id: Scalars['ID']['output'];
   /** Contact who made the booking */
   contact: Scalars['ID']['output'];
-  /** Discount for the booking */
-  discount?: Maybe<Scalars['Float']['output']>;
-  /** Total Due for the booking */
-  due?: Maybe<Scalars['Float']['output']>;
   /** Hotel where the booking were generated */
   hotel: Scalars['ID']['output'];
   /** Payment status of the booking */
   paymentStatus: PaymentStatus;
-  /** Rent for the booking */
-  totalBookingRent?: Maybe<Scalars['Float']['output']>;
 };
 
 export type Contact = {
@@ -44,15 +38,42 @@ export type Contact = {
   address?: Maybe<Scalars['String']['output']>;
   /** Hotel where the contact visited */
   hotel: Scalars['ID']['output'];
+  /** ID number of the contact */
+  idNo?: Maybe<Scalars['Float']['output']>;
+  /** ID type of the contact */
+  idType?: Maybe<ContactIdTypes>;
   /** Name of the contact */
   name: Scalars['String']['output'];
-  /** NID of the contact */
-  nid?: Maybe<Scalars['Float']['output']>;
   /** Phone number of the contact */
   phone: Scalars['String']['output'];
   /** Type of the contact */
   type: ContactTypes;
 };
+
+export type ContactFilterInput = {
+  /** Example field (placeholder) */
+  _id?: InputMaybe<Scalars['ID']['input']>;
+  /** Address of the contact */
+  address?: InputMaybe<Scalars['String']['input']>;
+  hotel: Scalars['ID']['input'];
+  /** ID number of the contact */
+  idNo?: InputMaybe<Scalars['Float']['input']>;
+  /** ID type of the contact */
+  idType?: InputMaybe<ContactIdTypes>;
+  /** Name of the contact */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Phone number of the contact */
+  phone?: InputMaybe<Scalars['String']['input']>;
+  /** Type of the contact */
+  type?: InputMaybe<ContactTypes>;
+};
+
+/** The type of the contact ID */
+export enum ContactIdTypes {
+  DrivingLicense = 'DRIVING_LICENSE',
+  Nid = 'NID',
+  Passport = 'PASSPORT'
+}
 
 /** The type of the contact */
 export enum ContactTypes {
@@ -83,11 +104,13 @@ export type CreateContactInput = {
   address?: InputMaybe<Scalars['String']['input']>;
   /** Hotel where the contact visited */
   hotel: Scalars['ID']['input'];
+  /** ID number of the contact */
+  idNo?: InputMaybe<Scalars['Float']['input']>;
+  /** ID type of the contact */
+  idType?: InputMaybe<ContactIdTypes>;
   /** Name of the contact */
   name: Scalars['String']['input'];
-  /** NID of the contact */
-  nid?: InputMaybe<Scalars['Float']['input']>;
-  /** Phone Number of the contact */
+  /** Phone number of the contact */
   phone: Scalars['String']['input'];
   /** Type of the contact */
   type: ContactTypes;
@@ -266,7 +289,7 @@ export type MutationRemoveBookingArgs = {
 
 
 export type MutationRemoveContactArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -355,7 +378,6 @@ export type Query = {
   bookings: Array<Booking>;
   /** Find contact by ID */
   contact: Contact;
-  /** Find all contacts */
   contacts: Array<Contact>;
   hotel: Hotel;
   hotels: Array<Hotel>;
@@ -386,6 +408,11 @@ export type QueryBookingArgs = {
 
 export type QueryContactArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryContactsArgs = {
+  filter: ContactFilterInput;
 };
 
 
@@ -622,16 +649,18 @@ export type UpdateBookingInput = {
 };
 
 export type UpdateContactInput = {
+  _id: Scalars['ID']['input'];
   /** Address of the contact */
   address?: InputMaybe<Scalars['String']['input']>;
   /** Hotel where the contact visited */
   hotel?: InputMaybe<Scalars['ID']['input']>;
-  id: Scalars['Int']['input'];
+  /** ID number of the contact */
+  idNo?: InputMaybe<Scalars['Float']['input']>;
+  /** ID type of the contact */
+  idType?: InputMaybe<ContactIdTypes>;
   /** Name of the contact */
   name?: InputMaybe<Scalars['String']['input']>;
-  /** NID of the contact */
-  nid?: InputMaybe<Scalars['Float']['input']>;
-  /** Phone Number of the contact */
+  /** Phone number of the contact */
   phone?: InputMaybe<Scalars['String']['input']>;
   /** Type of the contact */
   type?: InputMaybe<ContactTypes>;
@@ -762,7 +791,7 @@ export type CreateBookingMutationVariables = Exact<{
 }>;
 
 
-export type CreateBookingMutation = { __typename?: 'Mutation', createBooking: { __typename?: 'Booking', _id: string, contact: string, hotel: string, totalBookingRent?: number | null, discount?: number | null, due?: number | null, paymentStatus: PaymentStatus } };
+export type CreateBookingMutation = { __typename?: 'Mutation', createBooking: { __typename?: 'Booking', _id: string, contact: string, hotel: string, paymentStatus: PaymentStatus } };
 
 export type LoginMutationVariables = Exact<{
   phone: Scalars['String']['input'];
@@ -771,6 +800,13 @@ export type LoginMutationVariables = Exact<{
 
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponseDto', access_token: string, user: { __typename?: 'UserResponseDto', _id: string, name: string, email?: string | null, phone: string, hotels: Array<string>, type: UserType } } };
+
+export type ContactsQueryVariables = Exact<{
+  filter: ContactFilterInput;
+}>;
+
+
+export type ContactsQuery = { __typename?: 'Query', contacts: Array<{ __typename?: 'Contact', _id: string, name: string, phone: string, idType?: ContactIdTypes | null, idNo?: number | null, address?: string | null, hotel: string, type: ContactTypes }> };
 
 export type RoomsByFloorQueryVariables = Exact<{
   hotel: Scalars['ID']['input'];
@@ -782,6 +818,7 @@ export type RoomsByFloorQueryVariables = Exact<{
 export type RoomsByFloorQuery = { __typename?: 'Query', roomsByFloor: Array<{ __typename?: 'RoomsByFloorResponse', floor: string, rooms: Array<{ __typename?: 'RoomBookingsOverview', _id: string, number: string, floor: string, position: string, type: { __typename?: 'RoomTypeDetails', title: string, rent: number }, bookings: Array<{ __typename?: 'RoomBookingDetails', _id: string, rent: number, booking: string, discount: number, checkIn: any, checkOut: any, status: string }> }> }> };
 
 
-export const CreateBookingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateBooking"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateBookingInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createBooking"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createBookingInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"contact"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"totalBookingRent"}},{"kind":"Field","name":{"kind":"Name","value":"discount"}},{"kind":"Field","name":{"kind":"Name","value":"due"}},{"kind":"Field","name":{"kind":"Name","value":"paymentStatus"}}]}}]}}]} as unknown as DocumentNode<CreateBookingMutation, CreateBookingMutationVariables>;
+export const CreateBookingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateBooking"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateBookingInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createBooking"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createBookingInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"contact"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"paymentStatus"}}]}}]}}]} as unknown as DocumentNode<CreateBookingMutation, CreateBookingMutationVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phone"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"phone"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phone"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"hotels"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
+export const ContactsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Contacts"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ContactFilterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contacts"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"idType"}},{"kind":"Field","name":{"kind":"Name","value":"idNo"}},{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<ContactsQuery, ContactsQueryVariables>;
 export const RoomsByFloorDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RoomsByFloor"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hotel"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roomsByFloor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"hotel"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hotel"}}},{"kind":"Argument","name":{"kind":"Name","value":"startDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}}},{"kind":"Argument","name":{"kind":"Name","value":"endDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"floor"}},{"kind":"Field","name":{"kind":"Name","value":"rooms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"floor"}},{"kind":"Field","name":{"kind":"Name","value":"position"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}}]}},{"kind":"Field","name":{"kind":"Name","value":"bookings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}},{"kind":"Field","name":{"kind":"Name","value":"booking"}},{"kind":"Field","name":{"kind":"Name","value":"discount"}},{"kind":"Field","name":{"kind":"Name","value":"checkIn"}},{"kind":"Field","name":{"kind":"Name","value":"checkOut"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]}}]} as unknown as DocumentNode<RoomsByFloorQuery, RoomsByFloorQueryVariables>;

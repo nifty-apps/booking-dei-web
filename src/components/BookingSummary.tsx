@@ -1,15 +1,19 @@
+import { Input, Modal, Radio } from "antd";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
-import { Modal, Input, Radio } from "antd";
+import { CreateBookingInput } from "../graphql/__generated__/graphql";
 const { TextArea } = Input;
 
-const BookingSummary = () => {
+interface BookingSummaryProps {
+  bookingDetails: CreateBookingInput;
+}
+
+const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const plainOptions = ["Bank", "Bkash", "Cash"];
 
-  // modal for new payment
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -28,51 +32,41 @@ const BookingSummary = () => {
         <h3 className="text-lg capitalize font-semibold mb-5">
           Booking Summary
         </h3>
-        <div className="flex justify-between text-md">
-          <div className="flex items-center">
-            <span className="mr-2">1.</span>
-            <span className="cursor-pointer">
-              <AiOutlineClose />
-            </span>
-            <div className="mx-2 font-semibold">
-              Super Deluxe Tripel (Non-AC)
-            </div>
-          </div>
-          <div className="font-semibold">5000.00</div>
-        </div>
-        <div className="flex items-center justify-between">
-          <p>Extrans Bed + Breakfast</p>
-          <p>1000.00</p>
-        </div>
 
-        <div className="flex justify-between text-md mt-2">
-          <div className="flex items-center">
-            <span className="mr-2">1.</span>
-            <span className="cursor-pointer">
-              <AiOutlineClose />
-            </span>
-            <div className="mx-2 font-semibold">
-              Super Deluxe Tripel (Non-AC)
+        {bookingDetails.roomBookings?.map((room) => (
+          <div className="flex justify-between text-md" key={room.checkIn}>
+            <div className="flex items-center">
+              <span className="mr-2">{room?.status}</span>
+              <span className="cursor-pointer">
+                <AiOutlineClose />
+              </span>
+              <div className="mx-2 font-semibold">
+                Super Deluxe Tripel (Non-AC)
+              </div>
             </div>
+            <div className="font-semibold">{room.rent}</div>
           </div>
-          <div className="font-semibold">10000.00</div>
-        </div>
+        ))}
+
         <div className="border border-gray-400 my-2"></div>
 
         <div className="flex items-center justify-between">
           <p className="font-bold">Subtotal</p>
-          <p>16000.00</p>
+          <p>{bookingDetails.totalBookingRent}</p>
         </div>
 
         <div className="flex items-center justify-between">
           <p className="font-bold">Discount</p>
-          <p>16000.00</p>
+          <p>{bookingDetails.discount}</p>
         </div>
 
         <div className="border border-gray-400 my-2"></div>
         <div className="flex items-center justify-between">
           <p className="font-bold">Grand Total</p>
-          <p>16000.00</p>
+          <p>
+            {bookingDetails.totalBookingRent &&
+              bookingDetails.totalBookingRent - (bookingDetails.discount || 0)}
+          </p>
         </div>
 
         <p className="text-gray-400 text-xs">
