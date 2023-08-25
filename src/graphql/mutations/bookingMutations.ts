@@ -6,9 +6,6 @@ mutation CreateBooking($createBookingInput: CreateBookingInput!) {
         _id
         contact
         hotel
-        totalBookingRent
-        discount
-        due
         paymentStatus
   }
 }

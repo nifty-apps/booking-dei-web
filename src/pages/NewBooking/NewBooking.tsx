@@ -1,13 +1,14 @@
 import { useMutation } from "@apollo/client";
-import { DatePicker, Form, Input, Modal, Select, Table, message } from "antd";
+import { DatePicker, Modal, Select, Table, message } from "antd";
 import dayjs from "dayjs";
 import { RangeValue } from "rc-picker/lib/interface";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaEllipsisVertical, FaXmark } from "react-icons/fa6";
-import { MdClose } from "react-icons/md";
+import AdditionalGuests from "../../components/AdditionalGuests";
 import BookingSummary from "../../components/BookingSummary";
 import FloorPlan, { Room } from "../../components/FloorPlan";
+import GuestDetailsInfo from "../../components/GuestDetailsInfo";
 import RoomOptionsModal from "../../components/RoomOptionsModal";
 import TitleText from "../../components/Title";
 import {
@@ -17,13 +18,6 @@ import {
   RoomBookingStatus,
 } from "../../graphql/__generated__/graphql";
 import { CREATE_BOOKING } from "../../graphql/mutations/bookingMutations";
-
-// guest interface
-interface Guest {
-  name: string;
-  phoneNumber: string;
-  nidNumber: string;
-}
 
 const NewBooking = () => {
   const [createBooking] = useMutation(CREATE_BOOKING);
@@ -44,50 +38,16 @@ const NewBooking = () => {
   }>({
     showModal: false,
   });
+
   const [bookingDetails, setBookingDetails] = useState<CreateBookingInput>({
     roomBookings: [],
-    contact: "64d22306cb903c900cee91e4",
+    contact: "",
     hotel: JSON.parse(localStorage.getItem("user") || "{}").user.hotels[0],
     totalBookingRent: 0,
     discount: 0,
     due: 0,
     paymentStatus: PaymentStatus.Unpaid,
   });
-
-  // guest details
-  const [guestDetails, setGuestDetails] = useState({
-    name: "",
-    phone: "",
-    nid: "",
-  });
-  // additional guest
-  const [guests, setGuests] = useState<Guest[]>([]);
-
-  // add guest
-  const handleAddGuest = () => {
-    setGuests([...guests, { name: "", phoneNumber: "", nidNumber: "" }]);
-  };
-
-  const handleGuestInputChange = (
-    index: number,
-    field: keyof Guest,
-    value: string
-  ) => {
-    const updatedGuests = [...guests];
-    updatedGuests[index][field] = value;
-    setGuests(updatedGuests);
-  };
-
-  const handleRemoveGuest = (index: number) => {
-    const updatedGuests = guests.filter((_, i) => i !== index);
-    setGuests(updatedGuests);
-  };
-
-  // handle change in guest details
-  const handleGuestDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setGuestDetails({ ...guestDetails, [name]: value });
-  };
 
   // table columns
   const columns = [
@@ -297,129 +257,18 @@ const NewBooking = () => {
               <span className="font-semibold"> Add Room</span>
             </button>
           </div>
+
           {/* guest detailas part */}
-          <div className="mt-8">
-            <h1 className="font-semibold text-xl text-gray-500 mb-4 capitalize">
-              Guest details
-            </h1>
-          </div>
-          <Form layout="vertical" className="flex items-center font-semibold">
-            <Form.Item
-              label="Full Name"
-              rules={[
-                {
-                  message: "Please enter your name",
-                },
-              ]}
-            >
-              <Input
-                placeholder="Enter your name"
-                name="name"
-                value={guestDetails.name}
-                onChange={handleGuestDetailsChange}
-              />
-            </Form.Item>
-
-            <Form.Item
-              className="mx-5"
-              label="phone"
-              rules={[
-                {
-                  message: "Please enter your phone number",
-                },
-              ]}
-            >
-              <Input
-                placeholder="Enter your phone number"
-                name="phone"
-                value={guestDetails.phone}
-                onChange={handleGuestDetailsChange}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="NID/Passport"
-              rules={[
-                {
-                  message: "Please enter your NID Number",
-                },
-              ]}
-            >
-              <Input
-                placeholder="Enter your NID Number"
-                name="nid"
-                value={guestDetails.nid}
-                onChange={handleGuestDetailsChange}
-              />
-            </Form.Item>
-          </Form>
+          <GuestDetailsInfo
+            onSelect={(contact) => {
+              setBookingDetails({
+                ...bookingDetails,
+                contact: contact._id,
+              });
+            }}
+          />
           {/* Additional Guest details info */}
-          <h1 className="font-semibold text-xl text-gray-500 mb-4 capitalize">
-            Additional Guests
-          </h1>
-          {/* Additional Guest details info labels */}
-          <div className="flex items-center mb-2">
-            <div className="font-semibold">Full Name</div>
-            <div className="font-semibold ml-64">
-              Phone Number <span className="text-gray-400">(Optional)</span>
-            </div>
-            <div className="font-semibold ml-32">
-              NID/Passport <span className="text-gray-400">(Optional)</span>
-            </div>
-          </div>
-          {/* Additional Guest details info input */}
-
-          {guests.length > 0 &&
-            guests.map((guest, index) => (
-              <Form
-                key={index}
-                layout="vertical"
-                className="flex items-center font-semibold mb-2"
-              >
-                <Input
-                  placeholder="Enter your name"
-                  value={guest.name}
-                  onChange={(e) =>
-                    handleGuestInputChange(index, "name", e.target.value)
-                  }
-                />
-                <Input
-                  className="mx-3"
-                  placeholder="Enter your phone number"
-                  value={guest.phoneNumber}
-                  onChange={(e) =>
-                    handleGuestInputChange(index, "phoneNumber", e.target.value)
-                  }
-                />
-                <Input
-                  placeholder="Enter your NID Number"
-                  value={guest.nidNumber}
-                  onChange={(e) =>
-                    handleGuestInputChange(index, "nidNumber", e.target.value)
-                  }
-                />
-                {index > 0 && (
-                  <div
-                    className="cursor-pointer text-gray-500 text-xl ml-2"
-                    onClick={() => handleRemoveGuest(index)}
-                  >
-                    <MdClose />
-                  </div>
-                )}
-              </Form>
-            ))}
-          {/* add extra guest btn */}
-          <div className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1">
-            <button
-              className="flex items-center gap-2"
-              onClick={handleAddGuest}
-            >
-              <span>
-                <FaPlus />
-              </span>
-              <span className="font-semibold">Add Guest</span>
-            </button>
-          </div>
+          <AdditionalGuests />
         </div>
         {/* booking summary || Payment flow */}
         <BookingSummary />
