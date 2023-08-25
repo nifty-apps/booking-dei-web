@@ -271,7 +271,7 @@ const NewBooking = () => {
           <AdditionalGuests />
         </div>
         {/* booking summary || Payment flow */}
-        <BookingSummary />
+        <BookingSummary bookingDetails={bookingDetails} />
       </div>
 
       {/* modal for room select */}
