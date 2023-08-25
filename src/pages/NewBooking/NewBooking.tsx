@@ -1,63 +1,95 @@
-import { Checkbox, DatePicker, Form, Input, Modal, Select, Table } from "antd";
+import { useMutation } from "@apollo/client";
+import { DatePicker, Form, Input, Modal, Select, Table, message } from "antd";
 import dayjs from "dayjs";
 import { RangeValue } from "rc-picker/lib/interface";
-import { useState } from "react";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { FaPlus, FaRegCheckCircle } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { FaPlus } from "react-icons/fa";
+import { FaEllipsisVertical, FaXmark } from "react-icons/fa6";
 import { MdClose } from "react-icons/md";
 import BookingSummary from "../../components/BookingSummary";
 import FloorPlan, { Room } from "../../components/FloorPlan";
+import RoomOptionsModal from "../../components/RoomOptionsModal";
 import TitleText from "../../components/Title";
+import {
+  CreateBookingInput,
+  CreateRoomBookingInput,
+  PaymentStatus,
+  RoomBookingStatus,
+} from "../../graphql/__generated__/graphql";
+import { CREATE_BOOKING } from "../../graphql/mutations/bookingMutations";
+
+// guest interface
+interface Guest {
+  name: string;
+  phoneNumber: string;
+  nidNumber: string;
+}
 
 const NewBooking = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [extra, setExtra] = useState(false);
-  const [confirm, setConfirm] = useState(false);
-  const [addGuestRow, setAddGuestRow] = useState(1);
-  const [numOfRows, setNumOfRows] = useState(1);
-  const [selectedRooms, setSelectedRooms] = useState<Room[]>([]);
+  const [createBooking] = useMutation(CREATE_BOOKING);
+
   const [selectedDateRange, setSelectedDateRange] = useState<
     RangeValue<dayjs.Dayjs>
-  >([dayjs(), dayjs().add(1, "day")]);
-
-  const dataSource = [
+  >([dayjs().startOf("day"), dayjs().add(1, "day").startOf("day")]);
+  const [showFloorPlan, setShowFloorPlan] = useState(false);
+  const [selectedRoomsByDate, setSelectedRoomsByDate] = useState<
     {
-      key: "1",
-      checkin: "2021-07-08",
-      checkout: "2021-07-08",
-      roomType: "family ac.",
-      roomNo: "302",
-      status: (
-        <div className="flex">
-          <Select
-            defaultValue="Select Status"
-            className="w-40"
-            options={[
-              { value: "BOOKED", label: "Booked" },
-              { value: "CHECKEDIN", label: "Check In" },
-              { value: "CHECKEDOUT", label: "Check Out" },
-              { value: "PARTIALPAYMENT", label: "Partial Payment" },
-            ]}
-          />
-          <div className="mt-1 cursor-pointer mx-4">
-            <span onClick={() => setExtra(true)}>
-              <span>
-                <BsThreeDotsVertical />
-              </span>
-            </span>
-          </div>
+      dateRange: RangeValue<dayjs.Dayjs>;
+      rooms: Room[];
+    }[]
+  >([]);
+  const [extraOptions, setExtraOptions] = useState<{
+    roomBooking?: CreateRoomBookingInput;
+    showModal: boolean;
+  }>({
+    showModal: false,
+  });
+  const [bookingDetails, setBookingDetails] = useState<CreateBookingInput>({
+    roomBookings: [],
+    contact: "64d22306cb903c900cee91e4",
+    hotel: JSON.parse(localStorage.getItem("user") || "{}").user.hotels[0],
+    totalBookingRent: 0,
+    discount: 0,
+    due: 0,
+    paymentStatus: PaymentStatus.Unpaid,
+  });
 
-          <div
-            className="cursor-pointer text-gray-500 text-xl"
-            onClick={() => setNumOfRows(numOfRows - 1)}
-          >
-            <MdClose />
-          </div>
-        </div>
-      ),
-    },
-  ];
+  // guest details
+  const [guestDetails, setGuestDetails] = useState({
+    name: "",
+    phone: "",
+    nid: "",
+  });
+  // additional guest
+  const [guests, setGuests] = useState<Guest[]>([]);
 
+  // add guest
+  const handleAddGuest = () => {
+    setGuests([...guests, { name: "", phoneNumber: "", nidNumber: "" }]);
+  };
+
+  const handleGuestInputChange = (
+    index: number,
+    field: keyof Guest,
+    value: string
+  ) => {
+    const updatedGuests = [...guests];
+    updatedGuests[index][field] = value;
+    setGuests(updatedGuests);
+  };
+
+  const handleRemoveGuest = (index: number) => {
+    const updatedGuests = guests.filter((_, i) => i !== index);
+    setGuests(updatedGuests);
+  };
+
+  // handle change in guest details
+  const handleGuestDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setGuestDetails({ ...guestDetails, [name]: value });
+  };
+
+  // table columns
   const columns = [
     {
       title: "Check In",
@@ -84,7 +116,133 @@ const NewBooking = () => {
       dataIndex: "status",
       key: "status",
     },
+    {
+      title: "Actions",
+      dataIndex: "key",
+      render: (roomId: string) => (
+        <div className="flex items-center gap-4 text-lg">
+          <button
+            onClick={() =>
+              setExtraOptions({
+                showModal: true,
+                roomBooking: bookingDetails.roomBookings.find(
+                  (room) => room.room === roomId
+                ),
+              })
+            }
+          >
+            <FaEllipsisVertical />
+          </button>
+          <button
+            onClick={() => {
+              setSelectedRoomsByDate(
+                selectedRoomsByDate.map((roomByDate) => ({
+                  ...roomByDate,
+                  rooms: roomByDate.rooms.filter((room) => room._id !== roomId),
+                }))
+              );
+              setBookingDetails({
+                ...bookingDetails,
+                roomBookings: bookingDetails.roomBookings.filter(
+                  (roomBooking) => roomBooking.room !== roomId
+                ),
+              });
+            }}
+          >
+            <FaXmark />
+          </button>
+        </div>
+      ),
+    },
   ];
+
+  // table data source
+  const dataSource = bookingDetails.roomBookings.map((roomBooking) => ({
+    key: roomBooking.room,
+    checkin: dayjs(roomBooking?.checkIn).format("YYYY-MM-DD"),
+    checkout: dayjs(roomBooking?.checkOut).format("YYYY-MM-DD"),
+    roomType: selectedRoomsByDate
+      .find((roomByDate) =>
+        roomByDate.rooms.find((room) => room._id === roomBooking.room)
+      )
+      ?.rooms.find((room) => room._id === roomBooking.room)?.type?.title,
+    roomNo: selectedRoomsByDate
+      .find((roomByDate) =>
+        roomByDate.rooms.find((room) => room._id === roomBooking.room)
+      )
+      ?.rooms.find((room) => room._id === roomBooking.room)?.number,
+    status: (
+      <div className="flex">
+        <Select
+          defaultValue={RoomBookingStatus.Booked}
+          className="w-40"
+          options={[
+            { value: RoomBookingStatus.Booked, label: "Booked" },
+            { value: RoomBookingStatus.Checkedin, label: "Check In" },
+            { value: RoomBookingStatus.Checkedout, label: "Check Out" },
+          ]}
+          onChange={(value) =>
+            setBookingDetails({
+              ...bookingDetails,
+              roomBookings: bookingDetails.roomBookings.map((booking) =>
+                booking.room === roomBooking.room
+                  ? { ...booking, status: value }
+                  : booking
+              ),
+            })
+          }
+        />
+      </div>
+    ),
+  }));
+
+  const handleCreateBooking = async () => {
+    try {
+      const res = await createBooking({
+        variables: {
+          createBookingInput: bookingDetails,
+        },
+      });
+      if (res.data?.createBooking?._id) {
+        message.success("Yay! Your new booking was added successfully.");
+      }
+    } catch (error) {
+      console.log(error);
+      message.error("Oops! Something went wrong.");
+    }
+  };
+
+  useEffect(() => {
+    const newRoomBookings = selectedRoomsByDate.flatMap((roomByDate) =>
+      roomByDate.rooms.map((room) => ({
+        checkIn: roomByDate.dateRange?.[0]?.toDate() as Date,
+        checkOut: roomByDate.dateRange?.[1]?.toDate() as Date,
+        room: room._id,
+        extraBed: false,
+        extraBreakfast: false,
+        discount: 0,
+        rent: room.type.rent,
+        status: RoomBookingStatus.Booked,
+      }))
+    );
+
+    const filteredNewRoomBookings = newRoomBookings.filter(
+      (roomBooking) =>
+        !bookingDetails.roomBookings.some(
+          (existingBooking) => existingBooking.room === roomBooking.room
+        )
+    );
+
+    if (filteredNewRoomBookings.length > 0) {
+      setBookingDetails((prevBookingDetails) => ({
+        ...prevBookingDetails,
+        roomBookings: [
+          ...prevBookingDetails.roomBookings,
+          ...filteredNewRoomBookings,
+        ],
+      }));
+    }
+  }, [selectedRoomsByDate, bookingDetails]);
 
   return (
     <>
@@ -104,8 +262,9 @@ const NewBooking = () => {
             Reset
           </button>
           <button
+            type="submit"
             className="text-white px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2  bg-blue-900 w-full"
-            onClick={() => setConfirm(true)}
+            onClick={() => handleCreateBooking()}
           >
             Confirm Booking
           </button>
@@ -117,18 +276,19 @@ const NewBooking = () => {
           <h1 className="font-semibold text-xl text-gray-500 mb-4 capitalize">
             Room details
           </h1>
-
-          <Table
-            dataSource={dataSource}
-            columns={columns}
-            size="small"
-            pagination={false}
-          />
+          {bookingDetails.roomBookings.length !== 0 && (
+            <Table
+              dataSource={dataSource}
+              columns={columns}
+              size="small"
+              pagination={false}
+            />
+          )}
 
           {/* add room button */}
           <div
             className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1 mt-2"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setShowFloorPlan(true)}
           >
             <button className="flex items-center gap-2">
               <span>
@@ -146,39 +306,51 @@ const NewBooking = () => {
           <Form layout="vertical" className="flex items-center font-semibold">
             <Form.Item
               label="Full Name"
-              name="guestName"
               rules={[
                 {
                   message: "Please enter your name",
                 },
               ]}
             >
-              <Input placeholder="Enter your name" />
+              <Input
+                placeholder="Enter your name"
+                name="name"
+                value={guestDetails.name}
+                onChange={handleGuestDetailsChange}
+              />
             </Form.Item>
 
             <Form.Item
               className="mx-5"
-              label="Phone Number"
-              name="guestPhone"
+              label="phone"
               rules={[
                 {
                   message: "Please enter your phone number",
                 },
               ]}
             >
-              <Input placeholder="Enter your phone number" />
+              <Input
+                placeholder="Enter your phone number"
+                name="phone"
+                value={guestDetails.phone}
+                onChange={handleGuestDetailsChange}
+              />
             </Form.Item>
 
             <Form.Item
               label="NID/Passport"
-              name="guestNID"
               rules={[
                 {
                   message: "Please enter your NID Number",
                 },
               ]}
             >
-              <Input placeholder="Enter your NID Number" />
+              <Input
+                placeholder="Enter your NID Number"
+                name="nid"
+                value={guestDetails.nid}
+                onChange={handleGuestDetailsChange}
+              />
             </Form.Item>
           </Form>
           {/* Additional Guest details info */}
@@ -196,35 +368,56 @@ const NewBooking = () => {
             </div>
           </div>
           {/* Additional Guest details info input */}
-          {Array.from({ length: addGuestRow }).map((_, index) => (
-            <Form
-              key={index}
-              layout="vertical"
-              className="flex items-center font-semibold mb-2"
-            >
-              <Input placeholder="Enter your name" />
-              <Input className="mx-3" placeholder="Enter your phone number" />
-              <Input placeholder="Enter your NID Number" />
 
-              {/* cancel row */}
-              <div
-                className="cursor-pointer text-gray-500 text-xl ml-2"
-                onClick={() => setAddGuestRow(addGuestRow - 1)}
+          {guests.length > 0 &&
+            guests.map((guest, index) => (
+              <Form
+                key={index}
+                layout="vertical"
+                className="flex items-center font-semibold mb-2"
               >
-                <MdClose />
-              </div>
-            </Form>
-          ))}
+                <Input
+                  placeholder="Enter your name"
+                  value={guest.name}
+                  onChange={(e) =>
+                    handleGuestInputChange(index, "name", e.target.value)
+                  }
+                />
+                <Input
+                  className="mx-3"
+                  placeholder="Enter your phone number"
+                  value={guest.phoneNumber}
+                  onChange={(e) =>
+                    handleGuestInputChange(index, "phoneNumber", e.target.value)
+                  }
+                />
+                <Input
+                  placeholder="Enter your NID Number"
+                  value={guest.nidNumber}
+                  onChange={(e) =>
+                    handleGuestInputChange(index, "nidNumber", e.target.value)
+                  }
+                />
+                {index > 0 && (
+                  <div
+                    className="cursor-pointer text-gray-500 text-xl ml-2"
+                    onClick={() => handleRemoveGuest(index)}
+                  >
+                    <MdClose />
+                  </div>
+                )}
+              </Form>
+            ))}
           {/* add extra guest btn */}
-          <div
-            className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1"
-            onClick={() => setAddGuestRow(addGuestRow + 1)}
-          >
-            <button className="flex items-center gap-2">
+          <div className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1">
+            <button
+              className="flex items-center gap-2"
+              onClick={handleAddGuest}
+            >
               <span>
                 <FaPlus />
               </span>
-              <span className="font-semibold"> Add Guest</span>
+              <span className="font-semibold">Add Guest</span>
             </button>
           </div>
         </div>
@@ -234,14 +427,14 @@ const NewBooking = () => {
 
       {/* modal for room select */}
       <Modal
-        open={isModalOpen}
-        onOk={() => setIsModalOpen(false)}
-        onCancel={() => setIsModalOpen(false)}
+        open={showFloorPlan}
+        onOk={() => setShowFloorPlan(false)}
+        onCancel={() => setShowFloorPlan(false)}
         cancelText="Cancel"
         okText="Apply"
         width={1000}
         okButtonProps={{
-          style: { background: "gray" },
+          className: "bg-blue-600",
         }}
       >
         <div className="flex justify-around">
@@ -253,79 +446,59 @@ const NewBooking = () => {
             onChange={(value) => setSelectedDateRange(value)}
           />
         </div>
-
         <FloorPlan
-          selectedRooms={selectedRooms}
-          onSelectionChange={(rooms) => setSelectedRooms(rooms)}
           startDate={selectedDateRange?.[0]?.toDate() as Date}
           endDate={selectedDateRange?.[1]?.toDate() as Date}
+          selectedRooms={
+            selectedRoomsByDate.find(
+              (room) =>
+                dayjs(room.dateRange?.[0]).isSame(
+                  selectedDateRange?.[0],
+                  "date"
+                ) &&
+                dayjs(room.dateRange?.[1]).isSame(
+                  selectedDateRange?.[1],
+                  "date"
+                )
+            )?.rooms || []
+          }
+          onSelectionChange={(rooms) => {
+            setSelectedRoomsByDate([
+              ...selectedRoomsByDate.filter(
+                (room) =>
+                  !dayjs(room.dateRange?.[0]).isSame(
+                    selectedDateRange?.[0],
+                    "date"
+                  ) &&
+                  !dayjs(room.dateRange?.[1]).isSame(
+                    selectedDateRange?.[1],
+                    "date"
+                  )
+              ),
+              {
+                dateRange: selectedDateRange,
+                rooms,
+              },
+            ]);
+          }}
         />
       </Modal>
-
-      {/* modal for extra | discount */}
-      <Modal
-        open={extra}
-        onOk={() => setExtra(false)}
-        onCancel={() => setExtra(false)}
-        cancelText="Cancel"
-        okText="Apply"
-        width={600}
-        okButtonProps={{
-          style: { background: "#005099" },
+      {/* Room  options modal */}
+      <RoomOptionsModal
+        options={extraOptions}
+        onOk={(options) => {
+          setExtraOptions({ showModal: false });
+          if (!options.roomBooking) return;
+          setBookingDetails({
+            ...bookingDetails,
+            roomBookings: bookingDetails.roomBookings.map((roomBooking) =>
+              roomBooking.room === options.roomBooking?.room
+                ? options.roomBooking
+                : roomBooking
+            ),
+          });
         }}
-      >
-        <div>
-          <h3 className="font-semibold text-xl mb-2">Extras & Discount</h3>
-          <div className="flex items-center gap-2 mb-3">
-            <Checkbox>Bed</Checkbox>
-            <br />
-            <Checkbox>Breakfast</Checkbox>
-          </div>
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <div className="font-semibold">Room Rent : </div>
-              <div className="font-semibold my-2">Discount : </div>
-              <div className="font-semibold">
-                Final Room Rent (Including Extras & Discount) :
-              </div>
-            </div>
-            <div>
-              <div>3000</div>
-              <input
-                type="number"
-                placeholder="Enter Discount"
-                className="border border-gray-400 rounded-md p-2 my-2"
-              />
-              <div>1321313</div>
-            </div>
-          </div>
-        </div>
-      </Modal>
-
-      {/* modal for confirm booking */}
-      <Modal
-        open={confirm}
-        onOk={() => setConfirm(false)}
-        onCancel={() => setConfirm(false)}
-        cancelText="View Booking Details"
-        okText="Back To Home"
-        width={400}
-        okButtonProps={{
-          style: { background: "#005099" },
-        }}
-      >
-        <div className="flex justify-evenly">
-          <div className="mt-2">
-            <span className="text-xl text-blue-300">
-              <FaRegCheckCircle />
-            </span>
-          </div>
-          <div className="mx-2 mb-2">
-            <h4 className="font-semibold text-xl">Booking Confirmed</h4>
-            <p>Yay! Your new booking was added successfully.</p>
-          </div>
-        </div>
-      </Modal>
+      />
     </>
   );
 };

@@ -15,7 +15,7 @@ export type Room = {
   type: {
     title: string;
     rent: number;
-  } | null;
+  };
   bookings: RoomBookingDetails[];
 };
 

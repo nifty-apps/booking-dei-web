@@ -129,7 +129,7 @@ export type CreateRoomInput = {
   /** Position of the room */
   position: Scalars['String']['input'];
   /** Type of the room */
-  type?: InputMaybe<Scalars['ID']['input']>;
+  type: Scalars['ID']['input'];
 };
 
 export type CreateTransactionInput = {
@@ -451,7 +451,7 @@ export type Room = {
   /** Position of the room */
   position: Scalars['String']['output'];
   /** Type of the room */
-  type?: Maybe<Scalars['ID']['output']>;
+  type: Scalars['ID']['output'];
 };
 
 export type RoomBooking = {
