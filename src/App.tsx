@@ -12,11 +12,10 @@ import Toolbar from "./components/Toolbar";
 import Calender from "./pages/Calender/Calender";
 import EditBooking from "./pages/EditBooking.tsx/EditBooking";
 import Error from "./pages/Error/Error";
-import FinancialOverview from "./pages/Transactions/Transactions";
 import GuestLookUp from "./pages/GuestLookUp/GuestLookUp";
-import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import NewBooking from "./pages/NewBooking/NewBooking";
+import FinancialOverview from "./pages/Transactions/Transactions";
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -30,7 +29,7 @@ const App = () => {
         <Toolbar collapsed={collapsed} setCollapsed={setCollapsed} />
         <Content className="p-4">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Login />} />
             <Route path="/new-booking" element={<NewBooking />} />
             <Route path="/edit-booking/:id" element={<EditBooking />} />
             <Route path="/calender" element={<Calender />} />

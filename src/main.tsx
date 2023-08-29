@@ -11,17 +11,17 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 
-const token = JSON.parse(localStorage.getItem("user") || "").access_token; // Retrieve token from local storage
+const token = JSON.parse(localStorage.getItem("user") || "").access_token;
 
 const httpLink = new HttpLink({
   uri: import.meta.env.VITE_GRAPHQL_ENDPOINT,
   headers: {
-    authorization: token ? `Bearer ${token}` : "", // Include the token in the headers
+    authorization: token ? `Bearer ${token}` : "",
   },
 });
 
 const client = new ApolloClient({
-  link: httpLink, // Use the http link with headers
+  link: httpLink,
   cache: new InMemoryCache(),
 });
 

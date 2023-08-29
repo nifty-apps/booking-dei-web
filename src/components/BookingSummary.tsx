@@ -1,12 +1,12 @@
 import { Input, Modal, Radio } from "antd";
 import { useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
-import { CreateBookingInput } from "../graphql/__generated__/graphql";
+import { FaXmark } from "react-icons/fa6";
+import { BookingDetails } from "../pages/NewBooking/NewBooking";
 const { TextArea } = Input;
 
 interface BookingSummaryProps {
-  bookingDetails: CreateBookingInput;
+  bookingDetails: BookingDetails;
 }
 
 const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
@@ -33,16 +33,14 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
           Booking Summary
         </h3>
 
-        {bookingDetails.roomBookings?.map((room) => (
+        {bookingDetails.roomBookings?.map((room, index) => (
           <div className="flex justify-between text-md" key={room.checkIn}>
             <div className="flex items-center">
-              <span className="mr-2">{room?.status}</span>
+              <span className="mr-2">{index + 1}</span>
               <span className="cursor-pointer">
-                <AiOutlineClose />
+                <FaXmark />
               </span>
-              <div className="mx-2 font-semibold">
-                Super Deluxe Tripel (Non-AC)
-              </div>
+              <div className="mx-2 font-semibold">{room?.type}</div>
             </div>
             <div className="font-semibold">{room.rent}</div>
           </div>
@@ -95,7 +93,7 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
             <div className="border border-gray-400 my-2"></div>
             <div className="flex items-center justify-between">
               <p className="font-bold">Due</p>
-              <p>16000.00</p>
+              <p>{bookingDetails.due} </p>
             </div>
           </div>
         </div>

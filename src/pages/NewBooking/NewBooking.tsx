@@ -14,10 +14,27 @@ import TitleText from "../../components/Title";
 import {
   CreateBookingInput,
   CreateRoomBookingInput,
+  InputMaybe,
   PaymentStatus,
   RoomBookingStatus,
+  Scalars,
 } from "../../graphql/__generated__/graphql";
 import { CREATE_BOOKING } from "../../graphql/mutations/bookingMutations";
+
+export interface BookingDetails extends CreateBookingInput {
+  roomBookings:
+    | {
+        checkIn: Scalars["DateTime"]["input"];
+        checkOut: Scalars["DateTime"]["input"];
+        discount?: InputMaybe<Scalars["Float"]["input"]>;
+        extraBed: Scalars["Boolean"]["input"];
+        extraBreakfast: Scalars["Boolean"]["input"];
+        rent: Scalars["Float"]["input"];
+        room: Scalars["ID"]["input"];
+        status?: InputMaybe<RoomBookingStatus>;
+        type?: string;
+      }[];
+}
 
 const NewBooking = () => {
   const [createBooking] = useMutation(CREATE_BOOKING);
@@ -39,7 +56,7 @@ const NewBooking = () => {
     showModal: false,
   });
 
-  const [bookingDetails, setBookingDetails] = useState<CreateBookingInput>({
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails>({
     roomBookings: [],
     contact: "",
     hotel: JSON.parse(localStorage.getItem("user") || "{}").user.hotels[0],
@@ -160,14 +177,20 @@ const NewBooking = () => {
     try {
       const res = await createBooking({
         variables: {
-          createBookingInput: bookingDetails,
+          createBookingInput: {
+            ...bookingDetails,
+            roomBookings: bookingDetails.roomBookings.map((roomBooking) => ({
+              ...roomBooking,
+              type: undefined,
+            })),
+          },
         },
       });
+
       if (res.data?.createBooking?._id) {
         message.success("Yay! Your new booking was added successfully.");
       }
     } catch (error) {
-      console.log(error);
       message.error("Oops! Something went wrong.");
     }
   };
@@ -178,6 +201,7 @@ const NewBooking = () => {
         checkIn: roomByDate.dateRange?.[0]?.toDate() as Date,
         checkOut: roomByDate.dateRange?.[1]?.toDate() as Date,
         room: room._id,
+        type: room.type.title,
         extraBed: false,
         extraBreakfast: false,
         discount: 0,
@@ -295,6 +319,7 @@ const NewBooking = () => {
             onChange={(value) => setSelectedDateRange(value)}
           />
         </div>
+        {/* floor plan */}
         <FloorPlan
           startDate={selectedDateRange?.[0]?.toDate() as Date}
           endDate={selectedDateRange?.[1]?.toDate() as Date}
