@@ -1,24 +1,28 @@
 import { useQuery } from "@apollo/client";
 import { AutoComplete, Form, Input, Select } from "antd";
 import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Contact,
   ContactFilterInput,
   ContactTypes,
 } from "../graphql/__generated__/graphql";
 import { GET_CONTACTS } from "../graphql/queries/contactQueries";
+import { RootState } from "../store";
 
 interface GuestDetailsInfoProps {
   onSelect: (contact: Contact) => void;
 }
 
 const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
+  const { user } = useSelector((state: RootState) => state.auth);
+
   const [form] = Form.useForm();
 
   const [options, setOptions] = useState<{ value: string }[]>([]);
   const [contact, setContact] = useState<Contact>({
     _id: "",
-    hotel: JSON.parse(localStorage.getItem("user") || "{}").user.hotels[0],
+    hotel: user?.hotels[0] || "",
     name: "",
     phone: "",
     type: ContactTypes.Customer,
@@ -27,7 +31,7 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
   const { data, loading, error } = useQuery(GET_CONTACTS, {
     variables: {
       filter: {
-        hotel: JSON.parse(localStorage.getItem("user") || "{}").user.hotels[0],
+        hotel: user?.hotels[0] || "",
       } as ContactFilterInput,
     },
   });

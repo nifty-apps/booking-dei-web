@@ -3,11 +3,13 @@ import { Modal, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import classNames from "classnames";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import {
   RoomBookingDetails,
   RoomBookingStatus,
 } from "../graphql/__generated__/graphql";
 import { GET_ROOMS_BY_FLOOR } from "../graphql/queries/roomQueries";
+import { RootState } from "../store";
 
 export type Room = {
   _id: string;
@@ -43,6 +45,8 @@ const FloorPlan = ({
   startDate,
   endDate,
 }: FloorPlanProps) => {
+  const { user } = useSelector((state: RootState) => state.auth);
+
   const [detailsModalInfo, setDetailsModalInfo] = useState<{
     room: Room | null;
     open: boolean;
@@ -53,7 +57,7 @@ const FloorPlan = ({
 
   const { data, loading, error } = useQuery(GET_ROOMS_BY_FLOOR, {
     variables: {
-      hotel: JSON.parse(localStorage.getItem("user") || "{}").user.hotels[0],
+      hotel: user?.hotels[0] || "",
       startDate,
       endDate,
     },

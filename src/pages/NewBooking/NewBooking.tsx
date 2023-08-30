@@ -5,6 +5,7 @@ import { RangeValue } from "rc-picker/lib/interface";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaEllipsisVertical, FaXmark } from "react-icons/fa6";
+import { useSelector } from "react-redux";
 import AdditionalGuests from "../../components/AdditionalGuests";
 import BookingSummary from "../../components/BookingSummary";
 import FloorPlan, { Room } from "../../components/FloorPlan";
@@ -20,6 +21,7 @@ import {
   Scalars,
 } from "../../graphql/__generated__/graphql";
 import { CREATE_BOOKING } from "../../graphql/mutations/bookingMutations";
+import { RootState } from "../../store";
 
 export interface BookingDetails extends CreateBookingInput {
   roomBookings:
@@ -37,6 +39,8 @@ export interface BookingDetails extends CreateBookingInput {
 }
 
 const NewBooking = () => {
+  const { user } = useSelector((state: RootState) => state.auth);
+
   const [createBooking] = useMutation(CREATE_BOOKING);
 
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -59,7 +63,7 @@ const NewBooking = () => {
   const [bookingDetails, setBookingDetails] = useState<BookingDetails>({
     roomBookings: [],
     contact: "",
-    hotel: JSON.parse(localStorage.getItem("user") || "{}").user.hotels[0],
+    hotel: user?.hotels[0] || "",
     totalBookingRent: 0,
     discount: 0,
     due: 0,
