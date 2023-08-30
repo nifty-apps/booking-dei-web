@@ -78,9 +78,10 @@ const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
     <>
       <div className="flex items-center gap-6">
         <Button
+          type="text"
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           onClick={() => setCollapsed(!collapsed)}
-          className="w-64 h-16"
+          className="w-64 h-12"
         />
         <Input
           className="w-2/5"

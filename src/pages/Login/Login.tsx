@@ -27,6 +27,7 @@ const Login = () => {
       });
       if (response?.data?.login) {
         dispatch(login(response.data.login));
+        localStorage.setItem("accessToken", response.data.login.access_token);
         message.success("Login successful!");
         navigate("/");
       }

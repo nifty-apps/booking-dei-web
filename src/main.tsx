@@ -20,7 +20,7 @@ const AppWrapper = () => {
     },
   });
 
-  const client = new ApolloClient({
+  const client = new ApolloClient({ 
     link: httpLink,
     cache: new InMemoryCache(),
   });

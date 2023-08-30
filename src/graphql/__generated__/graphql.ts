@@ -202,7 +202,7 @@ export type Hotel = {
 export type LoginResponseDto = {
   __typename?: 'LoginResponseDto';
   access_token: Scalars['String']['output'];
-  user: User;
+  user: UserResponseDto;
 };
 
 export type Mutation = {
@@ -756,6 +756,24 @@ export type User = {
   hotels: Array<Scalars['ID']['output']>;
   /** Name of the user */
   name: Scalars['String']['output'];
+  /** Password of the user */
+  password: Scalars['String']['output'];
+  /** Phone number of the user */
+  phone: Scalars['String']['output'];
+  /** Type of the user */
+  type: UserType;
+};
+
+export type UserResponseDto = {
+  __typename?: 'UserResponseDto';
+  /** Unique identifier of the user */
+  _id: Scalars['ID']['output'];
+  /** Email of the user */
+  email?: Maybe<Scalars['String']['output']>;
+  /** Hotels of the user */
+  hotels: Array<Scalars['ID']['output']>;
+  /** Name of the user */
+  name: Scalars['String']['output'];
   /** Phone number of the user */
   phone: Scalars['String']['output'];
   /** Type of the user */
@@ -781,7 +799,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponseDto', access_token: string, user: { __typename?: 'User', _id: string, name: string, email?: string | null, phone: string, hotels: Array<string>, type: UserType } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponseDto', access_token: string, user: { __typename?: 'UserResponseDto', _id: string, name: string, email?: string | null, phone: string, hotels: Array<string>, type: UserType } } };
 
 export type CreateTransactionMutationVariables = Exact<{ [key: string]: never; }>;
 
