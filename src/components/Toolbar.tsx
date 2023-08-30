@@ -1,19 +1,21 @@
-import { Button } from "antd";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import {
   BellOutlined,
   ExclamationCircleOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Avatar, Badge, Dropdown, Input, Space } from "antd";
+import { Avatar, Badge, Button, Dropdown, Input, Space } from "antd";
 import {
   AiOutlineSearch,
-  AiOutlineUser,
   AiOutlineSetting,
+  AiOutlineUser,
 } from "react-icons/ai";
 import { FiHelpCircle } from "react-icons/fi";
-import gridots from "../assets/gridots.png";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import gridots from "../assets/gridots.png";
+import { RootState } from "../store";
 
 interface ToolbarProps {
   collapsed: boolean;
@@ -21,6 +23,8 @@ interface ToolbarProps {
 }
 
 const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
+  const { user } = useSelector((state: RootState) => state.auth);
+
   const notificationCount = 5;
 
   const items = [
@@ -74,14 +78,9 @@ const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
     <>
       <div className="flex items-center gap-6">
         <Button
-          type="text"
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           onClick={() => setCollapsed(!collapsed)}
-          style={{
-            fontSize: "16px",
-            width: 64,
-            height: 64,
-          }}
+          className="w-64 h-16"
         />
         <Input
           className="w-2/5"
@@ -105,15 +104,15 @@ const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
             }}
             trigger={["click"]}
           >
-            <a onClick={(e) => e.preventDefault()}>
-              <Space wrap size={16} style={{ alignItems: "center" }}>
+            <div className="cursor-pointer">
+              <Space className="items-center" wrap size={16}>
                 <Avatar size="large" icon={<UserOutlined />} />
               </Space>
-            </a>
+            </div>
           </Dropdown>
           <div className="text-left">
-            <p className="font-bold text-md">Ahmad (Nifty)</p>
-            <p className="font-semibold text-gray-600">Admin</p>
+            {user ? <p className="font-bold text-md">{user?.name}</p> : ""}
+            <p className="font-semibold text-gray-600">{user?.type}</p>
           </div>
         </div>
       </div>

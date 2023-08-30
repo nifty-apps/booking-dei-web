@@ -27,10 +27,10 @@ const Login = () => {
       });
       if (response?.data?.login) {
         dispatch(login(response.data.login));
-        navigate("/");
         message.success("Login successful!");
+        navigate("/");
       }
-    } catch (error) {
+    } catch (err) {
       message.error(`something went wrong!`);
     }
   };
