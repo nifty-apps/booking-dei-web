@@ -73,7 +73,7 @@ const RoomOptionsModal = ({ options, onOk }: RoomOptionsModalProps) => {
           <div>
             <div>{roomBooking?.rent}</div>
             <input
-              type="number"
+              type="text"
               placeholder="Enter Discount"
               className="border border-gray-400 rounded-md p-2 my-2"
               value={roomBooking?.discount || 0}

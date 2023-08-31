@@ -116,7 +116,6 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
           style: { background: "#005099" },
         }}
       >
-        <div>
           <div>
             <h3 className="font-semibold mb-1">Description</h3>
             <TextArea
@@ -134,7 +133,6 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
             <h3 className="font-semibold mb-1">Amount</h3>
             <Input placeholder="Enter Amount" type="number" />
           </div>
-        </div>
       </Modal>
     </>
   );

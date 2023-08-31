@@ -14,6 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        contact\n        hotel\n        paymentStatus\n  }\n}\n": types.CreateBookingDocument,
+    "\n   mutation CreateContact ($createContactInput: CreateContactInput!) {\n       createContact (createContactInput: $createContactInput) {\n            _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n      }\n  \n}\n\n": types.CreateContactDocument,
     "\nmutation Login($phone: String!, $password: String!) {\n    login(phone: $phone, password: $password) {\n      access_token\n      user {\n        _id\n        name\n        email\n        phone\n        hotels\n        type\n      }\n    }\n  }\n\n": types.LoginDocument,
     " \n   mutation CreateTransaction {\n      createTransaction(\n         createTransactionInput: {\n           booking: \"64d765008a6065d8dd91aca6\", \n           contact: \"64d22306cb903c900cee91e4\", \n           hotel: \"64d0a1d008291a484b015d0b\",\n           date: \"2023\", \n           deletedAt: \"2023\",\n           category: INCOME, \n           subCategory: ELECTRICITY, \n           method: BANK, \n           description: \"test\", \n           amount: 500\n        }\n    ) {\n         _id  \n         booking\n         hotel\n         date\n         deletedAt\n         category\n         subCategory\n         method\n         description\n         amount\n    }\n }\n": types.CreateTransactionDocument,
     "\n  query Contacts($filter: ContactFilterInput!) {\n    contacts(filter: $filter) {\n        _id\n        name\n        phone\n        idType\n        idNo\n        address\n        hotel\n        type\n    }\n }\n": types.ContactsDocument,
@@ -38,6 +39,10 @@ export function gql(source: string): unknown;
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        contact\n        hotel\n        paymentStatus\n  }\n}\n"): (typeof documents)["\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        contact\n        hotel\n        paymentStatus\n  }\n}\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n   mutation CreateContact ($createContactInput: CreateContactInput!) {\n       createContact (createContactInput: $createContactInput) {\n            _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n      }\n  \n}\n\n"): (typeof documents)["\n   mutation CreateContact ($createContactInput: CreateContactInput!) {\n       createContact (createContactInput: $createContactInput) {\n            _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n      }\n  \n}\n\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
