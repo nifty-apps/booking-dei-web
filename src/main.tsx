@@ -4,38 +4,35 @@ import {
   HttpLink,
   InMemoryCache,
 } from "@apollo/client";
+import React from "react";
 import ReactDOM from "react-dom/client";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App.tsx";
-import { RootState, store } from "./store/index.ts";
+import { store } from "./store/index.ts";
 
-const AppWrapper = () => {
-  const { accessToken } = useSelector((state: RootState) => state.auth);
+const token = localStorage.getItem("accessToken");
 
-  const httpLink = new HttpLink({
-    uri: import.meta.env.VITE_GRAPHQL_ENDPOINT,
-    headers: {
-      authorization: accessToken ? `Bearer ${accessToken}` : "",
-    },
-  });
+const httpLink = new HttpLink({
+  uri: import.meta.env.VITE_GRAPHQL_ENDPOINT,
+  headers: {
+    authorization: token ? `Bearer ${token}` : "",
+  },
+});
 
-  const client = new ApolloClient({ 
-    link: httpLink,
-    cache: new InMemoryCache(),
-  });
-
-  return (
-    <ApolloProvider client={client}>
-      <Router>
-        <App />
-      </Router>
-    </ApolloProvider>
-  );
-};
+const client = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache(),
+});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <Provider store={store}>
-    <AppWrapper />
-  </Provider>
+  <React.StrictMode>
+    <Provider store={store}>
+      <ApolloProvider client={client}>
+        <Router>
+          <App />
+        </Router>
+      </ApolloProvider>
+    </Provider>
+  </React.StrictMode>
 );

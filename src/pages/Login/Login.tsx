@@ -28,6 +28,7 @@ const Login = () => {
       if (response?.data?.login) {
         dispatch(login(response.data.login));
         localStorage.setItem("accessToken", response.data.login.access_token);
+        localStorage.setItem("user", JSON.stringify(response.data.login.user));
         message.success("Login successful!");
         navigate("/");
       }
