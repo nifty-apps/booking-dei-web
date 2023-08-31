@@ -14,6 +14,8 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
 
   const plainOptions = ["Bank", "Bkash", "Cash"];
 
+  console.log(bookingDetails);
+
   return (
     <>
       <div className="col-span-3 bg-gray-200 p-4 rounded-sm">
@@ -22,20 +24,20 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
         </h3>
 
         {bookingDetails.roomBookings?.map((room, index) => (
-          <div className="flex justify-between text-md" key={room.checkIn}>
-            <div className="flex items-center">
-              <span className="mr-2">{index + 1}</span>
-              <span className="cursor-pointer">
-                <FaXmark />
-              </span>
-              <div className="mx-2 font-semibold">{room?.type}</div>
+         
+            <div className="flex justify-between text-md" key={room.checkIn}>
+              <div className="flex items-center">
+                <span className="mr-2">{index + 1}</span>
+                <span className="cursor-pointer">
+                  <FaXmark />
+                </span>
+                <div className="mx-2 font-semibold">{room?.type}</div>
+              </div>
+              <div className="font-semibold">{room.rent}</div>
             </div>
-            <div className="font-semibold">{room.rent}</div>
-          </div>
         ))}
 
         <div className="border border-gray-400 my-2"></div>
-
         <div className="flex items-center justify-between">
           <p className="font-bold">Subtotal</p>
           <p>{bookingDetails.totalBookingRent}</p>

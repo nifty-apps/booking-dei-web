@@ -33,7 +33,6 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
 
   const [form] = Form.useForm();
 
-  const [options, setOptions] = useState<{ value: string }[]>([]);
   const [contact, setContact] = useState<Contact>({
     _id: "",
     hotel: user?.hotels[0] || "",
@@ -49,28 +48,6 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
       } as ContactFilterInput,
     },
   });
-
-  const getSuggestions = (field: "name" | "phone", value: string) => {
-    const matchedContacts = contacts.filter((contact) =>
-      contact[field].toLowerCase().includes(value.toLowerCase())
-    );
-
-    return matchedContacts.map((contact) => ({
-      key: contact._id,
-      value: contact[field],
-    }));
-  };
-
-  const handleSelect = (field: "name" | "phone", value: string) => {
-    const matchedContact = contacts.find(
-      (contact) => contact[field].toLowerCase() === value.toLowerCase()
-    );
-
-    if (matchedContact) {
-      setContact(matchedContact);
-      form.setFieldsValue(matchedContact);
-    }
-  };
 
   // create contact
   const onFinish = async (values: CreateContactInput) => {
@@ -124,7 +101,7 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
           setContact({ ...contact, ...values });
         }}
         layout="vertical"
-        className="flex items-center"
+        className="w-11/12 flex items-center justify-between"
       >
         <Form.Item name="name" label="Full Name" className="w-48">
           <Select
@@ -178,7 +155,7 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
           />
         </Form.Item>
 
-        <Form.Item name="idType" label="ID Type" className="mx-5 w-48">
+        <Form.Item name="idType" label="ID Type" className="w-48">
           <Select
             value={contact?.idType}
             options={[
@@ -188,7 +165,7 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
           />
         </Form.Item>
 
-        <Form.Item name="idNo" label="ID No" className="mx-5 w-48">
+        <Form.Item name="idNo" label="ID No" className="w-48">
           <Input
             placeholder="Enter your ID number"
             value={contact?.idNo?.toString()}
@@ -201,7 +178,9 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
         title="Create New Contact"
         open={isModalOpen}
         onOk={() => setIsModalOpen(false)}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={() => {
+          setIsModalOpen(false);
+        }}
         footer={null}
       >
         <Form onFinish={onFinish}>
