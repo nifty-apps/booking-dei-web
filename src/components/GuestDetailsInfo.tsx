@@ -1,7 +1,6 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@apollo/client";
 import {
-  AutoComplete,
   Button,
   Divider,
   Form,
@@ -127,13 +126,14 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
         layout="vertical"
         className="flex items-center"
       >
-        <Form.Item name="name" label="Full Name" className="mx-5 w-48">
+        <Form.Item name="name" label="Full Name" className="w-48">
           <Select
             placeholder="Enter full name"
             className="w-48"
             dropdownRender={(option) => (
               <>
                 <Button
+                  className="bg-gray-100"
                   block
                   type="text"
                   icon={<PlusOutlined style={{ verticalAlign: "0" }} />}
@@ -152,14 +152,29 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
           />
         </Form.Item>
 
-        <Form.Item name="phone" label="Phone" className="mx-5 w-48">
-          <AutoComplete
-            value={contact?.phone}
-            options={options}
-            onSearch={(text) => setOptions(getSuggestions("phone", text))}
-            onSelect={(value) => handleSelect("phone", value)}
-            placeholder="Enter your phone"
-            allowClear
+        <Form.Item name="phone" label="Phone" className="w-48">
+          <Select
+            placeholder="Enter phone number"
+            className="w-48"
+            dropdownRender={(option) => (
+              <>
+                <Button
+                  className="bg-gray-100"
+                  block
+                  type="text"
+                  icon={<PlusOutlined style={{ verticalAlign: "0" }} />}
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  Add new contact
+                </Button>
+                <Divider className="my-2" />
+                {option}
+              </>
+            )}
+            options={contacts.map((contact) => ({
+              label: contact.phone,
+              value: contact._id,
+            }))}
           />
         </Form.Item>
 
@@ -188,24 +203,21 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
         onOk={() => setIsModalOpen(false)}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
-        okButtonProps={{
-          style: { background: "#005099" },
-        }}
       >
         <Form onFinish={onFinish}>
           <Space direction="vertical" className="w-full">
             <h3>Full Name</h3>
-            <Form.Item name="name">
+            <Form.Item name="name" className="mb-0">
               <Input type="text" placeholder="Enter name" />
             </Form.Item>
 
             <h3>Phone</h3>
-            <Form.Item name="phone">
+            <Form.Item name="phone" className="mb-0">
               <Input type="text" placeholder="Enter your phone" />
             </Form.Item>
 
             <h3>ID Type</h3>
-            <Form.Item name="idType">
+            <Form.Item name="idType" className="mb-0">
               <Select
                 className="w-full"
                 placeholder="Select ID Type"
@@ -217,13 +229,13 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
             </Form.Item>
 
             <h3>ID No</h3>
-            <Form.Item name="idNo">
+            <Form.Item name="idNo" className="mb-0">
               <Input placeholder="Enter your ID number" />
             </Form.Item>
           </Space>
           <button
             type="submit"
-            className="w-full mt-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+            className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
           >
             Submit
           </button>
