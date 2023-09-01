@@ -5,6 +5,7 @@ import { RangeValue } from "rc-picker/lib/interface";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaEllipsisVertical, FaXmark } from "react-icons/fa6";
+import { useSelector } from "react-redux";
 import AdditionalGuests from "../../components/AdditionalGuests";
 import BookingSummary from "../../components/BookingSummary";
 import FloorPlan, { Room } from "../../components/FloorPlan";
@@ -14,12 +15,32 @@ import TitleText from "../../components/Title";
 import {
   CreateBookingInput,
   CreateRoomBookingInput,
+  InputMaybe,
   PaymentStatus,
   RoomBookingStatus,
+  Scalars,
 } from "../../graphql/__generated__/graphql";
 import { CREATE_BOOKING } from "../../graphql/mutations/bookingMutations";
+import { RootState } from "../../store";
+
+export interface BookingDetails extends CreateBookingInput {
+  roomBookings:
+    | {
+        checkIn: Scalars["DateTime"]["input"];
+        checkOut: Scalars["DateTime"]["input"];
+        discount?: InputMaybe<Scalars["Float"]["input"]>;
+        extraBed: Scalars["Boolean"]["input"];
+        extraBreakfast: Scalars["Boolean"]["input"];
+        rent: Scalars["Float"]["input"];
+        room: Scalars["ID"]["input"];
+        status?: InputMaybe<RoomBookingStatus>;
+        type?: string;
+      }[];
+}
 
 const NewBooking = () => {
+  const { user } = useSelector((state: RootState) => state.auth);
+
   const [createBooking] = useMutation(CREATE_BOOKING);
 
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -39,10 +60,10 @@ const NewBooking = () => {
     showModal: false,
   });
 
-  const [bookingDetails, setBookingDetails] = useState<CreateBookingInput>({
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails>({
     roomBookings: [],
     contact: "",
-    hotel: JSON.parse(localStorage.getItem("user") || "{}").user.hotels[0],
+    hotel: user?.hotels[0] || "",
     totalBookingRent: 0,
     discount: 0,
     due: 0,
@@ -160,14 +181,20 @@ const NewBooking = () => {
     try {
       const res = await createBooking({
         variables: {
-          createBookingInput: bookingDetails,
+          createBookingInput: {
+            ...bookingDetails,
+            roomBookings: bookingDetails.roomBookings.map((roomBooking) => ({
+              ...roomBooking,
+              type: undefined,
+            })),
+          },
         },
       });
+
       if (res.data?.createBooking?._id) {
         message.success("Yay! Your new booking was added successfully.");
       }
     } catch (error) {
-      console.log(error);
       message.error("Oops! Something went wrong.");
     }
   };
@@ -178,6 +205,7 @@ const NewBooking = () => {
         checkIn: roomByDate.dateRange?.[0]?.toDate() as Date,
         checkOut: roomByDate.dateRange?.[1]?.toDate() as Date,
         room: room._id,
+        type: room.type.title,
         extraBed: false,
         extraBreakfast: false,
         discount: 0,
@@ -203,6 +231,7 @@ const NewBooking = () => {
       }));
     }
   }, [selectedRoomsByDate, bookingDetails]);
+
 
   return (
     <>
@@ -231,7 +260,7 @@ const NewBooking = () => {
         </div>
       </div>
       <div className="grid grid-cols-12 mt-5">
-        <div className="col-span-9 bg-white shadow-sm p-5 mr-4">
+        <div className="col-span-8 bg-white shadow-sm p-5 mr-4">
           {/* room details */}
           <h1 className="font-semibold text-xl text-gray-500 mb-4 capitalize">
             Room details
@@ -258,7 +287,7 @@ const NewBooking = () => {
             </button>
           </div>
 
-          {/* guest detailas part */}
+          {/* guest details part */}
           <GuestDetailsInfo
             onSelect={(contact) => {
               setBookingDetails({
@@ -295,6 +324,7 @@ const NewBooking = () => {
             onChange={(value) => setSelectedDateRange(value)}
           />
         </div>
+        {/* floor plan */}
         <FloorPlan
           startDate={selectedDateRange?.[0]?.toDate() as Date}
           endDate={selectedDateRange?.[1]?.toDate() as Date}

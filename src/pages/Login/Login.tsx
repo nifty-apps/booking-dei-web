@@ -1,31 +1,41 @@
 import { useMutation } from "@apollo/client";
-import { Form, Input } from "antd";
+import { Form, Input, message } from "antd";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { LOGIN_USER } from "../../graphql/mutations/loginMutations";
-interface LoginFormValues {
+import { AppDispatch } from "../../store";
+import { login } from "../../store/authSlice";
+
+interface LoginForm {
   phone: string;
   password: string;
 }
 
 const Login = () => {
-  const [login] = useMutation(LOGIN_USER);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
-  // form submit
-  const onFinish = (values: LoginFormValues) => {
-    login({
-      variables: {
-        phone: values.phone,
-        password: values.password,
-      },
-    })
-      .then((res) => {
-        localStorage.setItem("user", JSON.stringify(res?.data?.login));
-      })
-      .catch((err) => {
-        console.log(err);
+  const [loginUser] = useMutation(LOGIN_USER);
+
+  const onFinish = async (values: LoginForm) => {
+    try {
+      const response = await loginUser({
+        variables: {
+          phone: values.phone,
+          password: values.password,
+        },
       });
+      if (response?.data?.login) {
+        dispatch(login(response.data.login));
+        localStorage.setItem("accessToken", response.data.login.access_token);
+        localStorage.setItem("user", JSON.stringify(response.data.login.user));
+        message.success("Login successful!");
+        navigate("/");
+      }
+    } catch (err) {
+      message.error(`something went wrong!`);
+    }
   };
-
-  // console.log(JSON.parse(localStorage.getItem("user") || "{}").user.hotels[0]);
 
   return (
     <div className="flex items-center justify-center h-[500px]">
