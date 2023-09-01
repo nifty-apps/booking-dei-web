@@ -14,8 +14,30 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
 
   const plainOptions = ["Bank", "Bkash", "Cash"];
 
-  console.log(bookingDetails);
+  const roomBookingInfo = bookingDetails.roomBookings?.map((room, index) => (
+    <div className="flex justify-between text-md" key={room.checkIn}>
+      <div className="flex items-center">
+        <span className="mr-2">{index + 1}</span>
+        <span className="cursor-pointer">
+          <FaXmark />
+        </span>
+        <div className="mx-2 font-semibold">{room?.type}</div>
+      </div>
+      <div className="font-semibold">{room.rent}</div>
+    </div>
+  ));
 
+  // Calculate the total rent for all room bookings
+  const totalBookingRent = bookingDetails.roomBookings?.reduce(
+    (total, room) => total + room.rent,
+    0
+  );
+
+  // access discount from roomBookingInfo
+  const discount = bookingDetails.roomBookings?.reduce(
+    (total, room) => total + (room?.discount ?? 0),
+    0
+  );
   return (
     <>
       <div className="col-span-3 bg-gray-200 p-4 rounded-sm">
@@ -23,37 +45,26 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
           Booking Summary
         </h3>
 
-        {bookingDetails.roomBookings?.map((room, index) => (
-         
-            <div className="flex justify-between text-md" key={room.checkIn}>
-              <div className="flex items-center">
-                <span className="mr-2">{index + 1}</span>
-                <span className="cursor-pointer">
-                  <FaXmark />
-                </span>
-                <div className="mx-2 font-semibold">{room?.type}</div>
-              </div>
-              <div className="font-semibold">{room.rent}</div>
-            </div>
-        ))}
+        {roomBookingInfo}
 
         <div className="border border-gray-400 my-2"></div>
         <div className="flex items-center justify-between">
           <p className="font-bold">Subtotal</p>
-          <p>{bookingDetails.totalBookingRent}</p>
+          <p>{totalBookingRent}</p>
         </div>
 
         <div className="flex items-center justify-between">
           <p className="font-bold">Discount</p>
-          <p>{bookingDetails.discount}</p>
+          <p>{discount}</p>
         </div>
 
         <div className="border border-gray-400 my-2"></div>
         <div className="flex items-center justify-between">
           <p className="font-bold">Grand Total</p>
           <p>
-            {bookingDetails.totalBookingRent &&
-              bookingDetails.totalBookingRent - (bookingDetails.discount || 0)}
+            {totalBookingRent && discount
+              ? totalBookingRent - discount
+              : totalBookingRent}
           </p>
         </div>
 
@@ -83,7 +94,11 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
             <div className="border border-gray-400 my-2"></div>
             <div className="flex items-center justify-between">
               <p className="font-bold">Due</p>
-              <p>16000.00</p>
+              <p>
+                {totalBookingRent && discount
+                  ? totalBookingRent - discount
+                  : totalBookingRent}
+              </p>
             </div>
           </div>
         </div>
