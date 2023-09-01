@@ -1,8 +1,8 @@
 import { gql } from "../__generated__";
 
 export const CREATE_TRANSACTION = gql(` 
-    mutation CreateTransaction ($createTransactionInput: CreateTransactionInput!) {
-       createTransaction (createTransactionInput:$createTransactionInput) {
+utation CreateTransaction ($createTransactionInput: CreateTransactionInput!) {
+   createTransaction (createTransactionInput:$createTransactionInput) {
           _id
           booking
           hotel
@@ -13,7 +13,7 @@ export const CREATE_TRANSACTION = gql(`
           method
           description
           amount
-      contact {
+     contact {
              _id
             name
             phone
@@ -22,7 +22,7 @@ export const CREATE_TRANSACTION = gql(`
             address
             hotel
             type
-      }
+       }
   }
 }
 `);

@@ -11,6 +11,8 @@ interface BookingSummaryProps {
 const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [form] = Form.useForm();
+
   const roomBookingInfo = bookingDetails.roomBookings?.map((room) => (
     <div className="flex justify-between text-md" key={room.checkIn}>
       <div className="flex items-center">
@@ -94,7 +96,7 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
             <span>
               <FaPlus />
             </span>
-            New Payment
+            New Transaction
           </button>
         </div>
       </div>
@@ -107,7 +109,12 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
         onCancel={() => setIsModalOpen(false)}
         footer={null}
       >
-        <Form>
+        <Form
+          form={form}
+          onValuesChange={(changedValues) => {
+            console.log(changedValues);
+          }}
+        >
           <Space direction="vertical" className="w-full">
             <h3>Date</h3>
             <Form.Item name="date" className="mb-0">
@@ -160,12 +167,13 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
 
             <h3>Description</h3>
             <TextArea
+              name="description"
               placeholder="Enter description"
               autoSize={{ minRows: 3, maxRows: 5 }}
             />
 
             <h3>Amount</h3>
-            <Input placeholder="Amount" />
+            <Input placeholder="Amount" name="amount" />
           </Space>
 
           <div className="flex justify-end">
