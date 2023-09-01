@@ -225,3 +225,4 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
 };
 
 export default GuestDetailsInfo;
+

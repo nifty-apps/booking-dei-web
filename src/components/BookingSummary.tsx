@@ -1,4 +1,4 @@
-import { Input, Modal, Radio } from "antd";
+import { DatePicker, Form, Input, Modal, Select, Space } from "antd";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
@@ -11,8 +11,6 @@ interface BookingSummaryProps {
 
 const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const plainOptions = ["Bank", "Bkash", "Cash"];
 
   const roomBookingInfo = bookingDetails.roomBookings?.map((room, index) => (
     <div className="flex justify-between text-md" key={room.checkIn}>
@@ -33,11 +31,12 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
     0
   );
 
-  // access discount from roomBookingInfo
+  // discount
   const discount = bookingDetails.roomBookings?.reduce(
     (total, room) => total + (room?.discount ?? 0),
     0
   );
+
   return (
     <>
       <div className="col-span-3 bg-gray-200 p-4 rounded-sm">
@@ -72,34 +71,19 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
           Inclusive of 15% Value Added Tax (VAT)
         </p>
 
-        {/* Discount field */}
-        <div className="mt-4 mb-14 flex justify-start">
-          <input
-            type="text"
-            placeholder="1000.00"
-            className="px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-          />
-          <button className=" text-blue-700 font-bold py-2 px-4 border border-blue-900 hover:bg-blue-900 hover:text-white">
-            Apply
-          </button>
-        </div>
-
-        <div>
+        <div className="my-12">
           {/* payments */}
           <h1 className="font-semibold text-xl text-black mb-4 capitalize">
-            Payments
+            Transactions
           </h1>
-
-          <div>
-            <div className="border border-gray-400 my-2"></div>
-            <div className="flex items-center justify-between">
-              <p className="font-bold">Due</p>
-              <p>
-                {totalBookingRent && discount
-                  ? totalBookingRent - discount
-                  : totalBookingRent}
-              </p>
-            </div>
+          <div className="border border-gray-400 my-2"></div>
+          <div className="flex items-center justify-between">
+            <p className="font-bold">Due</p>
+            <p>
+              {totalBookingRent && discount
+                ? totalBookingRent - discount
+                : totalBookingRent}
+            </p>
           </div>
         </div>
 
@@ -116,35 +100,80 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
 
       {/* modal for payment status */}
       <Modal
-        title="Payment"
+        title="Transaction"
         open={isModalOpen}
         onOk={() => setIsModalOpen(false)}
         onCancel={() => setIsModalOpen(false)}
-        cancelText="Cancel"
-        okText="Confirm"
-        okButtonProps={{
-          style: { background: "#005099" },
-        }}
+        footer={null}
       >
-        <div>
-          <div>
-            <h3 className="font-semibold mb-1">Description</h3>
+        <Form>
+          <Space direction="vertical" className="w-full">
+            <h3>Date</h3>
+            <Form.Item name="date" className="mb-0">
+              <DatePicker className="w-full" />
+            </Form.Item>
+
+            <div className="flex items-center justify-between gap-4">
+              <Space direction="vertical" className="w-full">
+                <h3>Category</h3>
+                <Form.Item name="category" className="mb-0">
+                  <Select
+                    placeholder="Select category"
+                    options={[
+                      { value: "INCOME", label: "Income" },
+                      { value: "EXPENSE", label: "Expense" },
+                    ]}
+                  />
+                </Form.Item>
+              </Space>
+
+              <Space direction="vertical" className="w-full">
+                <h3>Sub-Category</h3>
+                <Form.Item name="subCategory" className="mb-0">
+                  <Select
+                    placeholder="Select sub-category"
+                    options={[
+                      { value: "SALARY", label: "Salary" },
+                      { value: "ELECTRICITY", label: "Electricity" },
+                      { value: "WATER", label: "Water" },
+                      { value: "RENT", label: "Rent" },
+                      { value: "OTHEREXPENSE", label: "Other Expense" },
+                      { value: "ROOMRENT", label: "Room Rent" },
+                    ]}
+                  />
+                </Form.Item>
+              </Space>
+            </div>
+
+            <h3>Payment Method</h3>
+            <Form.Item name="paymentMethod" className="mb-0">
+              <Select
+                placeholder="Payment method"
+                options={[
+                  { value: "CASH", label: "Cash" },
+                  { value: "BANK", label: "Bank" },
+                  { value: "BKASH", label: "Bkash" },
+                ]}
+              />
+            </Form.Item>
+
+            <h3>Description</h3>
             <TextArea
-              placeholder="Controlled autosize"
+              placeholder="Enter description"
               autoSize={{ minRows: 3, maxRows: 5 }}
             />
-          </div>
 
-          <div className="my-2">
-            <h3 className="font-semibold">Payment Method</h3>
-            <Radio.Group options={plainOptions} />
-          </div>
+            <h3>Amount</h3>
+            <Input placeholder="Amount" />
+          </Space>
 
-          <div>
-            <h3 className="font-semibold mb-1">Amount</h3>
-            <Input placeholder="Enter Amount" type="number" />
-          </div>
-        </div>
+          <button
+            type="submit"
+            className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+          >
+            Confirm
+          </button>
+        </Form>
       </Modal>
     </>
   );
