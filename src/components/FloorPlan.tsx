@@ -2,9 +2,9 @@ import { useQuery } from "@apollo/client";
 import { Modal, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import classNames from "classnames";
+import { format } from "date-fns";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { format } from "timeago.js";
 import {
   RoomBookingDetails,
   RoomBookingStatus,
@@ -30,7 +30,7 @@ interface FloorPlanProps {
 }
 
 const columns: ColumnsType<RoomBookingDetails> = [
-  // { title: "Name", dataIndex: "name" },
+  // { title: "Name", dataIndex: "name" }, 
   // { title: "Phone", dataIndex: "phone" },
   { title: "Rent", dataIndex: "rent" },
   // { title: "Discount", dataIndex: "discount" },
@@ -38,13 +38,14 @@ const columns: ColumnsType<RoomBookingDetails> = [
   {
     title: "Check In",
     dataIndex: "checkIn",
-    render: (checkin: string) => format(checkin),
+    render: (date) => format(new Date(date), "dd/MM/yyyy"),
   },
   {
     title: "Check Out",
     dataIndex: "checkOut",
-    render: (checkout: string) => format(checkout),
+    render: (date) => format(new Date(date), "dd/MM/yyyy"),
   },
+
   { title: "Status", dataIndex: "status" },
 ];
 
