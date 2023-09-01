@@ -1,7 +1,6 @@
 import { DatePicker, Form, Input, Modal, Select, Space } from "antd";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { FaXmark } from "react-icons/fa6";
 import { BookingDetails } from "../pages/NewBooking/NewBooking";
 const { TextArea } = Input;
 
@@ -12,14 +11,16 @@ interface BookingSummaryProps {
 const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const roomBookingInfo = bookingDetails.roomBookings?.map((room, index) => (
+  const roomBookingInfo = bookingDetails.roomBookings?.map((room) => (
     <div className="flex justify-between text-md" key={room.checkIn}>
       <div className="flex items-center">
-        <span className="mr-2">{index + 1}</span>
-        <span className="cursor-pointer">
-          <FaXmark />
-        </span>
-        <div className="mx-2 font-semibold">{room?.type}</div>
+        <div className="font-semibold">
+          {room?.type}
+          <span className="text-xs"> {room.extraBed && " - Extra Bed"}</span>
+          <span className="text-xs">
+            {room.extraBreakfast && " + Extra Breakfast"}
+          </span>
+        </div>
       </div>
       <div className="font-semibold">{room.rent}</div>
     </div>
@@ -39,7 +40,7 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
 
   return (
     <>
-      <div className="col-span-3 bg-gray-200 p-4 rounded-sm">
+      <div className="col-span-4 bg-gray-200 p-4 rounded-sm">
         <h3 className="text-lg capitalize font-semibold mb-5">
           Booking Summary
         </h3>
@@ -167,12 +168,15 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
             <Input placeholder="Amount" />
           </Space>
 
-          <button
-            type="submit"
-            className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
-          >
-            Confirm
-          </button>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className=" mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-8 rounded"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Confirm
+            </button>
+          </div>
         </Form>
       </Modal>
     </>

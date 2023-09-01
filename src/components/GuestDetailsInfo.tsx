@@ -10,7 +10,7 @@ import {
   Space,
   message,
 } from "antd";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   Contact,
@@ -30,6 +30,8 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [createContact] = useMutation(CREATE_CONTACT);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const memoizedOnContact = useMemo(() => onSelect, [onSelect]);
 
   const [form] = Form.useForm();
 
@@ -74,10 +76,16 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
     }
   };
 
-  const memoizedOnContact = useCallback(onSelect, []);
+  const prevContact = useRef(contact);
+
+  const searchContact = (selectedContact: Contact) => {
+    setContact(selectedContact);
+    form.setFieldsValue(selectedContact);
+  };
 
   useEffect(() => {
-    if (contact?._id) {
+    if (contact !== prevContact.current) {
+      prevContact.current = contact;
       memoizedOnContact(contact);
     }
   }, [contact, memoizedOnContact]);
@@ -101,12 +109,20 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
           setContact({ ...contact, ...values });
         }}
         layout="vertical"
-        className="w-11/12 flex items-center justify-between"
+        className="flex items-center justify-between"
       >
         <Form.Item name="name" label="Full Name" className="w-48">
           <Select
             placeholder="Enter full name"
             className="w-48"
+            onSelect={(value) => {
+              const selectedContact = contacts.find(
+                (contact) => contact._id === value
+              );
+              if (selectedContact) {
+                searchContact(selectedContact);
+              }
+            }}
             dropdownRender={(option) => (
               <>
                 <Button
@@ -119,7 +135,7 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
                   Add new contact
                 </Button>
                 <Divider className="my-2" />
-                {option}
+                <span>{option}</span>
               </>
             )}
             options={contacts.map((contact) => ({
@@ -133,6 +149,14 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
           <Select
             placeholder="Enter phone number"
             className="w-48"
+            onSelect={(value) => {
+              const selectedContact = contacts.find(
+                (contact) => contact._id === value
+              );
+              if (selectedContact) {
+                searchContact(selectedContact);
+              }
+            }}
             dropdownRender={(option) => (
               <>
                 <Button
@@ -145,7 +169,7 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
                   Add new contact
                 </Button>
                 <Divider className="my-2" />
-                {option}
+                <span>{option}</span>
               </>
             )}
             options={contacts.map((contact) => ({
@@ -225,4 +249,3 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
 };
 
 export default GuestDetailsInfo;
-

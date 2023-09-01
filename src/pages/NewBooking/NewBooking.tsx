@@ -232,6 +232,7 @@ const NewBooking = () => {
     }
   }, [selectedRoomsByDate, bookingDetails]);
 
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -259,7 +260,7 @@ const NewBooking = () => {
         </div>
       </div>
       <div className="grid grid-cols-12 mt-5">
-        <div className="col-span-9 bg-white shadow-sm p-5 mr-4">
+        <div className="col-span-8 bg-white shadow-sm p-5 mr-4">
           {/* room details */}
           <h1 className="font-semibold text-xl text-gray-500 mb-4 capitalize">
             Room details
@@ -286,7 +287,7 @@ const NewBooking = () => {
             </button>
           </div>
 
-          {/* guest detailas part */}
+          {/* guest details part */}
           <GuestDetailsInfo
             onSelect={(contact) => {
               setBookingDetails({
