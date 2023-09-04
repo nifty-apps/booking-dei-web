@@ -30,6 +30,7 @@ const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
 
   const notificationCount = 5;
 
+  // logout user
   const logoutUser = () => {
     dispatch(logout());
     navigate("/login");
@@ -126,7 +127,11 @@ const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
           >
             <div className="cursor-pointer">
               <Space className="items-center" wrap size={16}>
-                <Avatar size="large" icon={<UserOutlined />} />
+                {user ? (
+                  <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=1" />
+                ) : (
+                  <Avatar size="large" icon={<UserOutlined />} />
+                )}
               </Space>
             </div>
           </Dropdown>
