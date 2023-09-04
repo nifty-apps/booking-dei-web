@@ -12,10 +12,11 @@ import {
   AiOutlineUser,
 } from "react-icons/ai";
 import { FiHelpCircle } from "react-icons/fi";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import gridots from "../assets/gridots.png";
-import { RootState } from "../store";
+import { AppDispatch, RootState } from "../store";
+import { logout } from "../store/authSlice";
 
 interface ToolbarProps {
   collapsed: boolean;
@@ -24,8 +25,15 @@ interface ToolbarProps {
 
 const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const notificationCount = 5;
+
+  const logoutUser = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
 
   const items = [
     {
@@ -52,12 +60,23 @@ const Toolbar = ({ collapsed, setCollapsed }: ToolbarProps) => {
     },
     {
       label: (
-        <Link to="/login" className="flex items-center gap-2">
-          <span>
-            <AiOutlineUser />
-          </span>
-          Login
-        </Link>
+        <>
+          {user ? (
+            <div className="flex items-center gap-2" onClick={logoutUser}>
+              <span>
+                <AiOutlineUser />
+              </span>
+              Logout
+            </div>
+          ) : (
+            <Link to="/login" className="flex items-center gap-2">
+              <span>
+                <AiOutlineUser />
+              </span>
+              Login
+            </Link>
+          )}
+        </>
       ),
       key: "2",
     },
