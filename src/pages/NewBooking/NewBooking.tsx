@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaEllipsisVertical, FaXmark } from "react-icons/fa6";
 import { useSelector } from "react-redux";
-import AdditionalGuests from "../../components/AdditionalGuests";
+import { useNavigate } from "react-router-dom";
 import BookingSummary from "../../components/BookingSummary";
 import FloorPlan, { Room } from "../../components/FloorPlan";
 import GuestDetailsInfo from "../../components/GuestDetailsInfo";
@@ -42,6 +42,8 @@ const NewBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
 
   const [createBooking] = useMutation(CREATE_BOOKING);
+
+  const navigate = useNavigate();
 
   const [selectedDateRange, setSelectedDateRange] = useState<
     RangeValue<dayjs.Dayjs>
@@ -193,6 +195,9 @@ const NewBooking = () => {
 
       if (res.data?.createBooking?._id) {
         message.success("Yay! Your new booking was added successfully.");
+        navigate({
+          pathname: `/booking-details/${res.data?.createBooking?._id}`,
+        });
       }
     } catch (error) {
       message.error("Oops! Something went wrong.");
@@ -282,7 +287,7 @@ const NewBooking = () => {
               <span>
                 <FaPlus />
               </span>
-              <span className="font-semibold"> Add Room</span>
+              <span className="font-semibold"> Add Room </span>
             </button>
           </div>
 
@@ -296,7 +301,7 @@ const NewBooking = () => {
             }}
           />
           {/* Additional Guest details info */}
-          <AdditionalGuests />
+          {/* <AdditionalGuests /> */}
         </div>
         {/* booking summary || Payment flow */}
         <BookingSummary bookingDetails={bookingDetails} />
