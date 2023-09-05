@@ -11,6 +11,7 @@ import Sidebar from "./components/Sidebar";
 import Toolbar from "./components/Toolbar";
 import BookingDetails from "./pages/BookingDetails/BookingDetails";
 import Calender from "./pages/Calender/Calender";
+import EditRoomBooking from "./pages/EditRoomBooking/EditRoomBooking";
 import Error from "./pages/Error/Error";
 import GuestLookUp from "./pages/GuestLookUp/GuestLookUp";
 import Home from "./pages/Home/Home";
@@ -34,6 +35,10 @@ const App = () => {
             <Route
               path="/booking-details/:bookingId"
               element={<BookingDetails />}
+            />
+            <Route
+              path="/edit-booking/:bookingId"
+              element={<EditRoomBooking />}
             />
             <Route path="/calender" element={<Calender />} />
             <Route path="/guest-lookup" element={<GuestLookUp />} />

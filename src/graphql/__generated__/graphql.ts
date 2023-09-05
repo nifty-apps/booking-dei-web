@@ -381,9 +381,7 @@ export type Query = {
   hotel: Hotel;
   hotels: Array<Hotel>;
   room: Room;
-  /** Find One room bookings by ID */
-  roomBooking: RoomBooking;
-  /** Find all room bookings */
+  roomBooking: RoomBookingResponse;
   roomBookings: Array<RoomBooking>;
   roomType: RoomType;
   rooms: Array<Room>;
@@ -580,6 +578,34 @@ export type RoomBookingInput = {
   status: RoomBookingStatus;
 };
 
+export type RoomBookingResponse = {
+  __typename?: 'RoomBookingResponse';
+  /** Unique identifier for the room booking */
+  _id: Scalars['ID']['output'];
+  /** Unique identifier for the booking */
+  booking?: Maybe<Scalars['ID']['output']>;
+  /** Check-in date of the Room booking */
+  checkIn?: Maybe<Scalars['DateTime']['output']>;
+  /** Check-out date of the Room booking */
+  checkOut?: Maybe<Scalars['DateTime']['output']>;
+  /** Discount for the booking */
+  discount?: Maybe<Scalars['Float']['output']>;
+  /** Extra bed for the booking */
+  extraBed?: Maybe<Scalars['Boolean']['output']>;
+  /** Extra breakfast for the booking */
+  extraBreakfast?: Maybe<Scalars['Boolean']['output']>;
+  /** Hotel where the booking were generated */
+  hotel?: Maybe<Scalars['ID']['output']>;
+  /** Room rent for the booking */
+  rent?: Maybe<Scalars['Float']['output']>;
+  /** Room where the booking were generated */
+  room?: Maybe<Scalars['ID']['output']>;
+  /** Room booking status of the booking */
+  status?: Maybe<RoomBookingStatus>;
+  /** Type of the room */
+  type: RoomResponse;
+};
+
 /** Room booking status for a booking */
 export enum RoomBookingStatus {
   Booked = 'BOOKED',
@@ -612,6 +638,16 @@ export type RoomFilterInput = {
   type?: InputMaybe<Scalars['ID']['input']>;
 };
 
+export type RoomResponse = {
+  __typename?: 'RoomResponse';
+  /** Unique identifier of the room */
+  _id: Scalars['ID']['output'];
+  /** Number or name of the room */
+  number: Scalars['String']['output'];
+  /** Type of the room */
+  type: RoomTypeResponse;
+};
+
 export type RoomType = {
   __typename?: 'RoomType';
   /** Unique identifier of the room */
@@ -628,6 +664,14 @@ export type RoomTypeDetails = {
   __typename?: 'RoomTypeDetails';
   /** Rent of the room type */
   rent: Scalars['Float']['output'];
+  /** Title of the room type */
+  title: Scalars['String']['output'];
+};
+
+export type RoomTypeResponse = {
+  __typename?: 'RoomTypeResponse';
+  /** Unique identifier of the room */
+  _id: Scalars['ID']['output'];
   /** Title of the room type */
   title: Scalars['String']['output'];
 };

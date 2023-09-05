@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Table } from "antd";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import BookingSummary from "../../components/BookingSummary";
 import GuestDetailsInfo from "../../components/GuestDetailsInfo";
 import TitleText from "../../components/Title";
@@ -98,13 +98,23 @@ const BookingDetails = () => {
     }));
   }, [roomBookings]);
 
-  console.log(bookingDetails);
-
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div
+        className={`flex items-center justify-between ${
+          bookingId && "justify-between"
+        }`}
+      >
         {location.pathname === `/booking-details/${bookingId}` && (
-          <TitleText text="Booking Details" />
+          <>
+            <TitleText text="Booking Details" />
+            <Link
+              className="text-white  py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2  bg-blue-900 px-20 hover:text-white"
+              to={`/edit-booking/${bookingId}`}
+            >
+              Edit Booking
+            </Link>
+          </>
         )}
       </div>
       <div className="grid grid-cols-12 mt-5">
