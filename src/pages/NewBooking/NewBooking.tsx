@@ -14,28 +14,17 @@ import RoomOptionsModal from "../../components/RoomOptionsModal";
 import TitleText from "../../components/Title";
 import {
   CreateBookingInput,
-  CreateRoomBookingInput,
-  InputMaybe,
   PaymentStatus,
+  RoomBookingInput,
   RoomBookingStatus,
-  Scalars,
 } from "../../graphql/__generated__/graphql";
 import { CREATE_BOOKING } from "../../graphql/mutations/bookingMutations";
 import { RootState } from "../../store";
 
 export interface BookingDetails extends CreateBookingInput {
-  roomBookings:
-    | {
-        checkIn: Scalars["DateTime"]["input"];
-        checkOut: Scalars["DateTime"]["input"];
-        discount?: InputMaybe<Scalars["Float"]["input"]>;
-        extraBed: Scalars["Boolean"]["input"];
-        extraBreakfast: Scalars["Boolean"]["input"];
-        rent: Scalars["Float"]["input"];
-        room: Scalars["ID"]["input"];
-        status?: InputMaybe<RoomBookingStatus>;
-        type?: string;
-      }[];
+  roomBookings: (RoomBookingInput & {
+    type?: string;
+  })[];
 }
 
 const NewBooking = () => {
@@ -56,7 +45,7 @@ const NewBooking = () => {
     }[]
   >([]);
   const [extraOptions, setExtraOptions] = useState<{
-    roomBooking?: CreateRoomBookingInput;
+    roomBooking?: RoomBookingInput;
     showModal: boolean;
   }>({
     showModal: false,
@@ -64,11 +53,8 @@ const NewBooking = () => {
 
   const [bookingDetails, setBookingDetails] = useState<BookingDetails>({
     roomBookings: [],
-    contact: "",
+    customer: "",
     hotel: user?.hotels[0] || "",
-    totalBookingRent: 0,
-    discount: 0,
-    due: 0,
     paymentStatus: PaymentStatus.Unpaid,
   });
 
@@ -296,10 +282,11 @@ const NewBooking = () => {
             onSelect={(contact) => {
               setBookingDetails({
                 ...bookingDetails,
-                contact: contact._id,
+                customer: contact._id,
               });
             }}
           />
+
           {/* Additional Guest details info */}
           {/* <AdditionalGuests /> */}
         </div>

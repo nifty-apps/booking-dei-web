@@ -1,22 +1,25 @@
 import { Checkbox, Modal } from "antd";
 import { useEffect, useState } from "react";
-import { CreateRoomBookingInput } from "../graphql/__generated__/graphql";
+import {
+  CreateRoomBookingInput,
+  RoomBookingInput,
+} from "../graphql/__generated__/graphql";
 
 interface RoomOptionsModalProps {
   options: {
     showModal: boolean;
-    roomBooking?: CreateRoomBookingInput;
+    roomBooking?: RoomBookingInput;
   };
   onOk: (options: {
     showModal: boolean;
-    roomBooking?: CreateRoomBookingInput;
+    roomBooking?: RoomBookingInput;
   }) => void;
 }
 
 const RoomOptionsModal = ({ options, onOk }: RoomOptionsModalProps) => {
-  const [roomBooking, setRoomBooking] = useState<
-    CreateRoomBookingInput | undefined
-  >(options.roomBooking);
+  const [roomBooking, setRoomBooking] = useState<RoomBookingInput | undefined>(
+    options.roomBooking
+  );
 
   useEffect(() => {
     setRoomBooking(options.roomBooking);

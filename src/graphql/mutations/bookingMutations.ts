@@ -4,7 +4,7 @@ export const CREATE_BOOKING = gql(`
 mutation CreateBooking($createBookingInput: CreateBookingInput!) {
     createBooking(createBookingInput: $createBookingInput){
         _id
-        contact
+        customer
         hotel
         paymentStatus
   }

@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Table } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import BookingSummary from "../../components/BookingSummary";
@@ -8,27 +8,24 @@ import GuestDetailsInfo from "../../components/GuestDetailsInfo";
 import TitleText from "../../components/Title";
 import {
   CreateBookingInput,
-  InputMaybe,
   PaymentStatus,
-  RoomBookingStatus,
-  Scalars,
 } from "../../graphql/__generated__/graphql";
 import { GET_ROOM_BOOKING } from "../../graphql/queries/roomBookingQueries";
 import { RootState } from "../../store";
 
 export interface BookingDetails extends CreateBookingInput {
-  roomBookings:
-    | {
-        checkIn: Scalars["DateTime"]["input"];
-        checkOut: Scalars["DateTime"]["input"];
-        discount?: InputMaybe<Scalars["Float"]["input"]>;
-        extraBed: Scalars["Boolean"]["input"];
-        extraBreakfast: Scalars["Boolean"]["input"];
-        rent: Scalars["Float"]["input"];
-        room: Scalars["ID"]["input"];
-        status?: InputMaybe<RoomBookingStatus>;
-        type?: string;
-      }[];
+  // roomBookings:
+  //   | {
+  //       checkIn: Scalars["DateTime"]["input"];
+  //       checkOut: Scalars["DateTime"]["input"];
+  //       discount?: InputMaybe<Scalars["Float"]["input"]>;
+  //       extraBed: Scalars["Boolean"]["input"];
+  //       extraBreakfast: Scalars["Boolean"]["input"];
+  //       rent: Scalars["Float"]["input"];
+  //       room: Scalars["ID"]["input"];
+  //       status?: InputMaybe<RoomBookingStatus>;
+  //       type?: string;
+  //     }[];
 }
 
 const BookingDetails = () => {
@@ -38,11 +35,8 @@ const BookingDetails = () => {
 
   const [bookingDetails, setBookingDetails] = useState<BookingDetails>({
     roomBookings: [],
-    contact: "",
+    customer: "",
     hotel: user?.hotels[0] || "",
-    totalBookingRent: 0,
-    discount: 0,
-    due: 0,
     paymentStatus: PaymentStatus.Unpaid,
   });
 
@@ -92,6 +86,13 @@ const BookingDetails = () => {
     status: room.status,
   }));
 
+  useEffect(() => {
+    setBookingDetails((booking) => ({
+      ...booking,
+      roomBookings: roomBookings,
+    }));
+  }, [roomBookings]);
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -112,12 +113,11 @@ const BookingDetails = () => {
             pagination={false}
           />
           {/* guest details part */}
-
           <GuestDetailsInfo
             onSelect={(contact) => {
               setBookingDetails({
                 ...bookingDetails,
-                contact: contact._id,
+                customer: contact._id,
               });
             }}
           />

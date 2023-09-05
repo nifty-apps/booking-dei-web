@@ -22,8 +22,8 @@ export type Booking = {
   __typename?: 'Booking';
   /** Unique identifier for the booking */
   _id: Scalars['ID']['output'];
-  /** Contact who made the booking */
-  contact: Scalars['ID']['output'];
+  /** Customer who made the booking */
+  customer: Scalars['ID']['output'];
   /** Hotel where the booking were generated */
   hotel: Scalars['ID']['output'];
   /** Payment status of the booking */
@@ -83,20 +83,14 @@ export enum ContactTypes {
 }
 
 export type CreateBookingInput = {
-  /** Contact who made the booking */
-  contact: Scalars['ID']['input'];
-  /** Discount for the booking */
-  discount?: InputMaybe<Scalars['Float']['input']>;
-  /** Total Due for the booking */
-  due?: InputMaybe<Scalars['Float']['input']>;
+  /** Customer who made the booking */
+  customer: Scalars['ID']['input'];
   /** Hotel where the booking were generated */
   hotel: Scalars['ID']['input'];
-  /** Payment status of the customer */
-  paymentStatus?: InputMaybe<PaymentStatus>;
+  /** Payment status of the booking */
+  paymentStatus: PaymentStatus;
   /** Room bookings of the booking */
-  roomBookings: Array<CreateRoomBookingInput>;
-  /** Total Rent for the booking */
-  totalBookingRent?: InputMaybe<Scalars['Float']['input']>;
+  roomBookings: Array<RoomBookingInput>;
 };
 
 export type CreateContactInput = {
@@ -124,6 +118,8 @@ export type CreateHotelInput = {
 };
 
 export type CreateRoomBookingInput = {
+  /** Unique identifier for the booking */
+  booking: Scalars['ID']['input'];
   /** Check-in date of the Room booking */
   checkIn: Scalars['DateTime']['input'];
   /** Check-out date of the Room booking */
@@ -134,12 +130,14 @@ export type CreateRoomBookingInput = {
   extraBed: Scalars['Boolean']['input'];
   /** Extra breakfast for the booking */
   extraBreakfast: Scalars['Boolean']['input'];
+  /** Hotel where the booking were generated */
+  hotel: Scalars['ID']['input'];
   /** Room rent for the booking */
   rent: Scalars['Float']['input'];
   /** Room where the booking were generated */
   room: Scalars['ID']['input'];
-  /** Room booking status of the Room booking */
-  status?: InputMaybe<RoomBookingStatus>;
+  /** Room booking status of the booking */
+  status: RoomBookingStatus;
 };
 
 export type CreateRoomInput = {
@@ -207,12 +205,13 @@ export type LoginResponseDto = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Create booking */
   createBooking: Booking;
   /** Create contact */
   createContact: Contact;
   createHotel: Hotel;
   createRoom: Room;
+  /** Create room booking */
+  createRoomBooking: RoomBooking;
   /** Create transaction */
   createTransaction: Transaction;
   /** Create user */
@@ -232,14 +231,13 @@ export type Mutation = {
   removeUser: User;
   /** Soft delete transaction by ID */
   softDeleteTransaction: Transaction;
-  /** Update booking */
   updateBooking: Booking;
   /** Update contact */
   updateContact: Contact;
   updateHotel: Hotel;
   updateRoom: Room;
   /** Update room booking by ID */
-  updateRoomBooking: Array<RoomBooking>;
+  updateRoomBooking: RoomBooking;
   /** Update transaction */
   updateTransaction: Transaction;
   /** Update user */
@@ -264,6 +262,11 @@ export type MutationCreateHotelArgs = {
 
 export type MutationCreateRoomArgs = {
   createRoomInput: CreateRoomInput;
+};
+
+
+export type MutationCreateRoomBookingArgs = {
+  createRoomBookingInput: CreateRoomBookingInput;
 };
 
 
@@ -324,7 +327,6 @@ export type MutationSoftDeleteTransactionArgs = {
 
 
 export type MutationUpdateBookingArgs = {
-  id: Scalars['ID']['input'];
   updateBookingInput: UpdateBookingInput;
 };
 
@@ -345,7 +347,6 @@ export type MutationUpdateRoomArgs = {
 
 
 export type MutationUpdateRoomBookingArgs = {
-  id: Scalars['ID']['input'];
   updateRoomBookingInput: UpdateRoomBookingInput;
 };
 
@@ -372,9 +373,7 @@ export type Query = {
   __typename?: 'Query';
   /** Find all active transactions */
   activeTransactions: Array<Transaction>;
-  /** Find booking by ID */
   booking: Booking;
-  /** Find all bookings */
   bookings: Array<Booking>;
   /** Find contact by ID */
   contact: Contact;
@@ -382,6 +381,8 @@ export type Query = {
   hotel: Hotel;
   hotels: Array<Hotel>;
   room: Room;
+  /** Find One room bookings by ID */
+  roomBooking: RoomBooking;
   /** Find all room bookings */
   roomBookings: Array<RoomBooking>;
   rooms: Array<Room>;
@@ -423,6 +424,11 @@ export type QueryHotelArgs = {
 
 export type QueryRoomArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryRoomBookingArgs = {
+  roomBookingFilter: RoomBookingFilter;
 };
 
 
@@ -509,13 +515,20 @@ export type RoomBooking = {
 
 export type RoomBookingDetails = {
   __typename?: 'RoomBookingDetails';
+  /** Unique identifier for the room booking */
   _id: Scalars['ID']['output'];
-  booking: Scalars['String']['output'];
+  /** Unique identifier for the booking */
+  booking: Scalars['ID']['output'];
+  /** Check-in date of the Room booking */
   checkIn: Scalars['DateTime']['output'];
+  /** Check-out date of the Room booking */
   checkOut: Scalars['DateTime']['output'];
-  discount: Scalars['Float']['output'];
+  /** Discount for the booking */
+  discount?: Maybe<Scalars['Float']['output']>;
+  /** Room rent for the booking */
   rent: Scalars['Float']['output'];
-  status: Scalars['String']['output'];
+  /** Room booking status of the booking */
+  status: RoomBookingStatus;
 };
 
 export type RoomBookingFilter = {
@@ -540,6 +553,25 @@ export type RoomBookingFilter = {
   room?: InputMaybe<Scalars['ID']['input']>;
   /** Room booking status of the booking */
   status?: InputMaybe<RoomBookingStatus>;
+};
+
+export type RoomBookingInput = {
+  /** Check-in date of the Room booking */
+  checkIn: Scalars['DateTime']['input'];
+  /** Check-out date of the Room booking */
+  checkOut: Scalars['DateTime']['input'];
+  /** Discount for the booking */
+  discount?: InputMaybe<Scalars['Float']['input']>;
+  /** Extra bed for the booking */
+  extraBed: Scalars['Boolean']['input'];
+  /** Extra breakfast for the booking */
+  extraBreakfast: Scalars['Boolean']['input'];
+  /** Room rent for the booking */
+  rent: Scalars['Float']['input'];
+  /** Room where the booking were generated */
+  room: Scalars['ID']['input'];
+  /** Room booking status of the booking */
+  status: RoomBookingStatus;
 };
 
 /** Room booking status for a booking */
@@ -576,7 +608,9 @@ export type RoomFilterInput = {
 
 export type RoomTypeDetails = {
   __typename?: 'RoomTypeDetails';
+  /** Rent of the room type */
   rent: Scalars['Float']['output'];
+  /** Title of the room type */
   title: Scalars['String']['output'];
 };
 
@@ -648,22 +682,14 @@ export enum TransactionType {
 }
 
 export type UpdateBookingInput = {
-  /** Contact who made the booking */
-  contact?: InputMaybe<Scalars['ID']['input']>;
-  /** Discount for the booking */
-  discount?: InputMaybe<Scalars['Float']['input']>;
-  /** Total Due for the booking */
-  due?: InputMaybe<Scalars['Float']['input']>;
+  /** Unique identifier for the booking */
+  _id?: InputMaybe<Scalars['ID']['input']>;
+  /** Customer who made the booking */
+  customer?: InputMaybe<Scalars['ID']['input']>;
   /** Hotel where the booking were generated */
   hotel?: InputMaybe<Scalars['ID']['input']>;
-  /** Booking ID */
-  id: Scalars['ID']['input'];
-  /** Payment status of the customer */
+  /** Payment status of the booking */
   paymentStatus?: InputMaybe<PaymentStatus>;
-  /** Room bookings of the booking */
-  roomBookings?: InputMaybe<Array<CreateRoomBookingInput>>;
-  /** Total Rent for the booking */
-  totalBookingRent?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type UpdateContactInput = {
@@ -693,6 +719,10 @@ export type UpdateHotelInput = {
 };
 
 export type UpdateRoomBookingInput = {
+  /** Unique identifier for the room booking */
+  _id?: InputMaybe<Scalars['ID']['input']>;
+  /** Unique identifier for the booking */
+  booking?: InputMaybe<Scalars['ID']['input']>;
   /** Check-in date of the Room booking */
   checkIn?: InputMaybe<Scalars['DateTime']['input']>;
   /** Check-out date of the Room booking */
@@ -703,13 +733,13 @@ export type UpdateRoomBookingInput = {
   extraBed?: InputMaybe<Scalars['Boolean']['input']>;
   /** Extra breakfast for the booking */
   extraBreakfast?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Room Booking ID */
-  id: Scalars['ID']['input'];
+  /** Hotel where the booking were generated */
+  hotel?: InputMaybe<Scalars['ID']['input']>;
   /** Room rent for the booking */
   rent?: InputMaybe<Scalars['Float']['input']>;
   /** Room where the booking were generated */
   room?: InputMaybe<Scalars['ID']['input']>;
-  /** Room booking status of the Room booking */
+  /** Room booking status of the booking */
   status?: InputMaybe<RoomBookingStatus>;
 };
 
@@ -791,7 +821,7 @@ export type CreateBookingMutationVariables = Exact<{
 }>;
 
 
-export type CreateBookingMutation = { __typename?: 'Mutation', createBooking: { __typename?: 'Booking', _id: string, contact: string, hotel: string, paymentStatus: PaymentStatus } };
+export type CreateBookingMutation = { __typename?: 'Mutation', createBooking: { __typename?: 'Booking', _id: string, customer: string, hotel: string, paymentStatus: PaymentStatus } };
 
 export type CreateContactMutationVariables = Exact<{
   createContactInput: CreateContactInput;
@@ -829,10 +859,10 @@ export type RoomsByFloorQueryVariables = Exact<{
 }>;
 
 
-export type RoomsByFloorQuery = { __typename?: 'Query', roomsByFloor: Array<{ __typename?: 'RoomsByFloorResponse', floor: string, rooms: Array<{ __typename?: 'RoomBookingsOverview', _id: string, number: string, floor: string, position: string, type: { __typename?: 'RoomTypeDetails', title: string, rent: number }, bookings: Array<{ __typename?: 'RoomBookingDetails', _id: string, rent: number, booking: string, discount: number, checkIn: any, checkOut: any, status: string }> }> }> };
+export type RoomsByFloorQuery = { __typename?: 'Query', roomsByFloor: Array<{ __typename?: 'RoomsByFloorResponse', floor: string, rooms: Array<{ __typename?: 'RoomBookingsOverview', _id: string, number: string, floor: string, position: string, type: { __typename?: 'RoomTypeDetails', title: string, rent: number }, bookings: Array<{ __typename?: 'RoomBookingDetails', _id: string, rent: number, booking: string, discount?: number | null, checkIn: any, checkOut: any, status: RoomBookingStatus }> }> }> };
 
 
-export const CreateBookingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateBooking"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateBookingInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createBooking"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createBookingInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"contact"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"paymentStatus"}}]}}]}}]} as unknown as DocumentNode<CreateBookingMutation, CreateBookingMutationVariables>;
+export const CreateBookingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateBooking"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateBookingInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createBooking"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createBookingInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"customer"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"paymentStatus"}}]}}]}}]} as unknown as DocumentNode<CreateBookingMutation, CreateBookingMutationVariables>;
 export const CreateContactDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateContact"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createContactInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateContactInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createContact"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createContactInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createContactInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"idType"}},{"kind":"Field","name":{"kind":"Name","value":"idNo"}},{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<CreateContactMutation, CreateContactMutationVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phone"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"phone"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phone"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"hotels"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
 export const ContactsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Contacts"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ContactFilterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contacts"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"idType"}},{"kind":"Field","name":{"kind":"Name","value":"idNo"}},{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<ContactsQuery, ContactsQueryVariables>;

@@ -17,4 +17,3 @@ export const GET_ROOM_BOOKING = gql(`
     }
 }
 `);
-
