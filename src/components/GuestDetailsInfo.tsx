@@ -21,12 +21,17 @@ import {
 import { CREATE_CONTACT } from "../graphql/mutations/createContactMutations";
 import { GET_CONTACTS } from "../graphql/queries/contactQueries";
 import { RootState } from "../store";
-
 interface GuestDetailsInfoProps {
   onSelect: (contact: Contact) => void;
+  contactInfo?: Contact;
+  isDetails: boolean;
 }
 
-const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
+const GuestDetailsInfo = ({
+  onSelect,
+  contactInfo,
+  isDetails,
+}: GuestDetailsInfoProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [createContact] = useMutation(CREATE_CONTACT);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,8 +43,8 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
   const [contact, setContact] = useState<Contact>({
     _id: "",
     hotel: user?.hotels[0] || "",
-    name: "",
-    phone: "",
+    name: contactInfo?.name || "",
+    phone: contactInfo?.phone || "",
     type: ContactTypes.Customer,
   });
 
@@ -113,7 +118,8 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
       >
         <Form.Item name="name" label="Full Name" className="w-48">
           <Select
-            placeholder="Enter full name"
+            disabled={isDetails}
+            placeholder={(isDetails && contactInfo?.name) || "Enter your name"}
             className="w-48"
             onSelect={(value) => {
               const selectedContact = contacts.find(
@@ -147,7 +153,8 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
 
         <Form.Item name="phone" label="Phone" className="w-48">
           <Select
-            placeholder="Enter phone number"
+            disabled={isDetails}
+            placeholder={contactInfo?.phone || "Enter phone number"}
             className="w-48"
             onSelect={(value) => {
               const selectedContact = contacts.find(
@@ -181,6 +188,8 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
 
         <Form.Item name="idType" label="ID Type" className="w-48">
           <Select
+            disabled={isDetails}
+            placeholder={contactInfo?.idType || "Enter ID Type"}
             value={contact?.idType}
             options={[
               { value: "NID", label: "NID" },
@@ -191,7 +200,8 @@ const GuestDetailsInfo = ({ onSelect }: GuestDetailsInfoProps) => {
 
         <Form.Item name="idNo" label="ID No" className="w-48">
           <Input
-            placeholder="Enter your ID number"
+            disabled={isDetails}
+            placeholder={contactInfo?.idNo?.toString() || "Enter ID Type"}
             value={contact?.idNo?.toString()}
           />
         </Form.Item>

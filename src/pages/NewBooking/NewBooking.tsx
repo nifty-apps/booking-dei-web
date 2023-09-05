@@ -285,6 +285,7 @@ const NewBooking = () => {
                 customer: contact._id,
               });
             }}
+            isDetails={false}
           />
 
           {/* Additional Guest details info */}

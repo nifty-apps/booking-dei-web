@@ -10,23 +10,14 @@ import {
   CreateBookingInput,
   PaymentStatus,
 } from "../../graphql/__generated__/graphql";
+import {
+  GET_BOOKING,
+  GET_CONTACT,
+} from "../../graphql/queries/bookingDetailsQueries";
 import { GET_ROOM_BOOKING } from "../../graphql/queries/roomBookingQueries";
 import { RootState } from "../../store";
 
-export interface BookingDetails extends CreateBookingInput {
-  // roomBookings:
-  //   | {
-  //       checkIn: Scalars["DateTime"]["input"];
-  //       checkOut: Scalars["DateTime"]["input"];
-  //       discount?: InputMaybe<Scalars["Float"]["input"]>;
-  //       extraBed: Scalars["Boolean"]["input"];
-  //       extraBreakfast: Scalars["Boolean"]["input"];
-  //       rent: Scalars["Float"]["input"];
-  //       room: Scalars["ID"]["input"];
-  //       status?: InputMaybe<RoomBookingStatus>;
-  //       type?: string;
-  //     }[];
-}
+export interface BookingDetails extends CreateBookingInput {}
 
 const BookingDetails = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -46,6 +37,20 @@ const BookingDetails = () => {
         hotel: user?.hotels[0] || "",
         booking: bookingId,
       },
+    },
+  });
+
+  const { data: bookingInfo } = useQuery(GET_BOOKING, {
+    variables: {
+      id: bookingId || "",
+    },
+  });
+
+  const contactId = bookingInfo?.booking?.customer || "";
+
+  const { data: contactInfo } = useQuery(GET_CONTACT, {
+    variables: {
+      id: contactId,
     },
   });
 
@@ -93,6 +98,8 @@ const BookingDetails = () => {
     }));
   }, [roomBookings]);
 
+  console.log(bookingDetails);
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -120,6 +127,8 @@ const BookingDetails = () => {
                 customer: contact._id,
               });
             }}
+            contactInfo={contactInfo?.contact}
+            isDetails
           />
         </div>
         {/* booking summary || Payment flow */}
