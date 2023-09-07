@@ -9,6 +9,7 @@ import TitleText from "../../components/Title";
 import {
   CreateBookingInput,
   PaymentStatus,
+  RoomBookingInput,
 } from "../../graphql/__generated__/graphql";
 import {
   GET_BOOKING,
@@ -17,28 +18,58 @@ import {
 import { GET_ROOM_BOOKING } from "../../graphql/queries/roomBookingQueries";
 import { RootState } from "../../store";
 
-export interface BookingDetails extends CreateBookingInput {}
+interface RoomBooking {
+  _id: string;
+  checkIn: string;
+  checkOut: string;
+  room: {
+    _id: string;
+    number: string;
+
+    type: {
+      title: string;
+      rent: number;
+    };
+  };
+  status: string;
+}
+[];
+
+export interface RoomBookingInfo extends CreateBookingInput {
+  roomBookings: (RoomBookingInput & {
+    room: {
+      _id: string;
+      number: string;
+      type: {
+        _id: string;
+        title: string;
+        rent: number;
+      };
+    };
+  })[];
+}
 
 const BookingDetails = () => {
   const { user } = useSelector((state: RootState) => state.auth);
 
   const { bookingId } = useParams();
 
-  const [bookingDetails, setBookingDetails] = useState<BookingDetails>({
+  const [bookingDetails, setBookingDetails] = useState<RoomBookingInfo>({
     roomBookings: [],
     customer: "",
     hotel: user?.hotels[0] || "",
     paymentStatus: PaymentStatus.Unpaid,
   });
 
-  const { data } = useQuery(GET_ROOM_BOOKING, {
-    variables: {
-      roomBookingFilter: {
-        hotel: user?.hotels[0] || "",
-        booking: bookingId,
+  const { data: { roomBookings } = { roomBookings: [] as RoomBooking[] } } =
+    useQuery(GET_ROOM_BOOKING, {
+      variables: {
+        roomBookingFilter: {
+          hotel: user?.hotels[0] || "",
+          booking: bookingId,
+        },
       },
-    },
-  });
+    });
 
   const { data: bookingInfo } = useQuery(GET_BOOKING, {
     variables: {
@@ -53,8 +84,6 @@ const BookingDetails = () => {
       id: contactId,
     },
   });
-
-  const roomBookings = data?.roomBookings || [];
 
   const columns = [
     {
@@ -88,13 +117,15 @@ const BookingDetails = () => {
     key: room._id,
     checkin: room.checkIn,
     checkout: room.checkOut,
+    roomType: room.room.type.title,
+    roomNo: room.room.number,
     status: room.status,
   }));
 
   useEffect(() => {
     setBookingDetails((booking) => ({
       ...booking,
-      roomBookings: roomBookings,
+      roomBookings: roomBookings as [],
     }));
   }, [roomBookings]);
 
@@ -142,7 +173,7 @@ const BookingDetails = () => {
           />
         </div>
         {/* booking summary || Payment flow */}
-        <BookingSummary bookingDetails={bookingDetails} />
+        <BookingSummary roomBookings={bookingDetails.roomBookings} />
       </div>
     </>
   );

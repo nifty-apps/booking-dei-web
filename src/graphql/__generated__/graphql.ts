@@ -381,8 +381,7 @@ export type Query = {
   hotel: Hotel;
   hotels: Array<Hotel>;
   room: Room;
-  roomBooking: RoomBookingResponse;
-  roomBookings: Array<RoomBooking>;
+  roomBookings: Array<RoomBookingResponse>;
   roomType: RoomType;
   rooms: Array<Room>;
   roomsByFloor: Array<RoomsByFloorResponse>;
@@ -423,11 +422,6 @@ export type QueryHotelArgs = {
 
 export type QueryRoomArgs = {
   id: Scalars['ID']['input'];
-};
-
-
-export type QueryRoomBookingArgs = {
-  roomBookingFilter: RoomBookingFilter;
 };
 
 
@@ -523,6 +517,9 @@ export type RoomBookingDetails = {
   _id: Scalars['ID']['output'];
   /** Unique identifier for the booking */
   booking: Scalars['ID']['output'];
+  bookingDue: Scalars['Float']['output'];
+  bookingPayment: Scalars['Float']['output'];
+  bookingRent: Scalars['Float']['output'];
   /** Check-in date of the Room booking */
   checkIn: Scalars['DateTime']['output'];
   /** Check-out date of the Room booking */
@@ -598,12 +595,10 @@ export type RoomBookingResponse = {
   hotel?: Maybe<Scalars['ID']['output']>;
   /** Room rent for the booking */
   rent?: Maybe<Scalars['Float']['output']>;
-  /** Room where the booking were generated */
-  room?: Maybe<Scalars['ID']['output']>;
+  /** Type of the room */
+  room: RoomResponse;
   /** Room booking status of the booking */
   status?: Maybe<RoomBookingStatus>;
-  /** Type of the room */
-  type: RoomResponse;
 };
 
 /** Room booking status for a booking */
@@ -617,10 +612,10 @@ export enum RoomBookingStatus {
 export type RoomBookingsOverview = {
   __typename?: 'RoomBookingsOverview';
   _id: Scalars['ID']['output'];
-  bookings: Array<RoomBookingDetails>;
   floor: Scalars['String']['output'];
   number: Scalars['String']['output'];
   position: Scalars['String']['output'];
+  roombookings: Array<RoomBookingDetails>;
   type: RoomTypeDetails;
 };
 
@@ -672,6 +667,8 @@ export type RoomTypeResponse = {
   __typename?: 'RoomTypeResponse';
   /** Unique identifier of the room */
   _id: Scalars['ID']['output'];
+  /** Rent of the room type */
+  rent: Scalars['Float']['output'];
   /** Title of the room type */
   title: Scalars['String']['output'];
 };
@@ -933,7 +930,7 @@ export type RoomBookingsQueryVariables = Exact<{
 }>;
 
 
-export type RoomBookingsQuery = { __typename?: 'Query', roomBookings: Array<{ __typename?: 'RoomBooking', _id: string, checkIn: any, checkOut: any, rent: number, discount?: number | null, extraBed: boolean, extraBreakfast: boolean, room: string, booking: string, hotel: string, status: RoomBookingStatus }> };
+export type RoomBookingsQuery = { __typename?: 'Query', roomBookings: Array<{ __typename?: 'RoomBookingResponse', _id: string, checkIn?: any | null, checkOut?: any | null, rent?: number | null, discount?: number | null, extraBed?: boolean | null, extraBreakfast?: boolean | null, booking?: string | null, hotel?: string | null, status?: RoomBookingStatus | null, room: { __typename?: 'RoomResponse', _id: string, number: string, type: { __typename?: 'RoomTypeResponse', _id: string, title: string } } }> };
 
 export type RoomsByFloorQueryVariables = Exact<{
   hotel: Scalars['ID']['input'];
@@ -942,7 +939,7 @@ export type RoomsByFloorQueryVariables = Exact<{
 }>;
 
 
-export type RoomsByFloorQuery = { __typename?: 'Query', roomsByFloor: Array<{ __typename?: 'RoomsByFloorResponse', floor: string, rooms: Array<{ __typename?: 'RoomBookingsOverview', _id: string, number: string, floor: string, position: string, type: { __typename?: 'RoomTypeDetails', title: string, rent: number }, bookings: Array<{ __typename?: 'RoomBookingDetails', _id: string, rent: number, booking: string, discount?: number | null, checkIn: any, checkOut: any, status: RoomBookingStatus }> }> }> };
+export type RoomsByFloorQuery = { __typename?: 'Query', roomsByFloor: Array<{ __typename?: 'RoomsByFloorResponse', floor: string, rooms: Array<{ __typename?: 'RoomBookingsOverview', _id: string, number: string, floor: string, position: string, type: { __typename?: 'RoomTypeDetails', title: string, rent: number }, roombookings: Array<{ __typename?: 'RoomBookingDetails', _id: string, checkIn: any, checkOut: any, rent: number, discount?: number | null, booking: string, status: RoomBookingStatus, bookingPayment: number, bookingRent: number, bookingDue: number }> }> }> };
 
 
 export const CreateBookingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateBooking"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateBookingInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createBooking"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createBookingInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"customer"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"paymentStatus"}}]}}]}}]} as unknown as DocumentNode<CreateBookingMutation, CreateBookingMutationVariables>;
@@ -952,5 +949,5 @@ export const BookingDocument = {"kind":"Document","definitions":[{"kind":"Operat
 export const ContactDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Contact"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contact"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"idType"}},{"kind":"Field","name":{"kind":"Name","value":"idNo"}},{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<ContactQuery, ContactQueryVariables>;
 export const RoomDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Room"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"room"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"floor"}},{"kind":"Field","name":{"kind":"Name","value":"position"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}}]}}]}}]} as unknown as DocumentNode<RoomQuery, RoomQueryVariables>;
 export const ContactsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Contacts"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ContactFilterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contacts"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"idType"}},{"kind":"Field","name":{"kind":"Name","value":"idNo"}},{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<ContactsQuery, ContactsQueryVariables>;
-export const RoomBookingsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RoomBookings"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"roomBookingFilter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RoomBookingFilter"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roomBookings"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"roomBookingFilter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"roomBookingFilter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"checkIn"}},{"kind":"Field","name":{"kind":"Name","value":"checkOut"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}},{"kind":"Field","name":{"kind":"Name","value":"discount"}},{"kind":"Field","name":{"kind":"Name","value":"extraBed"}},{"kind":"Field","name":{"kind":"Name","value":"extraBreakfast"}},{"kind":"Field","name":{"kind":"Name","value":"room"}},{"kind":"Field","name":{"kind":"Name","value":"booking"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<RoomBookingsQuery, RoomBookingsQueryVariables>;
-export const RoomsByFloorDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RoomsByFloor"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hotel"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roomsByFloor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"hotel"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hotel"}}},{"kind":"Argument","name":{"kind":"Name","value":"startDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}}},{"kind":"Argument","name":{"kind":"Name","value":"endDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"floor"}},{"kind":"Field","name":{"kind":"Name","value":"rooms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"floor"}},{"kind":"Field","name":{"kind":"Name","value":"position"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}}]}},{"kind":"Field","name":{"kind":"Name","value":"bookings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}},{"kind":"Field","name":{"kind":"Name","value":"booking"}},{"kind":"Field","name":{"kind":"Name","value":"discount"}},{"kind":"Field","name":{"kind":"Name","value":"checkIn"}},{"kind":"Field","name":{"kind":"Name","value":"checkOut"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]}}]} as unknown as DocumentNode<RoomsByFloorQuery, RoomsByFloorQueryVariables>;
+export const RoomBookingsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RoomBookings"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"roomBookingFilter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RoomBookingFilter"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roomBookings"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"roomBookingFilter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"roomBookingFilter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"checkIn"}},{"kind":"Field","name":{"kind":"Name","value":"checkOut"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}},{"kind":"Field","name":{"kind":"Name","value":"discount"}},{"kind":"Field","name":{"kind":"Name","value":"extraBed"}},{"kind":"Field","name":{"kind":"Name","value":"extraBreakfast"}},{"kind":"Field","name":{"kind":"Name","value":"booking"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"room"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]}}]} as unknown as DocumentNode<RoomBookingsQuery, RoomBookingsQueryVariables>;
+export const RoomsByFloorDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RoomsByFloor"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hotel"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roomsByFloor"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"hotel"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hotel"}}},{"kind":"Argument","name":{"kind":"Name","value":"startDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}}},{"kind":"Argument","name":{"kind":"Name","value":"endDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"floor"}},{"kind":"Field","name":{"kind":"Name","value":"rooms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"floor"}},{"kind":"Field","name":{"kind":"Name","value":"position"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}}]}},{"kind":"Field","name":{"kind":"Name","value":"roombookings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"checkIn"}},{"kind":"Field","name":{"kind":"Name","value":"checkOut"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}},{"kind":"Field","name":{"kind":"Name","value":"discount"}},{"kind":"Field","name":{"kind":"Name","value":"booking"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"bookingPayment"}},{"kind":"Field","name":{"kind":"Name","value":"bookingRent"}},{"kind":"Field","name":{"kind":"Name","value":"bookingDue"}}]}}]}}]}}]}}]} as unknown as DocumentNode<RoomsByFloorQuery, RoomsByFloorQueryVariables>;

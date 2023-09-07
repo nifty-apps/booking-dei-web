@@ -292,7 +292,7 @@ const NewBooking = () => {
           {/* <AdditionalGuests /> */}
         </div>
         {/* booking summary || Payment flow */}
-        <BookingSummary bookingDetails={bookingDetails} />
+        <BookingSummary roomBookings={bookingDetails.roomBookings} />
       </div>
 
       {/* modal for room select */}
@@ -315,6 +315,12 @@ const NewBooking = () => {
             value={selectedDateRange}
             onChange={(value) => setSelectedDateRange(value)}
           />
+          <span>
+            Start Date:
+            {selectedDateRange && selectedDateRange[0]?.format("DD/MM/YYYY")} -
+            End Date:
+            {selectedDateRange && selectedDateRange[1]?.format("DD/MM/YYYY")}
+          </span>
         </div>
         {/* floor plan */}
         <FloorPlan

@@ -2,40 +2,47 @@ import { DatePicker, Form, Input, Modal, Select, Space } from "antd";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { BookingDetails } from "../pages/NewBooking/NewBooking";
+
 const { TextArea } = Input;
 
+// interface BookingSummaryProps {
+//   roomBookings: RoomBookingResponse[];
+// }
+
 interface BookingSummaryProps {
-  bookingDetails: BookingDetails;
+  roomBookings: BookingDetails["roomBookings"];
 }
 
-const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
+const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [form] = Form.useForm();
 
-  const roomBookingInfo = bookingDetails.roomBookings?.map((room) => (
-    <div className="flex justify-between text-md" key={room.checkIn}>
+  const roomBookingInfo = roomBookings?.map((roomBooking) => (
+    <div className="flex justify-between text-md" key={roomBooking.checkIn}>
       <div className="flex items-center">
         <div className="font-semibold">
-          {room?.type}
-          <span className="text-xs"> {room.extraBed && " - Extra Bed"}</span>
+          {/* {`${roomBooking.room?.type?.title} - ${roomBooking.room?.number}`} */}
           <span className="text-xs">
-            {room.extraBreakfast && " + Extra Breakfast"}
+            {roomBooking.extraBed && " - Extra Bed"}
+          </span>
+          <span className="text-xs">
+            {roomBooking.extraBreakfast && " + Extra Breakfast"}
           </span>
         </div>
       </div>
-      <div className="font-semibold">{room.rent}</div>
+      <div className="font-semibold">{roomBooking.rent}</div>
     </div>
   ));
 
   // Calculate the total rent for all room bookings
-  const totalBookingRent = bookingDetails.roomBookings?.reduce(
-    (total, room) => total + room.rent,
+  const totalBookingRent = roomBookings?.reduce(
+    (total, roomBooking) => total + (roomBooking?.rent ?? 0),
     0
   );
 
   // discount
-  const discount = bookingDetails.roomBookings?.reduce(
+  const discount = roomBookings?.reduce(
     (total, room) => total + (room?.discount ?? 0),
     0
   );
@@ -47,7 +54,7 @@ const BookingSummary = ({ bookingDetails }: BookingSummaryProps) => {
           Booking Summary
         </h3>
 
-        {roomBookingInfo}
+        {...roomBookingInfo}
 
         <div className="border border-gray-400 my-2"></div>
         <div className="flex items-center justify-between">
