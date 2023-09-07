@@ -13,7 +13,7 @@ utation CreateTransaction ($createTransactionInput: CreateTransactionInput!) {
           method
           description
           amount
-     contact {
+      contact {
              _id
             name
             phone

@@ -2,9 +2,9 @@ import { useQuery } from "@apollo/client";
 import { Modal, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import classNames from "classnames";
+import { format } from "date-fns";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { format } from "timeago.js";
 import {
   RoomBookingDetails,
   RoomBookingStatus,
@@ -19,7 +19,7 @@ export type Room = {
     title: string;
     rent: number;
   };
-  bookings: RoomBookingDetails[];
+  roombookings: RoomBookingDetails[];
 };
 
 interface FloorPlanProps {
@@ -30,21 +30,18 @@ interface FloorPlanProps {
 }
 
 const columns: ColumnsType<RoomBookingDetails> = [
-  // { title: "Name", dataIndex: "name" },
-  // { title: "Phone", dataIndex: "phone" },
   { title: "Rent", dataIndex: "rent" },
-  // { title: "Discount", dataIndex: "discount" },
-  // { title: "Method", dataIndex: "method" },
   {
     title: "Check In",
     dataIndex: "checkIn",
-    render: (checkin: string) => format(checkin),
+    render: (date) => format(new Date(date), "dd/MM/yyyy"),
   },
   {
     title: "Check Out",
     dataIndex: "checkOut",
-    render: (checkout: string) => format(checkout),
+    render: (date) => format(new Date(date), "dd/MM/yyyy"),
   },
+
   { title: "Status", dataIndex: "status" },
 ];
 
@@ -76,7 +73,7 @@ const FloorPlan = ({
   if (error) return <p>Error : {error.message}</p>;
 
   const handleRoomClick = (room: Room) => {
-    if (room.bookings.length > 0) {
+    if (room.roombookings.length > 0) {
       return setDetailsModalInfo({
         room,
         open: true,
@@ -103,9 +100,9 @@ const FloorPlan = ({
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {floorDetails.rooms.map((room) => {
-                  const { _id, number, type, bookings } = room;
+                  const { _id, number, type, roombookings } = room;
                   const status =
-                    bookings.length > 0
+                    roombookings.length > 0
                       ? RoomBookingStatus.Booked
                       : "AVAILABLE";
 
@@ -182,7 +179,10 @@ const FloorPlan = ({
         </div>
 
         {/* table */}
-        <Table columns={columns} dataSource={detailsModalInfo.room?.bookings} />
+        <Table
+          columns={columns}
+          dataSource={detailsModalInfo.room?.roombookings}
+        />
       </Modal>
     </>
   );

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaEllipsisVertical, FaXmark } from "react-icons/fa6";
 import { useSelector } from "react-redux";
-import AdditionalGuests from "../../components/AdditionalGuests";
+import { useNavigate } from "react-router-dom";
 import BookingSummary from "../../components/BookingSummary";
 import FloorPlan, { Room } from "../../components/FloorPlan";
 import GuestDetailsInfo from "../../components/GuestDetailsInfo";
@@ -14,34 +14,25 @@ import RoomOptionsModal from "../../components/RoomOptionsModal";
 import TitleText from "../../components/Title";
 import {
   CreateBookingInput,
-  CreateRoomBookingInput,
-  InputMaybe,
   PaymentStatus,
+  RoomBookingInput,
   RoomBookingStatus,
-  Scalars,
 } from "../../graphql/__generated__/graphql";
 import { CREATE_BOOKING } from "../../graphql/mutations/bookingMutations";
 import { RootState } from "../../store";
 
 export interface BookingDetails extends CreateBookingInput {
-  roomBookings:
-    | {
-        checkIn: Scalars["DateTime"]["input"];
-        checkOut: Scalars["DateTime"]["input"];
-        discount?: InputMaybe<Scalars["Float"]["input"]>;
-        extraBed: Scalars["Boolean"]["input"];
-        extraBreakfast: Scalars["Boolean"]["input"];
-        rent: Scalars["Float"]["input"];
-        room: Scalars["ID"]["input"];
-        status?: InputMaybe<RoomBookingStatus>;
-        type?: string;
-      }[];
+  roomBookings: (RoomBookingInput & {
+    type?: string;
+  })[];
 }
 
 const NewBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
 
   const [createBooking] = useMutation(CREATE_BOOKING);
+
+  const navigate = useNavigate();
 
   const [selectedDateRange, setSelectedDateRange] = useState<
     RangeValue<dayjs.Dayjs>
@@ -54,7 +45,7 @@ const NewBooking = () => {
     }[]
   >([]);
   const [extraOptions, setExtraOptions] = useState<{
-    roomBooking?: CreateRoomBookingInput;
+    roomBooking?: RoomBookingInput;
     showModal: boolean;
   }>({
     showModal: false,
@@ -62,11 +53,8 @@ const NewBooking = () => {
 
   const [bookingDetails, setBookingDetails] = useState<BookingDetails>({
     roomBookings: [],
-    contact: "",
+    customer: "",
     hotel: user?.hotels[0] || "",
-    totalBookingRent: 0,
-    discount: 0,
-    due: 0,
     paymentStatus: PaymentStatus.Unpaid,
   });
 
@@ -193,6 +181,9 @@ const NewBooking = () => {
 
       if (res.data?.createBooking?._id) {
         message.success("Yay! Your new booking was added successfully.");
+        navigate({
+          pathname: `/booking-details/${res.data?.createBooking?._id}`,
+        });
       }
     } catch (error) {
       message.error("Oops! Something went wrong.");
@@ -231,7 +222,6 @@ const NewBooking = () => {
       }));
     }
   }, [selectedRoomsByDate, bookingDetails]);
-
 
   return (
     <>
@@ -283,7 +273,7 @@ const NewBooking = () => {
               <span>
                 <FaPlus />
               </span>
-              <span className="font-semibold"> Add Room</span>
+              <span className="font-semibold"> Add Room </span>
             </button>
           </div>
 
@@ -292,15 +282,17 @@ const NewBooking = () => {
             onSelect={(contact) => {
               setBookingDetails({
                 ...bookingDetails,
-                contact: contact._id,
+                customer: contact._id,
               });
             }}
+            isDetails={false}
           />
+
           {/* Additional Guest details info */}
-          <AdditionalGuests />
+          {/* <AdditionalGuests /> */}
         </div>
         {/* booking summary || Payment flow */}
-        <BookingSummary bookingDetails={bookingDetails} />
+        <BookingSummary roomBookings={bookingDetails.roomBookings} />
       </div>
 
       {/* modal for room select */}
@@ -323,6 +315,12 @@ const NewBooking = () => {
             value={selectedDateRange}
             onChange={(value) => setSelectedDateRange(value)}
           />
+          <span>
+            Start Date:
+            {selectedDateRange && selectedDateRange[0]?.format("DD/MM/YYYY")} -
+            End Date:
+            {selectedDateRange && selectedDateRange[1]?.format("DD/MM/YYYY")}
+          </span>
         </div>
         {/* floor plan */}
         <FloorPlan
