@@ -29,7 +29,7 @@ export interface BookingDetails extends CreateBookingInput {
 
 const NewBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
-
+  console.log("new booking ", user?.type);
   const [createBooking] = useMutation(CREATE_BOOKING);
 
   const navigate = useNavigate();
@@ -90,18 +90,20 @@ const NewBooking = () => {
       dataIndex: "key",
       render: (roomId: string) => (
         <div className="flex items-center gap-4 text-lg">
-          <button
-            onClick={() =>
-              setExtraOptions({
-                showModal: true,
-                roomBooking: bookingDetails.roomBookings.find(
-                  (room) => room.room === roomId
-                ),
-              })
-            }
-          >
-            <FaEllipsisVertical />
-          </button>
+          {user?.type === "ADMIN"  && (
+            <button
+              onClick={() =>
+                setExtraOptions({
+                  showModal: true,
+                  roomBooking: bookingDetails.roomBookings.find(
+                    (room) => room.room === roomId
+                  ),
+                })
+              }
+            >
+              <FaEllipsisVertical />
+            </button>
+          )}
           <button
             onClick={() => {
               setSelectedRoomsByDate(

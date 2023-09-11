@@ -8,9 +8,7 @@ export interface BookingDetails extends CreateBookingInput {}
 
 const EditRoomBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
-
-  console.log(user);
-
+  console.log(`edit : `, user);
   const { bookingId } = useParams();
 
   return (

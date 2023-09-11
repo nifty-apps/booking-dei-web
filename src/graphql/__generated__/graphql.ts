@@ -206,20 +206,17 @@ export type LoginResponseDto = {
 export type Mutation = {
   __typename?: 'Mutation';
   createBooking: Booking;
-  /** Create contact */
   createContact: Contact;
   createHotel: Hotel;
   createRoom: Room;
   /** Create room booking */
   createRoomBooking: RoomBooking;
-  /** Create transaction */
   createTransaction: Transaction;
   /** Create user */
   createUser: User;
   login: LoginResponseDto;
   /** Delete booking by ID */
   removeBooking: Booking;
-  /** Delete contact by ID */
   removeContact: Contact;
   removeHotel: Hotel;
   removeRoom: Room;
@@ -227,12 +224,10 @@ export type Mutation = {
   removeRoomBooking: RoomBooking;
   /** Delete transaction by ID */
   removeTransaction: Transaction;
-  /** Delete user by ID */
   removeUser: User;
   /** Soft delete transaction by ID */
   softDeleteTransaction: Transaction;
   updateBooking: Booking;
-  /** Update contact */
   updateContact: Contact;
   updateHotel: Hotel;
   updateRoom: Room;
@@ -240,7 +235,6 @@ export type Mutation = {
   updateRoomBooking: RoomBooking;
   /** Update transaction */
   updateTransaction: Transaction;
-  /** Update user */
   updateUser: User;
 };
 
@@ -375,7 +369,6 @@ export type Query = {
   activeTransactions: Array<Transaction>;
   booking: Booking;
   bookings: Array<Booking>;
-  /** Find contact by ID */
   contact: Contact;
   contacts: Array<Contact>;
   hotel: Hotel;
@@ -385,17 +378,12 @@ export type Query = {
   roomType: RoomType;
   rooms: Array<Room>;
   roomsByFloor: Array<RoomsByFloorResponse>;
-  /** Find transaction by ID */
   transaction: Transaction;
-  /** Find Transactions by filter(s) */
   transactionByFilter: Array<Transaction>;
   /** Find all transactions */
   transactions: Array<Transaction>;
-  /** Find transactions by date range */
   transactionsByDateRange: Array<Transaction>;
-  /** Get user by ID */
   user: User;
-  /** Get all users */
   users: Array<User>;
 };
 

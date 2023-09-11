@@ -77,7 +77,7 @@ const GuestDetailsInfo = ({
         setIsModalOpen(false);
       }
     } catch (err) {
-      message.error(`something went wrong!`);
+      message.error(`Something went wrong!`);
     }
   };
 
