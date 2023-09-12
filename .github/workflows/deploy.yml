@@ -30,7 +30,7 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          VITE_GRAPHQL_ENDPOINT: production
+          VITE_GRAPHQL_ENDPOINT: https://app.bookingdei.com/api
 
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
