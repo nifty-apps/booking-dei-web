@@ -1,0 +1,42 @@
+name: Deploy to production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Booking Web
+    runs-on: ubuntu-latest
+    environment: production
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          VITE_GRAPHQL_ENDPOINT: production
+
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@main
+        env:
+          REMOTE_HOST: ${{vars.HOST}}
+          REMOTE_USER: ${{secrets.NIFTY_AWS_SG_USER}}
+          SSH_PRIVATE_KEY: ${{secrets.NIFTY_AWS_SG_SERVER_KEY}}
+          SOURCE: "dist/"
+          TARGET: ${{secrets.SERVER_TARGET}}
