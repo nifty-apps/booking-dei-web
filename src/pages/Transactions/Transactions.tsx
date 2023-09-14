@@ -76,9 +76,14 @@ const Transactions = () => {
     <>
       <div className="flex align-middle justify-between mb-3">
         <div className="w-3/12">
-          <Input placeholder="Search here.." allowClear size="large" />
+          <Input placeholder="Search here.." allowClear size="middle" />
         </div>
-        <DatePicker showTime onChange={onChange} onOk={onOk} />
+        <DatePicker
+          showTime
+          onChange={onChange}
+          onOk={onOk}
+          placeholder="Select Date"
+        />
       </div>
       <Table dataSource={dataSource} columns={columns} />
     </>
