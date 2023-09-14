@@ -165,7 +165,7 @@ const NewBooking = () => {
       </div>
     ),
   }));
- 
+
   const handleCreateBooking = async () => {
     try {
       const res = await createBooking({

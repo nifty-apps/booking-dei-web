@@ -44,6 +44,7 @@ interface RoomBooking {
 
 export interface RoomBookingInfo extends CreateBookingInput {
   roomBookings: (RoomBookingInput & {
+    _id: string;
     room: {
       _id: string;
       number: string;
@@ -196,8 +197,6 @@ const EditRoomBooking = () => {
 
   // Update booking
   const handleUpdateBooking = async () => {
-    console.log(bookingDetails);
-
     try {
       const variables = {
         updateBookingInput: {
@@ -209,26 +208,29 @@ const EditRoomBooking = () => {
       };
 
       await updateBooking({ variables });
-      const res = await updateRoomBooking({
-        variables: {
-          updateRoomBookingInput: {
-            _id: "650032c696f895a82a57a523",
-            room: bookingDetails.roomBookings[0].room._id,
-            checkIn: bookingDetails.roomBookings[0].checkIn,
-            checkOut: bookingDetails.roomBookings[0].checkOut,
-            rent: bookingDetails.roomBookings[0].room.type.rent,
-            discount: bookingDetails.roomBookings[0].discount,
-            extraBed: bookingDetails.roomBookings[0].extraBed,
-            extraBreakfast: bookingDetails.roomBookings[0].extraBreakfast,
-            booking: bookingId,
-            hotel: bookingDetails.hotel,
-            status: bookingDetails.roomBookings[0].status,
-          },
-        },
-      });
 
-      if (res?.data && res) {
-        message.success("Booking updated successfully");
+      for (const roomBooking of bookingDetails.roomBookings) {
+        const res = await updateRoomBooking({
+          variables: {
+            updateRoomBookingInput: {
+              _id: roomBooking._id,
+              room: roomBooking.room._id,
+              checkIn: roomBooking.checkIn,
+              checkOut: roomBooking.checkOut,
+              rent: roomBooking.room.type.rent,
+              discount: roomBooking.discount,
+              extraBed: roomBooking.extraBed,
+              extraBreakfast: roomBooking.extraBreakfast,
+              booking: bookingId,
+              hotel: bookingDetails.hotel,
+              status: roomBooking.status,
+            },
+          },
+        });
+
+        if (res?.data && res) {
+          message.success("Booking updated successfully");
+        }
       }
     } catch (error) {
       message.error("Oops! Something went wrong.");
