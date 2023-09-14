@@ -1,73 +1,87 @@
-import { Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { useState } from "react";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import TitleText from "../../components/Title";
+import { DatePicker, Input, Table } from "antd";
 
-interface DataType {
-  key: React.Key;
-  roomNumber: string;
-  contact: string;
-  BookingAmount: string;
-  PaidAmount: string;
-  DueAmount: string;
-  action: React.ReactNode;
-}
+const dataSource = [
+  {
+    key: "1",
+    roomNumber: "John Doe",
+    contact: "34354534653",
+    bookingAmount: "2100",
+    paidAmount: "500",
+    dueAmount: "100",
+    actions: "Booking Details",
+  },
+  {
+    key: "2",
+    roomNumber: "annur",
+    contact: "34354534653",
+    bookingAmount: "2100",
+    paidAmount: "5000",
+    dueAmount: "1000",
+    actions: "Booking Details",
+  },
+  {
+    key: "3",
+    roomNumber: "jany",
+    contact: "34354534653",
+    bookingAmount: "2100",
+    paidAmount: "500",
+    dueAmount: "100",
+    actions: "Booking Details",
+  },
+];
 
-const columns: ColumnsType<DataType> = [
-  { title: "ROOM NUMBER", dataIndex: "roomNumber" },
-  { title: "CONTACT", dataIndex: "contact" },
-  { title: "BOOKING AMOUNT", dataIndex: "BookingAmount" },
-  { title: "PAID AMOUNT", dataIndex: "PaidAmount" },
-  { title: "DUE AMOUNT", dataIndex: "DueAmount" },
-  { title: "ACTIONS", dataIndex: "action" },
+const columns = [
+  {
+    title: "ROOM NUMBER",
+    dataIndex: "roomNumber",
+    key: "roomNumber",
+  },
+  {
+    title: "CONTACT",
+    dataIndex: "contact",
+    key: "contact",
+  },
+  {
+    title: "BOOKING AMOUNT",
+    dataIndex: "bookingAmount",
+    key: "bookingAmount",
+  },
+  {
+    title: "PAID AMOUNT",
+    dataIndex: "paidAmount",
+    key: "paidAmount",
+  },
+  {
+    title: "DUE AMOUNT",
+    dataIndex: "dueAmount",
+    key: "dueAmount",
+  },
+  {
+    title: "ACTIONS",
+    dataIndex: "actions",
+    key: "bookingDetails",
+  },
 ];
 
 const Transactions = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
+  const onChange = () => {
+    console.log("somethig change");
   };
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
+  const onOk = () => {
+    console.log("ok");
   };
-
-  const hasSelected = selectedRowKeys.length > 0;
-
-  const data: DataType[] = [];
-  for (let i = 0; i < 46; i++) {
-    data.push({
-      key: i,
-      roomNumber: "101",
-      contact: "1234567890",
-      BookingAmount: "1000",
-      PaidAmount: "500",
-      DueAmount: "500",
-      action: (
-        <>
-          <AiOutlineEdit className="text-2xl mx-2 text-green-500" />
-          <AiOutlineDelete className="text-2xl mx-2 text-red-500" />
-        </>
-      ),
-    });
-  }
 
   return (
-    <div className="p-5">
-      {/* Transactions title */}
-      <TitleText text={"Transactions"} />
-
-      {/* table */}
-      <div className="my-4">
-        <span>
-          {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
-        </span>
+    <>
+      <div className="flex align-middle justify-between mb-3">
+        <div className="w-3/12">
+          <Input placeholder="Search here.." allowClear size="large" />
+        </div>
+        <DatePicker showTime onChange={onChange} onOk={onOk} />
       </div>
-      <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
-    </div>
+      <Table dataSource={dataSource} columns={columns} />
+    </>
   );
 };
 

@@ -154,30 +154,29 @@ const EditRoomBooking = () => {
         <div className="flex items-center gap-4 text-lg">
           {user?.type === "ADMIN" && (
             <>
-            
-            <button
-              onClick={() =>
-                setExtraOptions({
-                  showModal: true,
-                  roomBooking: bookingDetails.roomBookings.find(
-                    (room) => room.room === roomId
-                  ),
-                })
-              }
-            >
-              <FaEllipsisVertical />
-            </button>
-          <button
-            onClick={() =>
-              deleteRoomBooking(
-                bookingDetails.roomBookings.find((room) => room.room === roomId)
-                  ?._id || ""
-              )
-            }
-          >
-            <FaXmark />
-          </button>
-            
+              <button
+                onClick={() =>
+                  setExtraOptions({
+                    showModal: true,
+                    roomBooking: bookingDetails.roomBookings.find(
+                      (room) => room.room === roomId
+                    ),
+                  })
+                }
+              >
+                <FaEllipsisVertical />
+              </button>
+              <button
+                onClick={() =>
+                  deleteRoomBooking(
+                    bookingDetails.roomBookings.find(
+                      (room) => room.room === roomId
+                    )?._id || ""
+                  )
+                }
+              >
+                <FaXmark />
+              </button>
             </>
           )}
         </div>
