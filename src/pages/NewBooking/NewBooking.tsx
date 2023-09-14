@@ -29,7 +29,6 @@ export interface BookingDetails extends CreateBookingInput {
 
 const NewBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
-  console.log("new booking ", user?.type);
   const [createBooking] = useMutation(CREATE_BOOKING);
 
   const navigate = useNavigate();
@@ -90,7 +89,7 @@ const NewBooking = () => {
       dataIndex: "key",
       render: (roomId: string) => (
         <div className="flex items-center gap-4 text-lg">
-          {user?.type === "ADMIN"  && (
+          {user?.type === "ADMIN" && (
             <button
               onClick={() =>
                 setExtraOptions({
@@ -166,7 +165,7 @@ const NewBooking = () => {
       </div>
     ),
   }));
-
+ 
   const handleCreateBooking = async () => {
     try {
       const res = await createBooking({
@@ -288,6 +287,7 @@ const NewBooking = () => {
               });
             }}
             isDetails={false}
+            isEditing={false}
           />
 
           {/* Additional Guest details info */}

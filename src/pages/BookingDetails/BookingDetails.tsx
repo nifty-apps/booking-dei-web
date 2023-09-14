@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Table } from "antd";
+import { format } from "date-fns"; // Import date-fns for date formatting
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
@@ -25,7 +26,6 @@ interface RoomBooking {
   room: {
     _id: string;
     number: string;
-
     type: {
       title: string;
       rent: number;
@@ -115,8 +115,8 @@ const BookingDetails = () => {
 
   const dataSource = roomBookings.map((room) => ({
     key: room._id,
-    checkin: room.checkIn,
-    checkout: room.checkOut,
+    checkin: format(new Date(room.checkIn), "yyyy-MM-dd"),
+    checkout: format(new Date(room.checkOut), "yyyy-MM-dd"),
     roomType: room.room.type.title,
     roomNo: room.room.number,
     status: room.status,
@@ -169,7 +169,8 @@ const BookingDetails = () => {
               });
             }}
             contactInfo={contactInfo?.contact}
-            isDetails
+            isDetails={true}
+            isEditing={false}
           />
         </div>
         {/* booking summary || Payment flow */}

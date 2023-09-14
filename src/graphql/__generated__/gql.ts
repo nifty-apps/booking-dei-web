@@ -14,6 +14,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n  }\n}\n": types.CreateBookingDocument,
+    "\n mutation UpdateRoomBooking(\n    $updateRoomBookingInput: UpdateRoomBookingInput!\n  ) {\n    updateRoomBooking(updateRoomBookingInput: $updateRoomBookingInput) {\n      _id\n      room\n      checkIn\n      checkOut\n      rent\n      discount\n      extraBed\n      extraBreakfast\n      booking\n      hotel\n      status\n    }\n  }\n\n": types.UpdateRoomBookingDocument,
+    "\nmutation UpdateBooking($updateBookingInput: UpdateBookingInput!) {\n    updateBooking(updateBookingInput: $updateBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n  }\n}\n": types.UpdateBookingDocument,
     "\n   mutation CreateContact ($createContactInput: CreateContactInput!) {\n       createContact (createContactInput: $createContactInput) {\n            _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n      }\n  \n}\n\n": types.CreateContactDocument,
     "\nmutation Login($phone: String!, $password: String!) {\n    login(phone: $phone, password: $password) {\n      access_token\n      user {\n        _id\n        name\n        email\n        phone\n        hotels\n        type\n      }\n    }\n  }\n\n": types.LoginDocument,
     "\n query Booking($id:ID!) {\n      booking(id: $id) {\n        _id\n        customer\n        hotel\n        paymentStatus\n     }\n }\n\n": types.BookingDocument,
@@ -42,6 +44,14 @@ export function gql(source: string): unknown;
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n  }\n}\n"): (typeof documents)["\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n  }\n}\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n mutation UpdateRoomBooking(\n    $updateRoomBookingInput: UpdateRoomBookingInput!\n  ) {\n    updateRoomBooking(updateRoomBookingInput: $updateRoomBookingInput) {\n      _id\n      room\n      checkIn\n      checkOut\n      rent\n      discount\n      extraBed\n      extraBreakfast\n      booking\n      hotel\n      status\n    }\n  }\n\n"): (typeof documents)["\n mutation UpdateRoomBooking(\n    $updateRoomBookingInput: UpdateRoomBookingInput!\n  ) {\n    updateRoomBooking(updateRoomBookingInput: $updateRoomBookingInput) {\n      _id\n      room\n      checkIn\n      checkOut\n      rent\n      discount\n      extraBed\n      extraBreakfast\n      booking\n      hotel\n      status\n    }\n  }\n\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\nmutation UpdateBooking($updateBookingInput: UpdateBookingInput!) {\n    updateBooking(updateBookingInput: $updateBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n  }\n}\n"): (typeof documents)["\nmutation UpdateBooking($updateBookingInput: UpdateBookingInput!) {\n    updateBooking(updateBookingInput: $updateBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n  }\n}\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

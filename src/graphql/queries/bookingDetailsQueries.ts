@@ -42,5 +42,6 @@ query Room($id:ID!) {
 `);
 
 // booking: 64f716687c888e446173da5e
+// booking: 650032c696f895a82a57a521
 
 // hotel : 64d0a1d008291a484b015d0b
