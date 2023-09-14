@@ -6,25 +6,21 @@ import TitleText from "../../components/Title";
 
 interface DataType {
   key: React.Key;
-  date: string;
+  roomNumber: string;
   contact: string;
-  category: string;
-  subCategory: string;
-  method: string;
-  description: string;
-  amount: string;
+  BookingAmount: string;
+  PaidAmount: string;
+  DueAmount: string;
   action: React.ReactNode;
 }
 
 const columns: ColumnsType<DataType> = [
-  { title: "Date", dataIndex: "date" },
-  { title: "Contact", dataIndex: "contact" },
-  { title: "Category", dataIndex: "category" },
-  { title: "Sub-Category", dataIndex: "subCategory" },
-  { title: "Method", dataIndex: "method" },
-  { title: "Description", dataIndex: "description" },
-  { title: "Amount", dataIndex: "amount" },
-  { title: "Action", dataIndex: "action" },
+  { title: "ROOM NUMBER", dataIndex: "roomNumber" },
+  { title: "CONTACT", dataIndex: "contact" },
+  { title: "BOOKING AMOUNT", dataIndex: "BookingAmount" },
+  { title: "PAID AMOUNT", dataIndex: "PaidAmount" },
+  { title: "DUE AMOUNT", dataIndex: "DueAmount" },
+  { title: "ACTIONS", dataIndex: "action" },
 ];
 
 const Transactions = () => {
@@ -45,18 +41,16 @@ const Transactions = () => {
   for (let i = 0; i < 46; i++) {
     data.push({
       key: i,
-      date: `2023-08-${i + 1}`,
-      contact: `Contact ${i}`,
-      category: `Category ${i}`,
-      subCategory: `Sub-Category ${i}`,
-      method: `Method ${i}`,
-      description: `Description ${i}`,
-      amount: `${i * 100}`,
+      roomNumber: "101",
+      contact: "1234567890",
+      BookingAmount: "1000",
+      PaidAmount: "500",
+      DueAmount: "500",
       action: (
-        <div className="flex items-center gap-5">
-          <AiOutlineEdit />
-          <AiOutlineDelete />
-        </div>
+        <>
+          <AiOutlineEdit className="text-2xl mx-2 text-green-500" />
+          <AiOutlineDelete className="text-2xl mx-2 text-red-500" />
+        </>
       ),
     });
   }

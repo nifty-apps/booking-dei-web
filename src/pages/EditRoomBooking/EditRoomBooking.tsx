@@ -153,6 +153,8 @@ const EditRoomBooking = () => {
       render: (roomId: string) => (
         <div className="flex items-center gap-4 text-lg">
           {user?.type === "ADMIN" && (
+            <>
+            
             <button
               onClick={() =>
                 setExtraOptions({
@@ -165,7 +167,6 @@ const EditRoomBooking = () => {
             >
               <FaEllipsisVertical />
             </button>
-          )}
           <button
             onClick={() =>
               deleteRoomBooking(
@@ -176,6 +177,9 @@ const EditRoomBooking = () => {
           >
             <FaXmark />
           </button>
+            
+            </>
+          )}
         </div>
       ),
     },
