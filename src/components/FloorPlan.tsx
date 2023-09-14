@@ -5,6 +5,7 @@ import classNames from "classnames";
 import { format } from "date-fns";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   RoomBookingDetails,
   RoomBookingStatus,
@@ -30,6 +31,13 @@ interface FloorPlanProps {
 }
 
 const columns: ColumnsType<RoomBookingDetails> = [
+  {
+    title: "Booking ID",
+    dataIndex: "booking",
+    render: (booking) => (
+      <Link to={`/booking-details/${booking}`}>{booking}</Link>
+    ),
+  },
   { title: "Rent", dataIndex: "rent" },
   {
     title: "Check In",

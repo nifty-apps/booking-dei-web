@@ -29,7 +29,6 @@ export interface BookingDetails extends CreateBookingInput {
 
 const NewBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
-
   const [createBooking] = useMutation(CREATE_BOOKING);
 
   const navigate = useNavigate();
@@ -86,40 +85,47 @@ const NewBooking = () => {
       key: "status",
     },
     {
-      title: "Actions",
+      title: "Action",
       dataIndex: "key",
       render: (roomId: string) => (
         <div className="flex items-center gap-4 text-lg">
-          <button
-            onClick={() =>
-              setExtraOptions({
-                showModal: true,
-                roomBooking: bookingDetails.roomBookings.find(
-                  (room) => room.room === roomId
-                ),
-              })
-            }
-          >
-            <FaEllipsisVertical />
-          </button>
-          <button
-            onClick={() => {
-              setSelectedRoomsByDate(
-                selectedRoomsByDate.map((roomByDate) => ({
-                  ...roomByDate,
-                  rooms: roomByDate.rooms.filter((room) => room._id !== roomId),
-                }))
-              );
-              setBookingDetails({
-                ...bookingDetails,
-                roomBookings: bookingDetails.roomBookings.filter(
-                  (roomBooking) => roomBooking.room !== roomId
-                ),
-              });
-            }}
-          >
-            <FaXmark />
-          </button>
+          {user?.type === "ADMIN" && (
+            <>
+              <button
+                onClick={() =>
+                  setExtraOptions({
+                    showModal: true,
+                    roomBooking: bookingDetails.roomBookings.find(
+                      (room) => room.room === roomId
+                    ),
+                  })
+                }
+              >
+                <FaEllipsisVertical />
+              </button>
+
+              <button
+                onClick={() => {
+                  setSelectedRoomsByDate(
+                    selectedRoomsByDate.map((roomByDate) => ({
+                      ...roomByDate,
+                      rooms: roomByDate.rooms.filter(
+                        (room) => room._id !== roomId
+                      ),
+                    }))
+                  );
+                  setBookingDetails({
+                    ...bookingDetails,
+                    roomBookings: bookingDetails.roomBookings.filter(
+                      (roomBooking) => roomBooking.room !== roomId
+                    ),
+                  });
+                }}
+              >
+                <FaXmark />
+              </button>
+            </>
+          )}
         </div>
       ),
     },
@@ -286,6 +292,7 @@ const NewBooking = () => {
               });
             }}
             isDetails={false}
+            isEditing={false}
           />
 
           {/* Additional Guest details info */}

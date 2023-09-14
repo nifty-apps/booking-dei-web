@@ -1,79 +1,85 @@
-import { Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { useState } from "react";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import TitleText from "../../components/Title";
+import { useQuery } from "@apollo/client";
+import { DatePicker, Input, Table } from "antd";
+import { Link } from "react-router-dom";
+import { GET_TRANSACTIONS } from "../../graphql/queries/transactionsQueries";
 
-interface DataType {
-  key: React.Key;
-  date: string;
-  contact: string;
-  category: string;
-  subCategory: string;
-  method: string;
-  description: string;
-  amount: string;
-  action: React.ReactNode;
-}
-
-const columns: ColumnsType<DataType> = [
-  { title: "Date", dataIndex: "date" },
-  { title: "Contact", dataIndex: "contact" },
-  { title: "Category", dataIndex: "category" },
-  { title: "Sub-Category", dataIndex: "subCategory" },
-  { title: "Method", dataIndex: "method" },
-  { title: "Description", dataIndex: "description" },
-  { title: "Amount", dataIndex: "amount" },
-  { title: "Action", dataIndex: "action" },
+const columns = [
+  {
+    title: "ROOM NUMBER",
+    dataIndex: "roomNumber",
+    key: "roomNumber",
+  },
+  {
+    title: "CONTACT",
+    dataIndex: "contact",
+    key: "contact",
+  },
+  {
+    title: "BOOKING AMOUNT",
+    dataIndex: "amount",
+    key: "bookingAmount",
+  },
+  {
+    title: "PAID AMOUNT",
+    dataIndex: "paidAmount",
+    key: "paidAmount",
+  },
+  {
+    title: "DUE AMOUNT",
+    dataIndex: "dueAmount",
+    key: "dueAmount",
+  },
+  {
+    title: "ACTION",
+    dataIndex: "action",
+    key: "action",
+    render: (bookingId: string) => (
+      <Link to={`/booking-details/${bookingId}`}>Booking Details</Link>
+    ),
+  },
 ];
 
 const Transactions = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const { data, loading, error } = useQuery(GET_TRANSACTIONS);
 
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+
+  const onChange = () => {
+    console.log("something changed");
   };
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
+  const onOk = () => {
+    console.log("ok");
   };
 
-  const hasSelected = selectedRowKeys.length > 0;
+  const searchInput = () => {
+    console.log("searching");
+  };
 
-  const data: DataType[] = [];
-  for (let i = 0; i < 46; i++) {
-    data.push({
-      key: i,
-      date: `2023-08-${i + 1}`,
-      contact: `Contact ${i}`,
-      category: `Category ${i}`,
-      subCategory: `Sub-Category ${i}`,
-      method: `Method ${i}`,
-      description: `Description ${i}`,
-      amount: `${i * 100}`,
-      action: (
-        <div className="flex items-center gap-5">
-          <AiOutlineEdit />
-          <AiOutlineDelete />
-        </div>
-      ),
-    });
-  }
+  const dataSource = data?.transactions.map((transaction) => ({
+    key: transaction.booking,
+    contact: transaction.contact.name,
+    amount: transaction.amount,
+  }));
 
   return (
-    <div className="p-5">
-      {/* Transactions title */}
-      <TitleText text={"Transactions"} />
+    <>
+      <div className="flex align-middle justify-between mb-3">
+        <div className="w-3/12">
+          <Input
+            placeholder="Search here.."
+            allowClear
+            size="middle"
+            onChange={searchInput}
+          />
+        </div>
 
-      {/* table */}
-      <div className="my-4">
-        <span>
-          {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
-        </span>
+        <DatePicker showTime onChange={onChange} onOk={onOk} />
       </div>
-      <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
-    </div>
+      {/* Transaction table */}
+      <Table dataSource={dataSource} columns={columns} />
+    </>
   );
 };
 

@@ -25,12 +25,14 @@ interface GuestDetailsInfoProps {
   onSelect: (contact: Contact) => void;
   contactInfo?: Contact;
   isDetails: boolean;
+  isEditing: boolean;
 }
 
 const GuestDetailsInfo = ({
   onSelect,
   contactInfo,
   isDetails,
+  isEditing,
 }: GuestDetailsInfoProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [createContact] = useMutation(CREATE_CONTACT);
@@ -77,7 +79,7 @@ const GuestDetailsInfo = ({
         setIsModalOpen(false);
       }
     } catch (err) {
-      message.error(`something went wrong!`);
+      message.error(`Something went wrong!`);
     }
   };
 
@@ -118,7 +120,7 @@ const GuestDetailsInfo = ({
       >
         <Form.Item name="name" label="Full Name" className="w-48">
           <Select
-            disabled={isDetails}
+            disabled={!isEditing && isDetails}
             placeholder={(isDetails && contactInfo?.name) || "Enter your name"}
             className="w-48"
             onSelect={(value) => {
@@ -153,7 +155,8 @@ const GuestDetailsInfo = ({
 
         <Form.Item name="phone" label="Phone" className="w-48">
           <Select
-            disabled={isDetails}
+            disabled={!isEditing && isDetails}
+            value={contactInfo?.phone}
             placeholder={contactInfo?.phone || "Enter phone number"}
             className="w-48"
             onSelect={(value) => {
@@ -188,7 +191,7 @@ const GuestDetailsInfo = ({
 
         <Form.Item name="idType" label="ID Type" className="w-48">
           <Select
-            disabled={isDetails}
+            disabled={!isEditing && isDetails}
             placeholder={contactInfo?.idType || "Enter ID Type"}
             value={contact?.idType}
             options={[
@@ -200,7 +203,7 @@ const GuestDetailsInfo = ({
 
         <Form.Item name="idNo" label="ID No" className="w-48">
           <Input
-            disabled={isDetails}
+            disabled={!isEditing && isDetails}
             placeholder={contactInfo?.idNo?.toString() || "Enter ID Type"}
             value={contact?.idNo?.toString()}
           />
