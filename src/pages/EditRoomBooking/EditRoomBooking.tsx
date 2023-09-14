@@ -62,7 +62,9 @@ const EditRoomBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [updateBooking] = useMutation(UPDATE_BOOKING);
   const [updateRoomBooking] = useMutation(UPDATE_ROOM_BOOKING);
-  const [removeRoomBooking] = useMutation(REMOVE_ROOM_BOOKING);
+  const [removeRoomBooking] = useMutation(REMOVE_ROOM_BOOKING, {
+    refetchQueries: [GET_ROOM_BOOKING],
+  });
 
   const [extraOptions, setExtraOptions] = useState<{
     roomBooking?: RoomBookingInput;
