@@ -1,34 +1,7 @@
+import { useQuery } from "@apollo/client";
 import { DatePicker, Input, Table } from "antd";
-
-const dataSource = [
-  {
-    key: "1",
-    roomNumber: "John Doe",
-    contact: "34354534653",
-    bookingAmount: "2100",
-    paidAmount: "500",
-    dueAmount: "100",
-    actions: "Booking Details",
-  },
-  {
-    key: "2",
-    roomNumber: "annur",
-    contact: "34354534653",
-    bookingAmount: "2100",
-    paidAmount: "5000",
-    dueAmount: "1000",
-    actions: "Booking Details",
-  },
-  {
-    key: "3",
-    roomNumber: "jany",
-    contact: "34354534653",
-    bookingAmount: "2100",
-    paidAmount: "500",
-    dueAmount: "100",
-    actions: "Booking Details",
-  },
-];
+import { Link } from "react-router-dom";
+import { GET_TRANSACTIONS } from "../../graphql/queries/transactionsQueries";
 
 const columns = [
   {
@@ -43,7 +16,7 @@ const columns = [
   },
   {
     title: "BOOKING AMOUNT",
-    dataIndex: "bookingAmount",
+    dataIndex: "amount",
     key: "bookingAmount",
   },
   {
@@ -57,34 +30,54 @@ const columns = [
     key: "dueAmount",
   },
   {
-    title: "ACTIONS",
-    dataIndex: "actions",
-    key: "bookingDetails",
+    title: "ACTION",
+    dataIndex: "action",
+    key: "action",
+    render: (bookingId: string) => (
+      <Link to={`/booking-details/${bookingId}`}>Booking Details</Link>
+    ),
   },
 ];
 
 const Transactions = () => {
+  const { data, loading, error } = useQuery(GET_TRANSACTIONS);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+
   const onChange = () => {
-    console.log("somethig change");
+    console.log("something changed");
   };
 
   const onOk = () => {
     console.log("ok");
   };
 
+  const searchInput = () => {
+    console.log("searching");
+  };
+
+  const dataSource = data?.transactions.map((transaction) => ({
+    key: transaction.booking,
+    contact: transaction.contact.name,
+    amount: transaction.amount,
+  }));
+
   return (
     <>
       <div className="flex align-middle justify-between mb-3">
         <div className="w-3/12">
-          <Input placeholder="Search here.." allowClear size="middle" />
+          <Input
+            placeholder="Search here.."
+            allowClear
+            size="middle"
+            onChange={searchInput}
+          />
         </div>
-        <DatePicker
-          showTime
-          onChange={onChange}
-          onOk={onOk}
-          placeholder="Select Date"
-        />
+
+        <DatePicker showTime onChange={onChange} onOk={onOk} />
       </div>
+      {/* Transaction table */}
       <Table dataSource={dataSource} columns={columns} />
     </>
   );

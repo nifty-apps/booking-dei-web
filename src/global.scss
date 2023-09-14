@@ -28,8 +28,8 @@ ul {
 
 // sidebar | antd
 .ant-layout-sider-children {
-background-color: #fff;
-    height: 100vh !important;
+   background-color: #fff;
+   height: 100vh !important;
 }
 
 li.ant-menu-item.ant-menu-item-selected {
@@ -42,8 +42,13 @@ li.ant-menu-item.ant-menu-item-selected {
     background: #fff;
 }
 
-
 // sidebar menu link 
 .menuLink:focus{
     color: #fff !important;
+}
+
+
+// date range picker 
+.ant-btn-sm {
+    background: rgb(82, 82, 221);
 }
