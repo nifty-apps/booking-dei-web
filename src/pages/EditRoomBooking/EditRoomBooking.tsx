@@ -16,6 +16,7 @@ import {
   RoomBookingStatus,
 } from "../../graphql/__generated__/graphql";
 import {
+  REMOVE_ROOM_BOOKING,
   UPDATE_BOOKING,
   UPDATE_ROOM_BOOKING,
 } from "../../graphql/mutations/bookingMutations";
@@ -61,6 +62,7 @@ const EditRoomBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [updateBooking] = useMutation(UPDATE_BOOKING);
   const [updateRoomBooking] = useMutation(UPDATE_ROOM_BOOKING);
+  const [removeRoomBooking] = useMutation(REMOVE_ROOM_BOOKING);
 
   const [extraOptions, setExtraOptions] = useState<{
     roomBooking?: RoomBookingInput;
@@ -101,6 +103,21 @@ const EditRoomBooking = () => {
       id: contactId,
     },
   });
+
+  // delete room booking
+  const deleteRoomBooking = async (roomId: string) => {
+    try {
+      const { data } = await removeRoomBooking({
+        variables: { id: roomId },
+      });
+
+      if (data) {
+        message.success("Room booking deleted successfully!");
+      }
+    } catch (error) {
+      message.error("Oops! Something went wrong.");
+    }
+  };
 
   const columns = [
     {
@@ -149,12 +166,10 @@ const EditRoomBooking = () => {
           )}
           <button
             onClick={() =>
-              setBookingDetails({
-                ...bookingDetails,
-                roomBookings: bookingDetails.roomBookings.filter(
-                  (room) => room.room !== roomId
-                ),
-              })
+              deleteRoomBooking(
+                bookingDetails.roomBookings.find((room) => room.room === roomId)
+                  ?._id || ""
+              )
             }
           >
             <FaXmark />
@@ -229,7 +244,7 @@ const EditRoomBooking = () => {
         });
 
         if (res?.data && res) {
-          message.success("Booking updated successfully");
+          message.success("Booking updated successfully!");
         }
       }
     } catch (error) {

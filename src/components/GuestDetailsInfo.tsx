@@ -156,6 +156,7 @@ const GuestDetailsInfo = ({
         <Form.Item name="phone" label="Phone" className="w-48">
           <Select
             disabled={!isEditing && isDetails}
+            value={contactInfo?.phone}
             placeholder={contactInfo?.phone || "Enter phone number"}
             className="w-48"
             onSelect={(value) => {

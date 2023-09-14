@@ -45,3 +45,23 @@ mutation UpdateBooking($updateBookingInput: UpdateBookingInput!) {
   }
 }
 `);
+
+// delete booking
+export const REMOVE_ROOM_BOOKING = gql(`
+mutation RemoveRoomBooking($id:ID!) {
+    removeRoomBooking(id: $id) {
+        _id
+        checkIn
+        checkOut
+        rent
+        discount
+        extraBed
+        extraBreakfast
+        booking
+        hotel
+        status
+        room
+    }
+}
+
+`);
