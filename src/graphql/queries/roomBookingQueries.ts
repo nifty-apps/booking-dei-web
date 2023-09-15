@@ -24,5 +24,3 @@ export const GET_ROOM_BOOKING = gql(`
     }
 }
 `);
-
-// bookingId: 64f716687c888e446173da5e

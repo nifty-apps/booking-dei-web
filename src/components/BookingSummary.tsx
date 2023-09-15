@@ -22,13 +22,14 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
       <div className="flex justify-between text-md" key={roomBooking.checkIn}>
         <div className="flex items-center">
           <div className="font-semibold">
-            {roomBooking.type}
-            {/* {`${roomBooking.room?.type?.title} - ${roomBooking.room?.number}`} */}
+            {roomBooking?.type && roomBooking?.type}
+            {roomBooking.room?.type?.title &&
+              `${roomBooking.room?.type?.title}`}
             <span className="text-xs">
-              {roomBooking.extraBed && " + Extra Bed"}
+              {roomBooking.extraBed && " ( Extra Bed"}
             </span>
             <span className="text-xs">
-              {roomBooking.extraBreakfast && " + Extra Breakfast"}
+              {roomBooking.extraBreakfast && " + Extra Breakfast )"}
             </span>
           </div>
         </div>
