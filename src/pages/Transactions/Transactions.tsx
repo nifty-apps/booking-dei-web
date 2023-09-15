@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { DatePicker, Input, Table } from "antd";
 import { format } from "date-fns";
 import { ChangeEvent, useState } from "react";
+import TitleText from "../../components/Title";
 import { GET_TRANSACTIONS } from "../../graphql/queries/transactionsQueries";
 
 const columns = [
@@ -43,14 +44,14 @@ const columns = [
 ];
 
 const Transactions = () => {
-  const { data, loading, error } = useQuery(GET_TRANSACTIONS);
   const [searchByText, setSearchByText] = useState("");
+  const { data, loading, error } = useQuery(GET_TRANSACTIONS);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
   const onChange = () => {
-    console.log("something changed");
+    console.log("date picker change");
   };
 
   const onOk = () => {
@@ -64,7 +65,6 @@ const Transactions = () => {
   const filteredDataSource = data?.transactions.filter((transaction) => {
     const lowercaseSearchText = searchByText.toLowerCase();
 
-    // Check if any of the fields match the search text
     return (
       transaction.date.toLowerCase().includes(lowercaseSearchText) ||
       transaction.contact.name.toLowerCase().includes(lowercaseSearchText) ||
@@ -87,6 +87,9 @@ const Transactions = () => {
 
   return (
     <>
+      <div className="mb-5">
+        <TitleText text="Transactions" />
+      </div>
       <div className="flex align-middle justify-between mb-3">
         <div className="w-3/12">
           <Input
