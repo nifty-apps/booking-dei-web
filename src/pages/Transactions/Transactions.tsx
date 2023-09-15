@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { DatePicker, Input, Table } from "antd";
 import { format } from "date-fns";
+import { ChangeEvent, useState } from "react";
 import { GET_TRANSACTIONS } from "../../graphql/queries/transactionsQueries";
 
 const columns = [
@@ -29,7 +30,6 @@ const columns = [
     dataIndex: "method",
     key: "method",
   },
-
   {
     title: "AMOUNT",
     dataIndex: "amount",
@@ -44,6 +44,7 @@ const columns = [
 
 const Transactions = () => {
   const { data, loading, error } = useQuery(GET_TRANSACTIONS);
+  const [searchByText, setSearchByText] = useState("");
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
@@ -56,13 +57,26 @@ const Transactions = () => {
     console.log("ok");
   };
 
-  const searchInput = () => {
-    console.log("searching");
+  const searchTransaction = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchByText(e.target.value);
   };
 
-  const dataSource = data?.transactions.map((transaction) => ({
+  const filteredDataSource = data?.transactions.filter((transaction) => {
+    const lowercaseSearchText = searchByText.toLowerCase();
+
+    // Check if any of the fields match the search text
+    return (
+      transaction.date.toLowerCase().includes(lowercaseSearchText) ||
+      transaction.contact.name.toLowerCase().includes(lowercaseSearchText) ||
+      transaction?.category?.toLowerCase().includes(lowercaseSearchText) ||
+      transaction?.subCategory?.toLowerCase().includes(lowercaseSearchText) ||
+      transaction.method.toLowerCase().includes(lowercaseSearchText)
+    );
+  });
+
+  const dataSource = filteredDataSource?.map((transaction) => ({
     key: transaction._id,
-    date: format(new Date(transaction.date), "dd/MM/yyyy"),
+    date: format(new Date(transaction.date), "yyyy-MM-dd"),
     contact: transaction.contact.name,
     category: transaction.category,
     subCategory: transaction.subCategory,
@@ -79,7 +93,8 @@ const Transactions = () => {
             placeholder="Search here.."
             allowClear
             size="middle"
-            onChange={searchInput}
+            onChange={searchTransaction}
+            value={searchByText}
           />
         </div>
 
