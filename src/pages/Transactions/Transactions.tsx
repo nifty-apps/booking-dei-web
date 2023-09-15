@@ -1,13 +1,13 @@
 import { useQuery } from "@apollo/client";
 import { DatePicker, Input, Table } from "antd";
-import { Link } from "react-router-dom";
+import { format } from "date-fns";
 import { GET_TRANSACTIONS } from "../../graphql/queries/transactionsQueries";
 
 const columns = [
   {
-    title: "ROOM NUMBER",
-    dataIndex: "roomNumber",
-    key: "roomNumber",
+    title: "DATE",
+    dataIndex: "date",
+    key: "date",
   },
   {
     title: "CONTACT",
@@ -15,27 +15,24 @@ const columns = [
     key: "contact",
   },
   {
-    title: "BOOKING AMOUNT",
-    dataIndex: "amount",
-    key: "bookingAmount",
+    title: "CATEGORY",
+    dataIndex: "category",
+    key: "category",
   },
   {
-    title: "PAID AMOUNT",
-    dataIndex: "paidAmount",
-    key: "paidAmount",
+    title: "SUB-CATEGORY",
+    dataIndex: "subCategory",
+    key: "subCategory",
   },
   {
-    title: "DUE AMOUNT",
-    dataIndex: "dueAmount",
-    key: "dueAmount",
+    title: "METHOD",
+    dataIndex: "method",
+    key: "method",
   },
   {
-    title: "ACTION",
-    dataIndex: "action",
-    key: "action",
-    render: (bookingId: string) => (
-      <Link to={`/booking-details/${bookingId}`}>Booking Details</Link>
-    ),
+    title: "DESCRIPTION",
+    dataIndex: "description",
+    key: "description",
   },
 ];
 
@@ -58,9 +55,13 @@ const Transactions = () => {
   };
 
   const dataSource = data?.transactions.map((transaction) => ({
-    key: transaction.booking,
+    key: transaction._id,
+    date: format(new Date(transaction.date), "dd/MM/yyyy"),
     contact: transaction.contact.name,
-    amount: transaction.amount,
+    category: transaction.category,
+    subCategory: transaction.subCategory,
+    method: transaction.method,
+    description: transaction.description,
   }));
 
   return (
