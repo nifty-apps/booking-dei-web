@@ -24,6 +24,12 @@ import { RootState } from "../../store";
 export interface BookingDetails extends CreateBookingInput {
   roomBookings: (RoomBookingInput & {
     type?: string;
+    room?: {
+      type?: {
+        title?: string;
+        rent?: number;
+      };
+    };
   })[];
 }
 
@@ -228,6 +234,8 @@ const NewBooking = () => {
       }));
     }
   }, [selectedRoomsByDate, bookingDetails]);
+
+  console.log("new booking: ", bookingDetails.roomBookings);
 
   return (
     <>
