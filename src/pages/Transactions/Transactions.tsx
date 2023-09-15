@@ -29,6 +29,12 @@ const columns = [
     dataIndex: "method",
     key: "method",
   },
+
+  {
+    title: "AMOUNT",
+    dataIndex: "amount",
+    key: "amount",
+  },
   {
     title: "DESCRIPTION",
     dataIndex: "description",
@@ -61,6 +67,7 @@ const Transactions = () => {
     category: transaction.category,
     subCategory: transaction.subCategory,
     method: transaction.method,
+    amount: transaction.amount,
     description: transaction.description,
   }));
 
