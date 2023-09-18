@@ -109,7 +109,6 @@ const FloorPlan = ({
               <div className="grid grid-cols-2 gap-2">
                 {floorDetails.rooms.map((room) => {
                   const { _id, number, type, roombookings } = room;
-                  console.log(roombookings);
                   const status =
                     roombookings.length > 0
                       ? RoomBookingStatus.Booked

@@ -1,7 +1,10 @@
-import { DatePicker, Form, Input, Modal, Select, Space } from "antd";
+import { useMutation } from "@apollo/client";
+import { DatePicker, Form, Input, Modal, Select, Space, message } from "antd";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { Transaction } from "../graphql/__generated__/graphql";
+import { CREATE_TRANSACTION } from "../graphql/mutations/transactionMutations";
 import { BookingDetails } from "../pages/NewBooking/NewBooking";
 import { RootState } from "../store";
 
@@ -14,8 +17,10 @@ interface BookingSummaryProps {
 const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [form] = Form.useForm();
+
+  // create transaction API call 
+  const [createTransaction] = useMutation(CREATE_TRANSACTION);
 
   const roomBookingInfo = roomBookings?.map((roomBooking) => {
     return (
@@ -49,6 +54,35 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
     (total, room) => total + (room?.discount ?? 0),
     0
   );
+
+  // create transaction
+  const onFinish = async (values: Transaction) => {
+    try {
+      const res = await createTransaction({
+        variables: {
+          createTransactionInput: {
+            contact: "64d22306cb903c900cee91e4",
+            booking: "64d76671e8ec34dfbf5b6aaf",
+            hotel: user?.hotels[0] || "",
+            date: values.date,
+            category: values.category,
+            subCategory: values.subCategory,
+            method: values.method,
+            description: values.description,
+            amount: Number(values.amount),
+          },
+        },
+      });
+
+      if (res?.data?.createTransaction) {
+        message.success("Transaction created successfully!");
+        form.resetFields();
+        setIsModalOpen(false);
+      }
+    } catch (err) {
+      message.error(`something went wrong!`);
+    }
+  };
 
   return (
     <>
@@ -142,7 +176,7 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
         </div>
       )}
 
-      {/* modal for payment status */}
+      {/* Modal for payment status */}
       <Modal
         title="Transaction"
         open={isModalOpen}
@@ -150,12 +184,7 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
         onCancel={() => setIsModalOpen(false)}
         footer={null}
       >
-        <Form
-          form={form}
-          onValuesChange={(changedValues) => {
-            console.log(changedValues);
-          }}
-        >
+        <Form form={form} onFinish={onFinish}>
           <Space direction="vertical" className="w-full">
             <h3>Date</h3>
             <Form.Item name="date" className="mb-0">
@@ -195,7 +224,7 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
             </div>
 
             <h3>Payment Method</h3>
-            <Form.Item name="paymentMethod" className="mb-0">
+            <Form.Item name="method" className="mb-0">
               <Select
                 placeholder="Payment method"
                 options={[
@@ -207,14 +236,17 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
             </Form.Item>
 
             <h3>Description</h3>
-            <TextArea
-              name="description"
-              placeholder="Enter description"
-              autoSize={{ minRows: 3, maxRows: 5 }}
-            />
+            <Form.Item name="description" className="mb-0">
+              <TextArea
+                placeholder="Enter description"
+                autoSize={{ minRows: 3, maxRows: 5 }}
+              />
+            </Form.Item>
 
             <h3>Amount</h3>
-            <Input placeholder="Amount" name="amount" />
+            <Form.Item name="amount" className="mb-0">
+              <Input placeholder="Amount" autoComplete="off" />
+            </Form.Item>
           </Space>
 
           <div className="flex justify-end">
