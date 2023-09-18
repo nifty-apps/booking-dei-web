@@ -56,3 +56,39 @@ export const GET_TRANSACTION_BY_FILTER = gql(`
         }
     }
 `);
+
+// transactionsByDateRange
+export const GET_TRANSACTIONS_BY_DATE_RANGE = gql(`
+  query TransactionsByDateRange( 
+    $hotelId: ID!,
+     $startDate: DateTime!,
+      $endDate: DateTime!
+) {
+    transactionsByDateRange(
+      hotelId: $hotelId,
+      startDate: $startDate,
+      endDate: $endDate
+    ) {
+      _id
+      booking
+      hotel
+      date
+      deletedAt
+      category
+      subCategory
+      method
+      description
+      amount
+      contact {
+        _id
+        name
+        phone
+        idType
+        idNo
+        address
+        hotel
+        type
+      }
+    }
+  }
+`);

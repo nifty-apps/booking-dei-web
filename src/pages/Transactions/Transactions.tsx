@@ -1,70 +1,56 @@
 import { useQuery } from "@apollo/client";
 import { DatePicker, Input, Table } from "antd";
 import { format } from "date-fns";
-import { ChangeEvent, useState } from "react";
+import dayjs from "dayjs"; // Import dayjs
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
-import { GET_TRANSACTIONS } from "../../graphql/queries/transactionsQueries";
+import {
+  GET_TRANSACTIONS,
+  GET_TRANSACTIONS_BY_DATE_RANGE,
+} from "../../graphql/queries/transactionsQueries";
+import { RootState } from "../../store";
 
-const columns = [
-  {
-    title: "DATE",
-    dataIndex: "date",
-    key: "date",
-  },
-  {
-    title: "CONTACT",
-    dataIndex: "contact",
-    key: "contact",
-  },
-  {
-    title: "CATEGORY",
-    dataIndex: "category",
-    key: "category",
-  },
-  {
-    title: "SUB-CATEGORY",
-    dataIndex: "subCategory",
-    key: "subCategory",
-  },
-  {
-    title: "METHOD",
-    dataIndex: "method",
-    key: "method",
-  },
-  {
-    title: "AMOUNT",
-    dataIndex: "amount",
-    key: "amount",
-  },
-  {
-    title: "DESCRIPTION",
-    dataIndex: "description",
-    key: "description",
-  },
-];
+const { RangePicker } = DatePicker;
 
 const Transactions = () => {
-  const [searchByText, setSearchByText] = useState("");
-  const { data, loading, error } = useQuery(GET_TRANSACTIONS);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const [selectedDateRange, setSelectedDateRange] = useState<[string, string]>([
+    "",
+    "",
+  ]);
+  const [searchText, setSearchText] = useState("");
+
+  const { data: transactionsData, loading, error } = useQuery(GET_TRANSACTIONS);
+
+  // Fetch data based on the selected date range
+  const { data: transactionsByDateRangeData } = useQuery(
+    GET_TRANSACTIONS_BY_DATE_RANGE,
+    {
+      variables: {
+        hotelId: user?.hotels[0] || "",
+        startDate: selectedDateRange[0],
+        endDate: selectedDateRange[1],
+      },
+      skip: !selectedDateRange[0] || !selectedDateRange[1], // Skip the query if dates are not selected
+    }
+  );
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
-  const onChange = () => {
-    console.log("date picker change");
-  };
+  const transactions = transactionsData?.transactions || [];
+  const transactionsByDateRange =
+    transactionsByDateRangeData?.transactionsByDateRange || [];
 
-  const onOk = () => {
-    console.log("ok");
-  };
+  // Combine the data from both queries based on date range
+  const combinedTransactions = selectedDateRange[0]
+    ? transactionsByDateRange
+    : transactions;
 
-  const searchTransaction = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchByText(e.target.value);
-  };
-
-  const filteredDataSource = data?.transactions.filter((transaction) => {
-    const lowercaseSearchText = searchByText.toLowerCase();
-
+  // Filter transactions based on search text
+  const filteredTransactions = combinedTransactions.filter((transaction) => {
+    const lowercaseSearchText = searchText.toLowerCase();
     return (
       transaction.date.toLowerCase().includes(lowercaseSearchText) ||
       transaction.contact.name.toLowerCase().includes(lowercaseSearchText) ||
@@ -74,7 +60,7 @@ const Transactions = () => {
     );
   });
 
-  const dataSource = filteredDataSource?.map((transaction) => ({
+  const dataSource = filteredTransactions.map((transaction) => ({
     key: transaction._id,
     date: format(new Date(transaction.date), "yyyy-MM-dd"),
     contact: transaction.contact.name,
@@ -84,6 +70,44 @@ const Transactions = () => {
     amount: transaction.amount,
     description: transaction.description,
   }));
+
+  const columns = [
+    {
+      title: "DATE",
+      dataIndex: "date",
+      key: "date",
+    },
+    {
+      title: "CONTACT",
+      dataIndex: "contact",
+      key: "contact",
+    },
+    {
+      title: "CATEGORY",
+      dataIndex: "category",
+      key: "category",
+    },
+    {
+      title: "SUB-CATEGORY",
+      dataIndex: "subCategory",
+      key: "subCategory",
+    },
+    {
+      title: "METHOD",
+      dataIndex: "method",
+      key: "method",
+    },
+    {
+      title: "AMOUNT",
+      dataIndex: "amount",
+      key: "amount",
+    },
+    {
+      title: "DESCRIPTION",
+      dataIndex: "description",
+      key: "description",
+    },
+  ];
 
   return (
     <>
@@ -96,14 +120,26 @@ const Transactions = () => {
             placeholder="Search here.."
             allowClear
             size="middle"
-            onChange={searchTransaction}
-            value={searchByText}
+            onChange={(e) => setSearchText(e.target.value)}
+            value={searchText}
           />
         </div>
-
-        <DatePicker showTime onChange={onChange} onOk={onOk} />
+        <RangePicker
+          allowClear={true}
+          format="YYYY-MM-DD"
+          value={
+            selectedDateRange[0] && selectedDateRange[1]
+              ? [dayjs(selectedDateRange[0]), dayjs(selectedDateRange[1])]
+              : undefined
+          }
+          onChange={(dates) =>
+            setSelectedDateRange([
+              dates?.[0]?.format("YYYY-MM-DD") || "",
+              dates?.[1]?.format("YYYY-MM-DD") || "",
+            ])
+          }
+        />
       </div>
-      {/* Transaction table */}
       <Table dataSource={dataSource} columns={columns} />
     </>
   );
