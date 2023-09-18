@@ -52,11 +52,11 @@ const Transactions = () => {
   const filteredTransactions = combinedTransactions.filter((transaction) => {
     const lowercaseSearchText = searchText.toLowerCase();
     return (
-      transaction.date.toLowerCase().includes(lowercaseSearchText) ||
-      transaction.contact.name.toLowerCase().includes(lowercaseSearchText) ||
+      transaction?.date.toLowerCase().includes(lowercaseSearchText) ||
+      transaction?.contact?.name.toLowerCase().includes(lowercaseSearchText) ||
       transaction?.category?.toLowerCase().includes(lowercaseSearchText) ||
       transaction?.subCategory?.toLowerCase().includes(lowercaseSearchText) ||
-      transaction.method.toLowerCase().includes(lowercaseSearchText)
+      transaction?.method.toLowerCase().includes(lowercaseSearchText)
     );
   });
 
