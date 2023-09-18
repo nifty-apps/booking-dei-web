@@ -133,7 +133,7 @@ export type CreateRoomBookingInput = {
   /** Hotel where the booking were generated */
   hotel: Scalars['ID']['input'];
   /** Room rent for the booking */
-  rent: Scalars['Float']['input'];
+  rent?: InputMaybe<Scalars['Float']['input']>;
   /** Room where the booking were generated */
   room: Scalars['ID']['input'];
   /** Room booking status of the booking */
@@ -374,7 +374,7 @@ export type Query = {
   hotel: Hotel;
   hotels: Array<Hotel>;
   room: Room;
-  roomBookingFinancials: Array<RoomsByFloorResponse>;
+  roomBookingFinancials: Array<RoomBookingsOverview>;
   roomBookings: Array<RoomBookingResponse>;
   roomType: RoomType;
   rooms: Array<Room>;
@@ -500,7 +500,7 @@ export type RoomBooking = {
   /** Hotel where the booking were generated */
   hotel: Scalars['ID']['output'];
   /** Room rent for the booking */
-  rent: Scalars['Float']['output'];
+  rent?: Maybe<Scalars['Float']['output']>;
   /** Room where the booking were generated */
   room: Scalars['ID']['output'];
   /** Room booking status of the booking */
@@ -524,7 +524,7 @@ export type RoomBookingDetails = {
   /** Discount for the booking */
   discount?: Maybe<Scalars['Float']['output']>;
   /** Room rent for the booking */
-  rent: Scalars['Float']['output'];
+  rent?: Maybe<Scalars['Float']['output']>;
   /** Room booking status of the booking */
   status: RoomBookingStatus;
 };
@@ -565,7 +565,7 @@ export type RoomBookingInput = {
   /** Extra breakfast for the booking */
   extraBreakfast: Scalars['Boolean']['input'];
   /** Room rent for the booking */
-  rent: Scalars['Float']['input'];
+  rent?: InputMaybe<Scalars['Float']['input']>;
   /** Room where the booking were generated */
   room: Scalars['ID']['input'];
   /** Room booking status of the booking */
@@ -884,7 +884,7 @@ export type UpdateRoomBookingMutationVariables = Exact<{
 }>;
 
 
-export type UpdateRoomBookingMutation = { __typename?: 'Mutation', updateRoomBooking: { __typename?: 'RoomBooking', _id: string, room: string, checkIn: any, checkOut: any, rent: number, discount?: number | null, extraBed: boolean, extraBreakfast: boolean, booking: string, hotel: string, status: RoomBookingStatus } };
+export type UpdateRoomBookingMutation = { __typename?: 'Mutation', updateRoomBooking: { __typename?: 'RoomBooking', _id: string, room: string, checkIn: any, checkOut: any, rent?: number | null, discount?: number | null, extraBed: boolean, extraBreakfast: boolean, booking: string, hotel: string, status: RoomBookingStatus } };
 
 export type UpdateBookingMutationVariables = Exact<{
   updateBookingInput: UpdateBookingInput;
@@ -898,7 +898,7 @@ export type RemoveRoomBookingMutationVariables = Exact<{
 }>;
 
 
-export type RemoveRoomBookingMutation = { __typename?: 'Mutation', removeRoomBooking: { __typename?: 'RoomBooking', _id: string, checkIn: any, checkOut: any, rent: number, discount?: number | null, extraBed: boolean, extraBreakfast: boolean, booking: string, hotel: string, status: RoomBookingStatus, room: string } };
+export type RemoveRoomBookingMutation = { __typename?: 'Mutation', removeRoomBooking: { __typename?: 'RoomBooking', _id: string, checkIn: any, checkOut: any, rent?: number | null, discount?: number | null, extraBed: boolean, extraBreakfast: boolean, booking: string, hotel: string, status: RoomBookingStatus, room: string } };
 
 export type CreateContactMutationVariables = Exact<{
   createContactInput: CreateContactInput;
@@ -957,7 +957,7 @@ export type RoomsByFloorQueryVariables = Exact<{
 }>;
 
 
-export type RoomsByFloorQuery = { __typename?: 'Query', roomsByFloor: Array<{ __typename?: 'RoomsByFloorResponse', floor: string, rooms: Array<{ __typename?: 'RoomBookingsOverview', _id: string, number: string, floor: string, position: string, type: { __typename?: 'RoomTypeDetails', title: string, rent: number }, roombookings: Array<{ __typename?: 'RoomBookingDetails', _id: string, checkIn: any, checkOut: any, rent: number, discount?: number | null, booking: string, status: RoomBookingStatus, bookingCustomer?: string | null }> }> }> };
+export type RoomsByFloorQuery = { __typename?: 'Query', roomsByFloor: Array<{ __typename?: 'RoomsByFloorResponse', floor: string, rooms: Array<{ __typename?: 'RoomBookingsOverview', _id: string, number: string, floor: string, position: string, type: { __typename?: 'RoomTypeDetails', title: string, rent: number }, roombookings: Array<{ __typename?: 'RoomBookingDetails', _id: string, checkIn: any, checkOut: any, rent?: number | null, discount?: number | null, booking: string, status: RoomBookingStatus, bookingCustomer?: string | null }> }> }> };
 
 export type TransactionsQueryVariables = Exact<{ [key: string]: never; }>;
 
