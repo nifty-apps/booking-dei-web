@@ -61,18 +61,36 @@ const RoomBookingFinancials = () => {
     },
   ];
 
-  console.log(searchText);
-
   const dataSource = data?.roomBookingFinancials
-    .filter((transaction) => transaction?.roombookings?.length > 0) // Filter out items with an empty roombookings array
+    .filter((transaction) => transaction?.roombookings?.length > 0)
+    .filter((transaction) => {
+      const lowerCaseQuery = searchText.toLowerCase();
+      return (
+        (transaction?.number?.toString()?.includes(lowerCaseQuery) ?? false) ||
+        (transaction?.roombookings?.[0]?.bookingCustomer
+          ?.toLowerCase()
+          .includes(lowerCaseQuery) ??
+          false) ||
+        (transaction?.type?.rent?.toString()?.includes(lowerCaseQuery) ??
+          false) ||
+        (transaction?.roombookings?.[0]?.bookingPayment
+          ?.toString()
+          .includes(lowerCaseQuery) ??
+          false) ||
+        (transaction?.roombookings?.[0]?.bookingDue
+          ?.toString()
+          .includes(lowerCaseQuery) ??
+          false)
+      );
+    })
     .map((transaction) => ({
-      key: transaction._id,
-      roomNumber: transaction.number,
-      contact: transaction.roombookings[0]?.bookingCustomer,
+      key: transaction?._id,
+      roomNumber: transaction?.number,
+      contact: transaction?.roombookings?.[0]?.bookingCustomer,
       bookingAmount: transaction?.type?.rent,
-      paidAmount: transaction?.roombookings[0]?.bookingPayment,
-      dueAmount: transaction?.roombookings[0]?.bookingDue,
-      action: transaction?.roombookings[0]?.booking,
+      paidAmount: transaction?.roombookings?.[0]?.bookingPayment,
+      dueAmount: transaction?.roombookings?.[0]?.bookingDue,
+      action: transaction?.roombookings?.[0]?.booking,
     }));
 
   return (
@@ -90,7 +108,7 @@ const RoomBookingFinancials = () => {
           />
         </div>
         <DatePicker
-          allowClear={true}
+          allowClear={false}
           placeholder="Select Date"
           onChange={(_, date) => setSelectedDate(new Date(date))}
         />
