@@ -9,7 +9,8 @@ import { RootState } from "../../store";
 
 const RoomBookingFinancials = () => {
   const { user } = useSelector((state: RootState) => state.auth);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const { data, loading, error } = useQuery(GET_ROOM_BOOKING_FINANCIALS, {
     variables: {
@@ -34,9 +35,9 @@ const RoomBookingFinancials = () => {
       key: "contact",
     },
     {
-      title: "RENT AMOUNT",
-      dataIndex: "rentAmount",
-      key: "rentAmount",
+      title: "BOOKING AMOUNT",
+      dataIndex: "bookingAmount",
+      key: "bookingAmount",
     },
     {
       title: "PAID AMOUNT",
@@ -60,22 +61,19 @@ const RoomBookingFinancials = () => {
     },
   ];
 
-  const dataSource = data?.roomBookingFinancials.map((transaction) => ({
-    key: transaction._id,
-    roomNumber: transaction.number,
-    contact: transaction?.roombookings.map(
-      (contact) => contact?.bookingCustomer
-    ),
-    rentAmount: transaction?.type.rent,
-    paidAmount: transaction?.roombookings.map(
-      (amount) => amount?.bookingPayment
-    ),
-    dueAmount: transaction?.roombookings.map((due) => due?.bookingDue),
-    action: transaction?.roombookings.map((bookingId) => bookingId?.booking),
-  }));
+  console.log(searchText);
 
-  console.log("Date : ", selectedDate);
-  console.log(`Data : `, data);
+  const dataSource = data?.roomBookingFinancials
+    .filter((transaction) => transaction?.roombookings?.length > 0) // Filter out items with an empty roombookings array
+    .map((transaction) => ({
+      key: transaction._id,
+      roomNumber: transaction.number,
+      contact: transaction.roombookings[0]?.bookingCustomer,
+      bookingAmount: transaction?.type?.rent,
+      paidAmount: transaction?.roombookings[0]?.bookingPayment,
+      dueAmount: transaction?.roombookings[0]?.bookingDue,
+      action: transaction?.roombookings[0]?.booking,
+    }));
 
   return (
     <>
@@ -84,11 +82,17 @@ const RoomBookingFinancials = () => {
       </div>
       <div className="flex align-middle justify-between mb-3">
         <div className="w-3/12">
-          <Input placeholder="Search here.." allowClear size="middle" />
+          <Input
+            placeholder="Search here.."
+            allowClear
+            size="middle"
+            onChange={(event) => setSearchText(event.target.value)}
+          />
         </div>
         <DatePicker
+          allowClear={true}
           placeholder="Select Date"
-          onChange={(date, dateString) => setSelectedDate(dateString)}
+          onChange={(_, date) => setSelectedDate(new Date(date))}
         />
       </div>
       <Table dataSource={dataSource} columns={columns} />
