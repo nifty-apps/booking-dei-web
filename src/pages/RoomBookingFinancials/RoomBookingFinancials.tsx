@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { DatePicker, Input, Table } from "antd";
-import { ChangeEvent } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TitleText from "../../components/Title";
@@ -9,12 +9,13 @@ import { RootState } from "../../store";
 
 const RoomBookingFinancials = () => {
   const { user } = useSelector((state: RootState) => state.auth);
+  const [selectedDate, setSelectedDate] = useState("");
 
   const { data, loading, error } = useQuery(GET_ROOM_BOOKING_FINANCIALS, {
     variables: {
       hotel: user?.hotels[0] || "",
-      startDate: "2023-08-10",
-      endDate: "2023-08-13",
+      startDate: selectedDate,
+      endDate: selectedDate,
     },
   });
 
@@ -73,13 +74,8 @@ const RoomBookingFinancials = () => {
     action: transaction?.roombookings.map((bookingId) => bookingId?.booking),
   }));
 
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-  };
-
-  const handleDateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-  };
+  console.log("Date : ", selectedDate);
+  console.log(`Data : `, data);
 
   return (
     <>
@@ -88,14 +84,12 @@ const RoomBookingFinancials = () => {
       </div>
       <div className="flex align-middle justify-between mb-3">
         <div className="w-3/12">
-          <Input
-            placeholder="Search here.."
-            allowClear
-            size="middle"
-            onChange={handleSearchChange}
-          />
+          <Input placeholder="Search here.." allowClear size="middle" />
         </div>
-        <DatePicker placeholder="Select Date" />
+        <DatePicker
+          placeholder="Select Date"
+          onChange={(date, dateString) => setSelectedDate(dateString)}
+        />
       </div>
       <Table dataSource={dataSource} columns={columns} />
     </>
