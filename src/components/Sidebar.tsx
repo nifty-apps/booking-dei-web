@@ -36,7 +36,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     case "/transactions":
       selectedKey = "5";
       break;
-    case "/room-booking-financials":
+    case "/rooms-overview":
       selectedKey = "6";
       break;
 
@@ -88,7 +88,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
             </Link>
           </Menu.Item>
           <Menu.Item key="6" icon={<AiOutlineBarChart />}>
-            <Link to="/room-booking-financials" className="menuLink">
+            <Link to="/rooms-overview" className="menuLink">
               Rooms Overview
             </Link>
           </Menu.Item>

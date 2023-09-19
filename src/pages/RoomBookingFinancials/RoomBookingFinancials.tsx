@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { DatePicker, Input, Table } from "antd";
 import { ChangeEvent } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import TitleText from "../../components/Title";
 import { GET_ROOM_BOOKING_FINANCIALS } from "../../graphql/queries/roomBookingFinancialQueries";
 import { RootState } from "../../store";
@@ -50,13 +51,18 @@ const RoomBookingFinancials = () => {
       title: "ACTION",
       dataIndex: "action",
       key: "action",
+      render: (bookingId: string) => (
+        <Link to={`/booking-details/${bookingId}`} className="text-blue-600">
+          Booking Details
+        </Link>
+      ),
     },
   ];
 
   const dataSource = data?.roomBookingFinancials.map((transaction) => ({
     key: transaction._id,
     roomNumber: transaction.number,
-    contact: transaction.roombookings.map(
+    contact: transaction?.roombookings.map(
       (contact) => contact?.bookingCustomer
     ),
     rentAmount: transaction?.type.rent,
@@ -64,9 +70,14 @@ const RoomBookingFinancials = () => {
       (amount) => amount?.bookingPayment
     ),
     dueAmount: transaction?.roombookings.map((due) => due?.bookingDue),
+    action: transaction?.roombookings.map((bookingId) => bookingId?.booking),
   }));
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+  };
+
+  const handleDateChange = (e: ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
   };
 

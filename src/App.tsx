@@ -17,8 +17,8 @@ import GuestLookUp from "./pages/GuestLookUp/GuestLookUp";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import NewBooking from "./pages/NewBooking/NewBooking";
-import Transactions from "./pages/Transactions/Transactions";
 import RoomBookingFinancials from "./pages/RoomBookingFinancials/RoomBookingFinancials";
+import Transactions from "./pages/Transactions/Transactions";
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -44,10 +44,7 @@ const App = () => {
             <Route path="/calender" element={<Calender />} />
             <Route path="/guest-lookup" element={<GuestLookUp />} />
             <Route path="/transactions" element={<Transactions />} />
-            <Route
-              path="/room-booking-financials"
-              element={<RoomBookingFinancials />}
-            />
+            <Route path="/rooms-overview" element={<RoomBookingFinancials />} />
             <Route path="*" element={<Error />} />
           </Routes>
         </Content>
