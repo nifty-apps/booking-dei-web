@@ -8,6 +8,7 @@ import { Route, Routes } from "react-router-dom";
 // components
 import Sidebar from "./components/Sidebar";
 // pages
+import DetailsTransaction from "./components/DetailsTransaction";
 import Toolbar from "./components/Toolbar";
 import BookingDetails from "./pages/BookingDetails/BookingDetails";
 import Calender from "./pages/Calender/Calender";
@@ -45,6 +46,10 @@ const App = () => {
             <Route path="/guest-lookup" element={<GuestLookUp />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/rooms-overview" element={<RoomBookingFinancials />} />
+            <Route
+              path="/details-transactions/:transactionId"
+              element={<DetailsTransaction />}
+            />
             <Route path="*" element={<Error />} />
           </Routes>
         </Content>

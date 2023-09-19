@@ -40,3 +40,5 @@ query Room($id:ID!) {
 }
 
 `);
+
+// bookingId: 650997a33de68558be9aca99

@@ -3,6 +3,7 @@ import { DatePicker, Form, Input, Modal, Select, Space, message } from "antd";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Transaction } from "../graphql/__generated__/graphql";
 import { CREATE_TRANSACTION } from "../graphql/mutations/transactionMutations";
 import { BookingDetails } from "../pages/NewBooking/NewBooking";
@@ -24,6 +25,8 @@ const BookingSummary = ({
   const { user } = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
+
+  const navigate = useNavigate();
 
   // create transaction API call
   const [createTransaction] = useMutation(CREATE_TRANSACTION);
@@ -84,6 +87,9 @@ const BookingSummary = ({
         message.success("Transaction created successfully!");
         form.resetFields();
         setIsModalOpen(false);
+        navigate(
+          `/details-transactions/${res?.data?.createTransaction?.booking}`
+        );
       }
     } catch (err) {
       message.error(`something went wrong!`);
