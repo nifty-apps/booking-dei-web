@@ -35,6 +35,9 @@ export interface BookingDetails extends CreateBookingInput {
 
 const NewBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
+  const [bookingId, setCreateBookingId] = useState<string | null>(null);
+  const [contactId, setContactId] = useState<string | null>(null);
+
   const [createBooking] = useMutation(CREATE_BOOKING);
 
   const navigate = useNavigate();
@@ -196,6 +199,8 @@ const NewBooking = () => {
         navigate({
           pathname: `/booking-details/${res.data?.createBooking?._id}`,
         });
+        setCreateBookingId(res.data?.createBooking?._id);
+        setContactId(res.data?.createBooking?.customer);
       }
     } catch (error) {
       message.error("Oops! Something went wrong.");
@@ -234,8 +239,6 @@ const NewBooking = () => {
       }));
     }
   }, [selectedRoomsByDate, bookingDetails]);
-
-  console.log("new booking: ", bookingDetails.roomBookings);
 
   return (
     <>
@@ -307,7 +310,11 @@ const NewBooking = () => {
           {/* <AdditionalGuests /> */}
         </div>
         {/* booking summary || Payment flow */}
-        <BookingSummary roomBookings={bookingDetails.roomBookings} />
+        <BookingSummary
+          roomBookings={bookingDetails.roomBookings}
+          bookingId={bookingId}
+          contactId={contactId}
+        />
       </div>
 
       {/* modal for room select */}

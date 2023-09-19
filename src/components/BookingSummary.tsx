@@ -12,14 +12,20 @@ const { TextArea } = Input;
 
 interface BookingSummaryProps {
   roomBookings: BookingDetails["roomBookings"];
+  bookingId: string | null;
+  contactId: string | null;
 }
 
-const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
+const BookingSummary = ({
+  roomBookings,
+  bookingId: createBookingId,
+  contactId,
+}: BookingSummaryProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
 
-  // create transaction API call 
+  // create transaction API call
   const [createTransaction] = useMutation(CREATE_TRANSACTION);
 
   const roomBookingInfo = roomBookings?.map((roomBooking) => {
@@ -61,8 +67,8 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
       const res = await createTransaction({
         variables: {
           createTransactionInput: {
-            contact: "64d22306cb903c900cee91e4",
-            booking: "64d76671e8ec34dfbf5b6aaf",
+            contact: contactId || "",
+            booking: createBookingId || null,
             hotel: user?.hotels[0] || "",
             date: values.date,
             category: values.category,

@@ -309,7 +309,11 @@ const EditRoomBooking = () => {
           />
         </div>
         {/* booking summary || Payment flow */}
-        <BookingSummary roomBookings={bookingDetails.roomBookings} />
+        <BookingSummary
+          roomBookings={bookingDetails.roomBookings}
+          bookingId={bookingId || ""}
+          contactId={contactId}
+        />
       </div>
 
       {/* Room  options modal */}
