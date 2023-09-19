@@ -119,7 +119,7 @@ const FloorPlan = ({
                     "bg-blue-600 text-white": selectedRooms.includes(room),
                     "cursor-pointer":
                       room.number !== "Lift" && room.number !== "Staff",
-                    "cursor-not-allowed bg-gray-100":
+                    "cursor-move bg-gray-100":
                       room.number === "Lift" || room.number === "Staff",
                   });
 

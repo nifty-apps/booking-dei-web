@@ -16,8 +16,6 @@ const SelectionSummary = ({
     onChange(newRooms);
   };
 
-  console.log("selection summary : ", selectedRooms);
-
   if (selectedRooms.length === 0)
     return (
       <div className="col-span-3 bg-gray-200 p-4 rounded-sm ml-4">
