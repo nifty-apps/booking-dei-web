@@ -47,7 +47,7 @@ const App = () => {
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/rooms-overview" element={<RoomBookingFinancials />} />
             <Route
-              path="/details-transactions/:transactionId"
+              path="/details-transactions/:bookingId"
               element={<DetailsTransaction />}
             />
             <Route path="*" element={<Error />} />
