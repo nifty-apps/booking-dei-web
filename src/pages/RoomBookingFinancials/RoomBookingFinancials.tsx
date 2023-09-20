@@ -12,16 +12,19 @@ const RoomBookingFinancials = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const { data, loading, error } = useQuery(GET_ROOM_BOOKING_FINANCIALS, {
-    variables: {
-      hotel: user?.hotels[0] || "",
-      startDate: selectedDate,
-      endDate: selectedDate,
-    },
-  });
+  const { data, loading, error, refetch } = useQuery(
+    GET_ROOM_BOOKING_FINANCIALS,
+    {
+      variables: {
+        hotel: user?.hotels[0] || "",
+        startDate: selectedDate,
+        endDate: selectedDate,
+      },
+    }
+  );
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error occured - {error.message}</p>;
+  if (error) return <p>Error occurred - {error.message}</p>;
 
   const columns = [
     {
@@ -93,6 +96,20 @@ const RoomBookingFinancials = () => {
       action: transaction?.roombookings?.[0]?.booking,
     }));
 
+  const handlePreviousClick = () => {
+    const newDate = new Date(selectedDate);
+    newDate.setDate(newDate.getDate() - 1);
+    setSelectedDate(newDate);
+    refetch({ startDate: newDate, endDate: newDate });
+  };
+
+  const handleNextClick = () => {
+    const newDate = new Date(selectedDate);
+    newDate.setDate(newDate.getDate() + 1);
+    setSelectedDate(newDate);
+    refetch({ startDate: newDate, endDate: newDate });
+  };
+
   return (
     <>
       <div className="mb-5">
@@ -109,7 +126,7 @@ const RoomBookingFinancials = () => {
         </div>
 
         <div className="justify-between">
-          <Button type="primary" ghost>
+          <Button type="primary" ghost onClick={handlePreviousClick}>
             Previous
           </Button>
           <DatePicker
@@ -117,7 +134,7 @@ const RoomBookingFinancials = () => {
             placeholder="Select Date"
             onChange={(_, date) => setSelectedDate(new Date(date))}
           />
-          <Button type="primary" ghost>
+          <Button type="primary" ghost onClick={handleNextClick}>
             Next
           </Button>
         </div>
