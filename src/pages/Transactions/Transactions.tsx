@@ -140,6 +140,7 @@ const Transactions = () => {
           }
         />
       </div>
+
       <Table dataSource={dataSource} columns={columns} />
     </>
   );

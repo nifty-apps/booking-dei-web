@@ -39,11 +39,6 @@ const DetailsTransaction = () => {
     },
 
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-    },
-    {
       title: "Method",
       dataIndex: "method",
       key: "method",
@@ -54,6 +49,11 @@ const DetailsTransaction = () => {
       dataIndex: "amount",
       key: "amount",
     },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
   ];
 
   const dataSource = data?.transactionByFilter?.map(
@@ -62,9 +62,9 @@ const DetailsTransaction = () => {
         key: transaction._id,
         date: format(new Date(transaction.date), "yyyy-MM-dd"),
         name: transaction?.contact?.name,
-        description: transaction.description,
         method: transaction.method,
         amount: transaction.amount,
+        description: transaction.description,
       };
     }
   );

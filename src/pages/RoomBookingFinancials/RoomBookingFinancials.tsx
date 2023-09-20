@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { DatePicker, Input, Table } from "antd";
+import { Button, DatePicker, Input, Table } from "antd";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -98,7 +98,7 @@ const RoomBookingFinancials = () => {
       <div className="mb-5">
         <TitleText text="Rooms Overview" />
       </div>
-      <div className="flex align-middle justify-between mb-3">
+      <div className="flex align-middle mb-3 justify-between">
         <div className="w-3/12">
           <Input
             placeholder="Search here.."
@@ -107,12 +107,22 @@ const RoomBookingFinancials = () => {
             onChange={(event) => setSearchText(event.target.value)}
           />
         </div>
-        <DatePicker
-          allowClear={false}
-          placeholder="Select Date"
-          onChange={(_, date) => setSelectedDate(new Date(date))}
-        />
+
+        <div className="justify-between">
+          <Button type="primary" ghost>
+            Previous
+          </Button>
+          <DatePicker
+            allowClear={false}
+            placeholder="Select Date"
+            onChange={(_, date) => setSelectedDate(new Date(date))}
+          />
+          <Button type="primary" ghost>
+            Next
+          </Button>
+        </div>
       </div>
+
       <Table dataSource={dataSource} columns={columns} />
     </>
   );
