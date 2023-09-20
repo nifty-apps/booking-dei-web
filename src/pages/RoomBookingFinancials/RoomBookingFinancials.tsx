@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Button, DatePicker, Input, Table } from "antd";
-import { useState } from "react";
+import dayjs from "dayjs"; // Import dayjs library
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TitleText from "../../components/Title";
@@ -9,8 +10,12 @@ import { RootState } from "../../store";
 
 const RoomBookingFinancials = () => {
   const { user } = useSelector((state: RootState) => state.auth);
+
   const [searchText, setSearchText] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [formattedDate, setFormattedDate] = useState(
+    dayjs(selectedDate).format("YYYY-MM-DD")
+  );
 
   const { data, loading, error, refetch } = useQuery(
     GET_ROOM_BOOKING_FINANCIALS,
@@ -22,6 +27,10 @@ const RoomBookingFinancials = () => {
       },
     }
   );
+
+  useEffect(() => {
+    refetch({ startDate: selectedDate, endDate: selectedDate });
+  }, [refetch, selectedDate]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error occurred - {error.message}</p>;
@@ -100,6 +109,7 @@ const RoomBookingFinancials = () => {
     const newDate = new Date(selectedDate);
     newDate.setDate(newDate.getDate() - 1);
     setSelectedDate(newDate);
+    setFormattedDate(dayjs(newDate).format("YYYY-MM-DD"));
     refetch({ startDate: newDate, endDate: newDate });
   };
 
@@ -107,6 +117,7 @@ const RoomBookingFinancials = () => {
     const newDate = new Date(selectedDate);
     newDate.setDate(newDate.getDate() + 1);
     setSelectedDate(newDate);
+    setFormattedDate(dayjs(newDate).format("YYYY-MM-DD"));
     refetch({ startDate: newDate, endDate: newDate });
   };
 
@@ -129,11 +140,18 @@ const RoomBookingFinancials = () => {
           <Button type="primary" ghost onClick={handlePreviousClick}>
             Previous
           </Button>
+
           <DatePicker
             allowClear={false}
             placeholder="Select Date"
-            onChange={(_, date) => setSelectedDate(new Date(date))}
+            value={dayjs(formattedDate)}
+            onChange={(_, date) => {
+              const newDate = new Date(date);
+              setSelectedDate(newDate);
+              setFormattedDate(dayjs(newDate).format("YYYY-MM-DD"));
+            }}
           />
+
           <Button type="primary" ghost onClick={handleNextClick}>
             Next
           </Button>
