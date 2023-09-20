@@ -1,11 +1,22 @@
-import { useMutation } from "@apollo/client";
-import { DatePicker, Form, Input, Modal, Select, Space, message } from "antd";
+import { useMutation, useQuery } from "@apollo/client";
+import {
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Table,
+  message,
+} from "antd";
 import { format } from "date-fns";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { Transaction } from "../graphql/__generated__/graphql";
 import { CREATE_TRANSACTION } from "../graphql/mutations/transactionMutations";
+import { GET_TRANSACTION_BY_FILTER } from "../graphql/queries/transactionsQueries";
 import { BookingDetails } from "../pages/NewBooking/NewBooking";
 import { RootState } from "../store";
 
@@ -28,6 +39,15 @@ const BookingSummary = ({
   const [overView, setOverView] = useState(false);
 
   const [form] = Form.useForm();
+  const { bookingId } = useParams();
+  const { data: transactionSummury } = useQuery(GET_TRANSACTION_BY_FILTER, {
+    variables: {
+      transactionFilter: {
+        hotelId: user?.hotels[0] || "",
+        bookingId: bookingId,
+      },
+    },
+  });
 
   // create transaction API call
   const [createTransaction] = useMutation(CREATE_TRANSACTION);
@@ -96,6 +116,43 @@ const BookingSummary = ({
     }
   };
 
+  // After transaction created
+  const columns = [
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+    },
+
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Method",
+      dataIndex: "method",
+      key: "method",
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+    },
+  ];
+
+  const dataSource = transactionSummury?.transactionByFilter?.map(
+    (transaction) => {
+      return {
+        key: transaction?._id,
+        date: format(new Date(transaction?.date), "dd-MM-yyyy"),
+        description: transaction?.description,
+        method: transaction?.method,
+        amount: transaction?.amount,
+      };
+    }
+  );
+
   return (
     <>
       {user?.type === "ADMIN" ? (
@@ -138,30 +195,7 @@ const BookingSummary = ({
             {/* If transaction is successful */}
             {overView && transactionInfo && (
               <div className="p-2 bg-gray-100">
-                <div>
-                  <span className="font-semibold">Date: </span>
-                  {format(new Date(transactionInfo?.date), "yyyy-MM-dd")}
-                </div>
-                <div>
-                  <span className="font-semibold">Description: </span>
-                  {transactionInfo?.description}
-                </div>
-                <div>
-                  <span className="font-semibold">Category: </span>
-                  {transactionInfo?.category}
-                </div>
-                <div>
-                  <span className="font-semibold">Sub-Category: </span>
-                  {transactionInfo?.subCategory}
-                </div>
-                <div>
-                  <span className="font-semibold">Method: </span>
-                  {transactionInfo?.method}
-                </div>
-                <div>
-                  <span className="font-semibold">Amount: </span>
-                  {transactionInfo?.amount}
-                </div>
+                <Table dataSource={dataSource} columns={columns} />
               </div>
             )}
             <div className="border border-gray-400 my-2"></div>
