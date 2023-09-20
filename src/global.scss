@@ -52,3 +52,12 @@ li.ant-menu-item.ant-menu-item-selected {
 .ant-btn-sm {
     background: rgb(82, 82, 221);
 }
+
+.custom_table .ant-table {
+    background-color: transparent !important;
+
+}
+
+.custom_table .ant-table-thead > tr > th {
+    background-color: transparent !important;
+}

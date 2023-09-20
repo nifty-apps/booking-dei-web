@@ -40,16 +40,19 @@ const BookingSummary = ({
 
   const [form] = Form.useForm();
   const { bookingId } = useParams();
-  const { data: transactionSummury } = useQuery(GET_TRANSACTION_BY_FILTER, {
-    variables: {
-      transactionFilter: {
-        hotelId: user?.hotels[0] || "",
-        bookingId: bookingId,
+  const { data: transactionSummary, refetch } = useQuery(
+    GET_TRANSACTION_BY_FILTER,
+    {
+      variables: {
+        transactionFilter: {
+          hotelId: user?.hotels[0] || "",
+          bookingId: bookingId || "",
+        },
       },
-    },
-  });
+    }
+  );
 
-  // create transaction API call
+  // Create transaction API call
   const [createTransaction] = useMutation(CREATE_TRANSACTION);
 
   const roomBookingInfo = roomBookings?.map((roomBooking) => {
@@ -79,13 +82,26 @@ const BookingSummary = ({
     0
   );
 
-  // discount
+  // Calculate the total discount
   const discount = roomBookings?.reduce(
     (total, room) => total + (room?.discount ?? 0),
     0
   );
 
-  // create transaction
+  // Calculate the total transaction amount
+  const totalTransactionAmount =
+    transactionSummary?.transactionByFilter?.reduce(
+      (total, transaction) => total + (transaction?.amount || 0),
+      0
+    );
+
+  // Calculate the remaining amount after deducting totalTransactionAmount
+  const remainingAmount =
+    ((totalBookingRent && discount
+      ? totalBookingRent - discount
+      : totalBookingRent) ?? 0) - (totalTransactionAmount ?? 0);
+
+  // Handle transaction submission
   const onFinish = async (values: Transaction) => {
     try {
       const res = await createTransaction({
@@ -110,20 +126,21 @@ const BookingSummary = ({
         setIsModalOpen(false);
         setTransactionInfo(res?.data?.createTransaction);
         setOverView(true);
+        // Refetch the transaction data to update the table
+        refetch();
       }
     } catch (err) {
-      message.error(`something went wrong!`);
+      message.error("Something went wrong!");
     }
   };
 
-  // After transaction created
+  // Define columns for the transaction table
   const columns = [
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
     },
-
     {
       title: "Description",
       dataIndex: "description",
@@ -141,7 +158,8 @@ const BookingSummary = ({
     },
   ];
 
-  const dataSource = transactionSummury?.transactionByFilter?.map(
+  // Prepare data source for the transaction table
+  const dataSource = transactionSummary?.transactionByFilter?.map(
     (transaction) => {
       return {
         key: transaction?._id,
@@ -161,19 +179,16 @@ const BookingSummary = ({
             Booking Summary
           </h3>
 
-          {...roomBookingInfo}
-
+          {roomBookingInfo}
           <div className="border border-gray-400 my-2"></div>
           <div className="flex items-center justify-between">
             <p className="font-bold">Subtotal</p>
             <p>{totalBookingRent}</p>
           </div>
-
           <div className="flex items-center justify-between">
             <p className="font-bold">Discount</p>
             <p>{discount}</p>
           </div>
-
           <div className="border border-gray-400 my-2"></div>
           <div className="flex items-center justify-between">
             <p className="font-bold">Grand Total</p>
@@ -188,29 +203,37 @@ const BookingSummary = ({
           </p>
 
           <div className="my-12">
-            {/* payments */}
+            {/* Payments */}
             <h1 className="font-semibold text-xl text-black mb-4 capitalize">
               Transactions
             </h1>
             {/* If transaction is successful */}
             {overView && transactionInfo && (
-              <div className="p-2 bg-gray-100">
-                <Table dataSource={dataSource} columns={columns} />
+              <div>
+                <Table
+                  className="custom_table"
+                  dataSource={dataSource}
+                  columns={columns}
+                  pagination={false}
+                />
               </div>
             )}
+
             <div className="border border-gray-400 my-2"></div>
 
             <div className="flex items-center justify-between">
-              <p className="font-bold">Due</p>
+              <p className="font-bold">Total Amount</p>
+              <p>{totalTransactionAmount}</p>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <p className="font-bold">Remaining</p>
               <p>
-                {totalBookingRent && discount
-                  ? totalBookingRent - discount
-                  : totalBookingRent}
+                {overView && transactionInfo && <div>{remainingAmount}</div>}
               </p>
             </div>
           </div>
-
-          {/* payment btn  */}
+          {/* Payment button */}
           <div className="mt-16" onClick={() => setIsModalOpen(true)}>
             <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold flex items-center justify-center gap-2">
               <span>
@@ -227,7 +250,7 @@ const BookingSummary = ({
           </h3>
 
           <div className="my-12">
-            {/* payments */}
+            {/* Payments */}
             <div className="border border-gray-400 my-2"></div>
             <div className="flex items-center justify-between">
               <p className="font-bold">Due</p>
@@ -239,7 +262,7 @@ const BookingSummary = ({
             </div>
           </div>
 
-          {/* payment btn  */}
+          {/* Payment button */}
           <div className="mt-16" onClick={() => setIsModalOpen(true)}>
             <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold flex items-center justify-center gap-2">
               <span>
@@ -254,7 +277,7 @@ const BookingSummary = ({
       {/* Modal for payment status */}
       <Modal
         title="Transaction"
-        open={isModalOpen}
+        visible={isModalOpen}
         onOk={() => setIsModalOpen(false)}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
