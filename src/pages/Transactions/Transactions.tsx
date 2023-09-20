@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { DatePicker, Input, Table } from "antd";
 import { format } from "date-fns";
-import dayjs from "dayjs"; // Import dayjs
+import dayjs from "dayjs";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";

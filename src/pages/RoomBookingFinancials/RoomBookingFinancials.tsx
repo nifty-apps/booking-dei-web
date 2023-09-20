@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Button, DatePicker, Input, Table } from "antd";
-import dayjs from "dayjs"; // Import dayjs library
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";

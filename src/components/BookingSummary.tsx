@@ -1,9 +1,9 @@
 import { useMutation } from "@apollo/client";
 import { DatePicker, Form, Input, Modal, Select, Space, message } from "antd";
+import { format } from "date-fns";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { Transaction } from "../graphql/__generated__/graphql";
 import { CREATE_TRANSACTION } from "../graphql/mutations/transactionMutations";
 import { BookingDetails } from "../pages/NewBooking/NewBooking";
@@ -24,9 +24,10 @@ const BookingSummary = ({
 }: BookingSummaryProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form] = Form.useForm();
+  const [transactionInfo, setTransactionInfo] = useState({} as Transaction);
+  const [overView, setOverView] = useState(false);
 
-  const navigate = useNavigate();
+  const [form] = Form.useForm();
 
   // create transaction API call
   const [createTransaction] = useMutation(CREATE_TRANSACTION);
@@ -87,9 +88,8 @@ const BookingSummary = ({
         message.success("Transaction created successfully!");
         form.resetFields();
         setIsModalOpen(false);
-        navigate(
-          `/details-transactions/${res?.data?.createTransaction?.booking}`
-        );
+        setTransactionInfo(res?.data?.createTransaction);
+        setOverView(true);
       }
     } catch (err) {
       message.error(`something went wrong!`);
@@ -135,6 +135,35 @@ const BookingSummary = ({
             <h1 className="font-semibold text-xl text-black mb-4 capitalize">
               Transactions
             </h1>
+            {/* If transaction is successful */}
+            {overView && transactionInfo && (
+              <div className="p-2 bg-gray-100">
+                <div>
+                  <span className="font-semibold">Date: </span>
+                  {format(new Date(transactionInfo?.date), "yyyy-MM-dd")}
+                </div>
+                <div>
+                  <span className="font-semibold">Description: </span>
+                  {transactionInfo?.description}
+                </div>
+                <div>
+                  <span className="font-semibold">Category: </span>
+                  {transactionInfo?.category}
+                </div>
+                <div>
+                  <span className="font-semibold">Sub-Category: </span>
+                  {transactionInfo?.subCategory}
+                </div>
+                <div>
+                  <span className="font-semibold">Method: </span>
+                  {transactionInfo?.method}
+                </div>
+                <div>
+                  <span className="font-semibold">Amount: </span>
+                  {transactionInfo?.amount}
+                </div>
+              </div>
+            )}
             <div className="border border-gray-400 my-2"></div>
 
             <div className="flex items-center justify-between">
