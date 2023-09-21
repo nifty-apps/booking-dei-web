@@ -26,6 +26,8 @@ const SelectionSummary = ({
       </div>
     );
 
+  console.log("selection summary : ", selectedRooms);
+
   return (
     <div className="col-span-3 bg-gray-200 p-4 rounded-sm ml-4">
       <h3 className="text-lg capitalize font-semibold mb-5">

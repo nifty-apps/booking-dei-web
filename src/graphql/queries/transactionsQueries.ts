@@ -92,5 +92,3 @@ export const GET_TRANSACTIONS_BY_DATE_RANGE = gql(`
     }
   }
 `);
-
-// booking: 650aea763de68558be9ad611
