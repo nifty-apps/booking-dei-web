@@ -14,7 +14,11 @@ import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Transaction } from "../graphql/__generated__/graphql";
+import {
+  Transaction,
+  TransactionSubCategory,
+  TransactionType,
+} from "../graphql/__generated__/graphql";
 import { CREATE_TRANSACTION } from "../graphql/mutations/transactionMutations";
 import { GET_TRANSACTION_BY_FILTER } from "../graphql/queries/transactionsQueries";
 import { BookingDetails } from "../pages/NewBooking/NewBooking";
@@ -36,7 +40,6 @@ const BookingSummary = ({
   const { user } = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transactionInfo, setTransactionInfo] = useState({} as Transaction);
-  const [overView, setOverView] = useState(false);
 
   const [form] = Form.useForm();
   const { bookingId } = useParams();
@@ -111,8 +114,10 @@ const BookingSummary = ({
             booking: createBookingId || null,
             hotel: user?.hotels[0] || "",
             date: values.date,
-            category: values.category,
-            subCategory: values.subCategory,
+            // category: values.category,
+            // subCategory: values.subCategory,
+            category: TransactionType.Income,
+            subCategory: TransactionSubCategory.Roomrent,
             method: values.method,
             description: values.description,
             amount: Number(values.amount),
@@ -125,7 +130,6 @@ const BookingSummary = ({
         form.resetFields();
         setIsModalOpen(false);
         setTransactionInfo(res?.data?.createTransaction);
-        setOverView(true);
         // Refetch the transaction data to update the table
         refetch();
       }
@@ -208,28 +212,47 @@ const BookingSummary = ({
               Transactions
             </h1>
             {/* If transaction is successful */}
-            {overView && transactionInfo && (
-              <div>
-                <Table
-                  className="custom_table"
-                  dataSource={dataSource}
-                  columns={columns}
-                  pagination={false}
-                />
-              </div>
+            {transactionInfo && bookingId ? (
+              <Table
+                className="custom_table"
+                dataSource={dataSource}
+                columns={columns}
+                pagination={false}
+              />
+            ) : (
+              ""
             )}
 
             <div className="border border-gray-400 my-2"></div>
 
             <div className="flex items-center justify-between">
               <p className="font-bold">Total Amount</p>
-              <p>{totalTransactionAmount}</p>
+              <p>
+                {transactionInfo && bookingId ? (
+                  <div>{totalTransactionAmount}</div>
+                ) : (
+                  <div>
+                    {totalBookingRent && discount
+                      ? totalBookingRent - discount
+                      : totalBookingRent}
+                  </div>
+                )}
+              </p>
             </div>
 
             <div className="flex items-center justify-between">
               <p className="font-bold">Remaining</p>
+
               <p>
-                {overView && transactionInfo && <div>{remainingAmount}</div>}
+                {transactionInfo && bookingId ? (
+                  <div>{remainingAmount}</div>
+                ) : (
+                  <div>
+                    {totalBookingRent && discount
+                      ? totalBookingRent - discount
+                      : totalBookingRent}
+                  </div>
+                )}
               </p>
             </div>
           </div>
@@ -290,7 +313,7 @@ const BookingSummary = ({
             </Form.Item>
 
             <div className="flex items-center justify-between gap-4">
-              <Space direction="vertical" className="w-full">
+              {/* <Space direction="vertical" className="w-full">
                 <h3>Category</h3>
                 <Form.Item name="category" className="mb-0">
                   <Select
@@ -301,8 +324,8 @@ const BookingSummary = ({
                     ]}
                   />
                 </Form.Item>
-              </Space>
-
+              </Space> */}
+              {/* 
               <Space direction="vertical" className="w-full">
                 <h3>Sub-Category</h3>
                 <Form.Item name="subCategory" className="mb-0">
@@ -318,7 +341,7 @@ const BookingSummary = ({
                     ]}
                   />
                 </Form.Item>
-              </Space>
+              </Space> */}
             </div>
 
             <h3>Payment Method</h3>

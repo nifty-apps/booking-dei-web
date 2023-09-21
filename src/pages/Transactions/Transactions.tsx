@@ -83,6 +83,11 @@ const Transactions = () => {
       key: "contact",
     },
     {
+      title: "DESCRIPTION",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
       title: "CATEGORY",
       dataIndex: "category",
       key: "category",
@@ -101,11 +106,6 @@ const Transactions = () => {
       title: "AMOUNT",
       dataIndex: "amount",
       key: "amount",
-    },
-    {
-      title: "DESCRIPTION",
-      dataIndex: "description",
-      key: "description",
     },
   ];
 
