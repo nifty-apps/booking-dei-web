@@ -30,3 +30,13 @@ mutation CreateTransaction (
   }
 }
 `);
+
+// remove transaction
+export const REMOVE_TRANSACTION = gql(`
+  mutation RemoveTransaction($id: ID!) {
+    removeTransaction(id:$id) {
+        _id
+    }
+}
+
+`);

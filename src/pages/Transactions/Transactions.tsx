@@ -1,11 +1,23 @@
-import { useQuery } from "@apollo/client";
-import { DatePicker, Input, Table } from "antd";
+import { useMutation, useQuery } from "@apollo/client";
+import {
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Table,
+  message,
+} from "antd";
+import TextArea from "antd/es/input/TextArea";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { useState } from "react";
+import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TitleText from "../../components/Title";
+import { REMOVE_TRANSACTION } from "../../graphql/mutations/transactionMutations";
 import {
   GET_TRANSACTIONS,
   GET_TRANSACTIONS_BY_DATE_RANGE,
@@ -21,6 +33,7 @@ const Transactions = () => {
     format(new Date(), "yyyy-MM-dd"),
   ]);
   const [searchText, setSearchText] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: transactionsData, loading, error } = useQuery(GET_TRANSACTIONS);
 
@@ -36,6 +49,20 @@ const Transactions = () => {
       skip: !selectedDateRange[0] || !selectedDateRange[1], // Skip the query if dates are not selected
     }
   );
+
+  // remove transaction
+  const [removeTransaction] = useMutation(REMOVE_TRANSACTION, {
+    refetchQueries: [{ query: GET_TRANSACTIONS }],
+  });
+
+  const handleDelete = async (transactionId: string) => {
+    try {
+      await removeTransaction({ variables: { id: transactionId } });
+      message.success("Transaction deleted successfully.");
+    } catch (error) {
+      message.error("An error occurred while deleting the transaction.");
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -70,7 +97,7 @@ const Transactions = () => {
     method: transaction.method,
     amount: transaction.amount,
     description: transaction.description,
-    actions: transaction.booking,
+    action: transaction.booking || transaction._id,
   }));
 
   const columns = [
@@ -110,12 +137,12 @@ const Transactions = () => {
       key: "amount",
     },
     {
-      title: "ACTIONS",
-      dataIndex: "actions",
-      key: "actions",
-      render: (bookingId: string) => {
+      title: "ACTION",
+      dataIndex: "action",
+      key: "action",
+      render: (bookingId: string, record: { key: string }) => {
         return (
-          <>
+          <div className="flex gap-4">
             {bookingId && (
               <Link
                 to={`/booking-details/${bookingId}`}
@@ -124,7 +151,12 @@ const Transactions = () => {
                 Booking Details
               </Link>
             )}
-          </>
+
+            <div className="flex items-center gap-3 cursor-pointer">
+              <FaRegEdit onClick={() => setIsModalOpen(true)} />
+              <FaRegTrashAlt onClick={() => handleDelete(record.key)} />
+            </div>
+          </div>
         );
       },
     },
@@ -163,6 +195,64 @@ const Transactions = () => {
       </div>
 
       <Table dataSource={dataSource} columns={columns} pagination={false} />
+
+      {/* Modal for edit transaction */}
+      <Modal
+        title="Edit Transaction"
+        visible={isModalOpen}
+        onOk={() => setIsModalOpen(false)}
+        onCancel={() => setIsModalOpen(false)}
+        footer={null}
+      >
+        <Form>
+          <Space direction="vertical" className="w-full">
+            <h3>Date</h3>
+            <Form.Item name="date" className="mb-0">
+              <DatePicker className="w-full" />
+            </Form.Item>
+
+            <h3>Contact</h3>
+            <Form.Item name="contact" className="mb-0">
+              <Input placeholder="contact" autoComplete="off" />
+            </Form.Item>
+
+            <h3>Description</h3>
+            <Form.Item name="description" className="mb-0">
+              <TextArea
+                placeholder="Enter description"
+                autoSize={{ minRows: 3, maxRows: 5 }}
+              />
+            </Form.Item>
+
+            <h3>Method</h3>
+            <Form.Item name="method" className="mb-0">
+              <Select
+                placeholder="method"
+                options={[
+                  { value: "CASH", label: "Cash" },
+                  { value: "BANK", label: "Bank" },
+                  { value: "BKASH", label: "Bkash" },
+                ]}
+              />
+            </Form.Item>
+
+            <h3>Amount</h3>
+            <Form.Item name="amount" className="mb-0">
+              <Input placeholder="Amount" autoComplete="off" />
+            </Form.Item>
+          </Space>
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className=" mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-8 rounded"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Edit Transaction
+            </button>
+          </div>
+        </Form>
+      </Modal>
     </>
   );
 };
