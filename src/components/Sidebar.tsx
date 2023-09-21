@@ -1,5 +1,9 @@
 import { Layout, Menu } from "antd";
-import { AiOutlineCalendar, AiOutlineHome } from "react-icons/ai";
+import {
+  AiOutlineBarChart,
+  AiOutlineCalendar,
+  AiOutlineHome,
+} from "react-icons/ai";
 import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/logo.png";
@@ -31,6 +35,9 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
       break;
     case "/transactions":
       selectedKey = "5";
+      break;
+    case "/rooms-overview":
+      selectedKey = "6";
       break;
 
     default:
@@ -78,6 +85,11 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
           <Menu.Item key="5" icon={<TbBrandGoogleAnalytics />}>
             <Link to="/transactions" className="menuLink">
               Transactions
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="6" icon={<AiOutlineBarChart />}>
+            <Link to="/rooms-overview" className="menuLink">
+              Rooms Overview
             </Link>
           </Menu.Item>
         </Menu>

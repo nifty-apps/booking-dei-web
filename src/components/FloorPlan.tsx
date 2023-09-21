@@ -119,21 +119,33 @@ const FloorPlan = ({
                     "bg-blue-600 text-white": selectedRooms.includes(room),
                     "cursor-pointer":
                       room.number !== "Lift" && room.number !== "Staff",
-                    "cursor-auto bg-gray-100":
+                    "cursor-move bg-gray-100":
                       room.number === "Lift" || room.number === "Staff",
                   });
 
                   return (
-                    <div
-                      key={_id}
-                      className={`h-28 w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center ${bgClass}`}
-                      onClick={() => handleRoomClick(room)}
-                    >
-                      <h4 className="font-bold text-lg">{number}</h4>
-                      {number !== "Lift" && number !== "Staff" && (
-                        <span>{type.title}</span>
-                      )}
-                    </div>
+                    <>
+                      <div key={_id}>
+                        <div
+                          className={`h-28 w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center ${bgClass}`}
+                          onClick={() => handleRoomClick(room)}
+                          title={
+                            roombookings?.length > 0
+                              ? `Booked by ${roombookings
+                                  ?.map(
+                                    (bookedRoom) => bookedRoom?.bookingCustomer
+                                  )
+                                  .join(", ")}`
+                              : ""
+                          }
+                        >
+                          <h4 className="font-bold text-lg">{number}</h4>
+                          {number !== "Lift" && number !== "Staff" && (
+                            <span>{type.title}</span>
+                          )}
+                        </div>
+                      </div>
+                    </>
                   );
                 })}
               </div>

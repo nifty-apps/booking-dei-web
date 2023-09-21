@@ -26,6 +26,8 @@ const SelectionSummary = ({
       </div>
     );
 
+  console.log("selection summary : ", selectedRooms);
+
   return (
     <div className="col-span-3 bg-gray-200 p-4 rounded-sm ml-4">
       <h3 className="text-lg capitalize font-semibold mb-5">
@@ -36,18 +38,20 @@ const SelectionSummary = ({
       {selectedRooms.length > 0 &&
         selectedRooms.map((room) => {
           return (
-            <div key={room._id} className="flex justify-between text-md">
-              <div className="flex items-center">
-                <span
-                  className="cursor-pointer"
-                  onClick={() => removeItem(room)}
-                >
-                  <AiOutlineClose />
-                </span>
-                <div className="mx-2 font-semibold">{room.type.title}</div>
+            <>
+              <div key={room._id} className="flex justify-between text-md">
+                <div className="flex items-center">
+                  <span
+                    className="cursor-pointer"
+                    onClick={() => removeItem(room)}
+                  >
+                    <AiOutlineClose />
+                  </span>
+                  <div className="mx-2 font-semibold">{room.type.title}</div>
+                </div>
+                <div className="mx-2 font-semibold">{room.number}</div>
               </div>
-              <div className="mx-2 font-semibold">{room.number}</div>
-            </div>
+            </>
           );
         })}
 
@@ -55,12 +59,12 @@ const SelectionSummary = ({
 
       {selectedRooms.length > 0 && (
         <div className="mt-72">
-          <Link to="/edit-booking/:id">
+          <Link to={`/edit-booking/id`}>
             <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold">
               Edit Booking
             </button>
           </Link>
-          {/* view booking btn */}
+
           <button className="w-full px-4 py-2 border-2 border-blue-900 text-blue-900 rounded-md hover:bg-blue-900 hover:text-white hover:border-blue-900 transition-colors duration-300 font-semibold">
             View Booking Details
           </button>

@@ -1,7 +1,22 @@
-import { DatePicker, Form, Input, Modal, Select, Space } from "antd";
+import { useMutation, useQuery } from "@apollo/client";
+import {
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Table,
+  message,
+} from "antd";
+import { format } from "date-fns";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { Transaction } from "../graphql/__generated__/graphql";
+import { CREATE_TRANSACTION } from "../graphql/mutations/transactionMutations";
+import { GET_TRANSACTION_BY_FILTER } from "../graphql/queries/transactionsQueries";
 import { BookingDetails } from "../pages/NewBooking/NewBooking";
 import { RootState } from "../store";
 
@@ -9,13 +24,36 @@ const { TextArea } = Input;
 
 interface BookingSummaryProps {
   roomBookings: BookingDetails["roomBookings"];
+  bookingId: string | null;
+  contactId: string | null;
 }
 
-const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
+const BookingSummary = ({
+  roomBookings,
+  bookingId: createBookingId,
+  contactId,
+}: BookingSummaryProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [transactionInfo, setTransactionInfo] = useState({} as Transaction);
+  const [overView, setOverView] = useState(false);
 
   const [form] = Form.useForm();
+  const { bookingId } = useParams();
+  const { data: transactionSummary, refetch } = useQuery(
+    GET_TRANSACTION_BY_FILTER,
+    {
+      variables: {
+        transactionFilter: {
+          hotelId: user?.hotels[0] || "",
+          bookingId: bookingId || "",
+        },
+      },
+    }
+  );
+
+  // Create transaction API call
+  const [createTransaction] = useMutation(CREATE_TRANSACTION);
 
   const roomBookingInfo = roomBookings?.map((roomBooking) => {
     return (
@@ -44,10 +82,93 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
     0
   );
 
-  // discount
+  // Calculate the total discount
   const discount = roomBookings?.reduce(
     (total, room) => total + (room?.discount ?? 0),
     0
+  );
+
+  // Calculate the total transaction amount
+  const totalTransactionAmount =
+    transactionSummary?.transactionByFilter?.reduce(
+      (total, transaction) => total + (transaction?.amount || 0),
+      0
+    );
+
+  // Calculate the remaining amount after deducting totalTransactionAmount
+  const remainingAmount =
+    ((totalBookingRent && discount
+      ? totalBookingRent - discount
+      : totalBookingRent) ?? 0) - (totalTransactionAmount ?? 0);
+
+  // Handle transaction submission
+  const onFinish = async (values: Transaction) => {
+    try {
+      const res = await createTransaction({
+        variables: {
+          createTransactionInput: {
+            contact: contactId || "",
+            booking: createBookingId || null,
+            hotel: user?.hotels[0] || "",
+            date: values.date,
+            category: values.category,
+            subCategory: values.subCategory,
+            method: values.method,
+            description: values.description,
+            amount: Number(values.amount),
+          },
+        },
+      });
+
+      if (res?.data?.createTransaction) {
+        message.success("Transaction created successfully!");
+        form.resetFields();
+        setIsModalOpen(false);
+        setTransactionInfo(res?.data?.createTransaction);
+        setOverView(true);
+        // Refetch the transaction data to update the table
+        refetch();
+      }
+    } catch (err) {
+      message.error("Something went wrong!");
+    }
+  };
+
+  // Define columns for the transaction table
+  const columns = [
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Method",
+      dataIndex: "method",
+      key: "method",
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+    },
+  ];
+
+  // Prepare data source for the transaction table
+  const dataSource = transactionSummary?.transactionByFilter?.map(
+    (transaction) => {
+      return {
+        key: transaction?._id,
+        date: format(new Date(transaction?.date), "dd-MM-yyyy"),
+        description: transaction?.description,
+        method: transaction?.method,
+        amount: transaction?.amount,
+      };
+    }
   );
 
   return (
@@ -58,19 +179,16 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
             Booking Summary
           </h3>
 
-          {...roomBookingInfo}
-
+          {roomBookingInfo}
           <div className="border border-gray-400 my-2"></div>
           <div className="flex items-center justify-between">
             <p className="font-bold">Subtotal</p>
             <p>{totalBookingRent}</p>
           </div>
-
           <div className="flex items-center justify-between">
             <p className="font-bold">Discount</p>
             <p>{discount}</p>
           </div>
-
           <div className="border border-gray-400 my-2"></div>
           <div className="flex items-center justify-between">
             <p className="font-bold">Grand Total</p>
@@ -85,23 +203,37 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
           </p>
 
           <div className="my-12">
-            {/* payments */}
+            {/* Payments */}
             <h1 className="font-semibold text-xl text-black mb-4 capitalize">
               Transactions
             </h1>
+            {/* If transaction is successful */}
+            {overView && transactionInfo && (
+              <div>
+                <Table
+                  className="custom_table"
+                  dataSource={dataSource}
+                  columns={columns}
+                  pagination={false}
+                />
+              </div>
+            )}
+
             <div className="border border-gray-400 my-2"></div>
 
             <div className="flex items-center justify-between">
-              <p className="font-bold">Due</p>
+              <p className="font-bold">Total Amount</p>
+              <p>{totalTransactionAmount}</p>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <p className="font-bold">Remaining</p>
               <p>
-                {totalBookingRent && discount
-                  ? totalBookingRent - discount
-                  : totalBookingRent}
+                {overView && transactionInfo && <div>{remainingAmount}</div>}
               </p>
             </div>
           </div>
-
-          {/* payment btn  */}
+          {/* Payment button */}
           <div className="mt-16" onClick={() => setIsModalOpen(true)}>
             <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold flex items-center justify-center gap-2">
               <span>
@@ -118,7 +250,7 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
           </h3>
 
           <div className="my-12">
-            {/* payments */}
+            {/* Payments */}
             <div className="border border-gray-400 my-2"></div>
             <div className="flex items-center justify-between">
               <p className="font-bold">Due</p>
@@ -130,7 +262,7 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
             </div>
           </div>
 
-          {/* payment btn  */}
+          {/* Payment button */}
           <div className="mt-16" onClick={() => setIsModalOpen(true)}>
             <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold flex items-center justify-center gap-2">
               <span>
@@ -142,20 +274,15 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
         </div>
       )}
 
-      {/* modal for payment status */}
+      {/* Modal for payment status */}
       <Modal
         title="Transaction"
-        open={isModalOpen}
+        visible={isModalOpen}
         onOk={() => setIsModalOpen(false)}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
       >
-        <Form
-          form={form}
-          onValuesChange={(changedValues) => {
-            console.log(changedValues);
-          }}
-        >
+        <Form form={form} onFinish={onFinish}>
           <Space direction="vertical" className="w-full">
             <h3>Date</h3>
             <Form.Item name="date" className="mb-0">
@@ -195,7 +322,7 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
             </div>
 
             <h3>Payment Method</h3>
-            <Form.Item name="paymentMethod" className="mb-0">
+            <Form.Item name="method" className="mb-0">
               <Select
                 placeholder="Payment method"
                 options={[
@@ -207,14 +334,17 @@ const BookingSummary = ({ roomBookings }: BookingSummaryProps) => {
             </Form.Item>
 
             <h3>Description</h3>
-            <TextArea
-              name="description"
-              placeholder="Enter description"
-              autoSize={{ minRows: 3, maxRows: 5 }}
-            />
+            <Form.Item name="description" className="mb-0">
+              <TextArea
+                placeholder="Enter description"
+                autoSize={{ minRows: 3, maxRows: 5 }}
+              />
+            </Form.Item>
 
             <h3>Amount</h3>
-            <Input placeholder="Amount" name="amount" />
+            <Form.Item name="amount" className="mb-0">
+              <Input placeholder="Amount" autoComplete="off" />
+            </Form.Item>
           </Space>
 
           <div className="flex justify-end">
