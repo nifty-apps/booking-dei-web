@@ -253,7 +253,7 @@ const EditRoomBooking = () => {
         }
       }
     } catch (error) {
-      message.error("Oops! Something went wrong.");
+      message.error("Oops! Edit booking not working.");
     }
   };
 

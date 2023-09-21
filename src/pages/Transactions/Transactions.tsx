@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import TitleText from "../../components/Title";
 import {
   GET_TRANSACTIONS,
@@ -16,8 +17,8 @@ const { RangePicker } = DatePicker;
 const Transactions = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [selectedDateRange, setSelectedDateRange] = useState<[string, string]>([
-    "",
-    "",
+    dayjs().subtract(1, "month").format("YYYY-MM-DD"),
+    format(new Date(), "yyyy-MM-dd"),
   ]);
   const [searchText, setSearchText] = useState("");
 
@@ -69,6 +70,7 @@ const Transactions = () => {
     method: transaction.method,
     amount: transaction.amount,
     description: transaction.description,
+    actions: transaction.booking,
   }));
 
   const columns = [
@@ -107,6 +109,25 @@ const Transactions = () => {
       dataIndex: "amount",
       key: "amount",
     },
+    {
+      title: "ACTIONS",
+      dataIndex: "actions",
+      key: "actions",
+      render: (bookingId: string) => {
+        return (
+          <>
+            {bookingId && (
+              <Link
+                to={`/booking-details/${bookingId}`}
+                className="text-blue-500 hover:text-blue-700"
+              >
+                Booking Details
+              </Link>
+            )}
+          </>
+        );
+      },
+    },
   ];
 
   return (
@@ -141,7 +162,7 @@ const Transactions = () => {
         />
       </div>
 
-      <Table dataSource={dataSource} columns={columns} />
+      <Table dataSource={dataSource} columns={columns} pagination={false} />
     </>
   );
 };
