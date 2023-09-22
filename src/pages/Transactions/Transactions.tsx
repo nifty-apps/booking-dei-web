@@ -10,14 +10,17 @@ import {
   message,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { format } from "date-fns";
-import dayjs from "dayjs";
+import dayjs from "dayjs"; // Import dayjs
 import { useState } from "react";
 import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TitleText from "../../components/Title";
-import { REMOVE_TRANSACTION } from "../../graphql/mutations/transactionMutations";
+import { Transaction } from "../../graphql/__generated__/graphql";
+import {
+  REMOVE_TRANSACTION,
+  UPDATE_TRANSACTION,
+} from "../../graphql/mutations/transactionMutations";
 import {
   GET_TRANSACTIONS,
   GET_TRANSACTIONS_BY_DATE_RANGE,
@@ -30,12 +33,20 @@ const Transactions = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [selectedDateRange, setSelectedDateRange] = useState<[string, string]>([
     dayjs().subtract(1, "month").format("YYYY-MM-DD"),
-    format(new Date(), "yyyy-MM-dd"),
+    dayjs().format("YYYY-MM-DD"),
   ]);
   const [searchText, setSearchText] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTransactionId, setEditingTransactionId] = useState<
+    string | null
+  >(null);
+
+  const [form] = Form.useForm();
 
   const { data: transactionsData, loading, error } = useQuery(GET_TRANSACTIONS);
+  const [updateTransaction] = useMutation(UPDATE_TRANSACTION, {
+    refetchQueries: [{ query: GET_TRANSACTIONS }],
+  });
 
   // Fetch data based on the selected date range
   const { data: transactionsByDateRangeData } = useQuery(
@@ -55,12 +66,34 @@ const Transactions = () => {
     refetchQueries: [{ query: GET_TRANSACTIONS }],
   });
 
-  const handleDelete = async (transactionId: string) => {
+  const handleRemoveTransaction = async (transactionId: string) => {
     try {
       await removeTransaction({ variables: { id: transactionId } });
       message.success("Transaction deleted successfully.");
     } catch (error) {
       message.error("An error occurred while deleting the transaction.");
+    }
+  };
+
+  // Update transaction
+  const onFinish = async (values: Transaction, transactionId: string) => {
+    try {
+      await updateTransaction({
+        variables: {
+          updateTransactionInput: {
+            _id: transactionId, // Use the dynamic ID here
+            date: values.date.format("YYYY-MM-DD"), // Format the date
+            contact: values.contact._id,
+            description: values.description,
+            method: values.method,
+            amount: Number(values.amount),
+          },
+        },
+      });
+      message.success("Transaction updated successfully.");
+      setIsModalOpen(false);
+    } catch (error) {
+      message.error("An error occurred while updating the transaction.");
     }
   };
 
@@ -90,7 +123,7 @@ const Transactions = () => {
 
   const dataSource = filteredTransactions.map((transaction) => ({
     key: transaction._id,
-    date: format(new Date(transaction.date), "yyyy-MM-dd"),
+    date: dayjs(transaction.date).format("YYYY-MM-DD"),
     contact: transaction.contact.name,
     category: transaction.category,
     subCategory: transaction.subCategory,
@@ -153,8 +186,25 @@ const Transactions = () => {
             )}
 
             <div className="flex items-center gap-3 cursor-pointer">
-              <FaRegEdit onClick={() => setIsModalOpen(true)} />
-              <FaRegTrashAlt onClick={() => handleDelete(record.key)} />
+              <FaRegEdit
+                onClick={() => {
+                  setIsModalOpen(true);
+                  setEditingTransactionId(record.key);
+                  const editedTransaction = dataSource.find(
+                    (item) => item.key === record.key
+                  );
+                  form.setFieldsValue({
+                    date: dayjs(editedTransaction?.date),
+                    contact: editedTransaction?.contact,
+                    description: editedTransaction?.description,
+                    method: editedTransaction?.method,
+                    amount: editedTransaction?.amount.toString(),
+                  });
+                }}
+              />
+              <FaRegTrashAlt
+                onClick={() => handleRemoveTransaction(record.key)}
+              />
             </div>
           </div>
         );
@@ -204,7 +254,10 @@ const Transactions = () => {
         onCancel={() => setIsModalOpen(false)}
         footer={null}
       >
-        <Form>
+        <Form
+          form={form}
+          onFinish={(values) => onFinish(values, editingTransactionId || "")}
+        >
           <Space direction="vertical" className="w-full">
             <h3>Date</h3>
             <Form.Item name="date" className="mb-0">
@@ -246,7 +299,6 @@ const Transactions = () => {
             <button
               type="submit"
               className=" mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-8 rounded"
-              onClick={() => setIsModalOpen(false)}
             >
               Edit Transaction
             </button>

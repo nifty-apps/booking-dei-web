@@ -31,6 +31,23 @@ mutation CreateTransaction (
 }
 `);
 
+// Edit transaction
+export const UPDATE_TRANSACTION = gql(`
+    mutation UpdateTransaction($updateTransactionInput: UpdateTransactionInput!) {
+    updateTransaction (
+      updateTransactionInput: $updateTransactionInput
+      ) {
+      _id
+      category
+      date
+      subCategory
+      method
+      description
+      amount
+    }
+}
+`);
+
 // remove transaction
 export const REMOVE_TRANSACTION = gql(`
   mutation RemoveTransaction($id: ID!) {

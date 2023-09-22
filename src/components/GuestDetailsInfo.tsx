@@ -122,6 +122,7 @@ const GuestDetailsInfo = ({
           <Select
             disabled={!isEditing && isDetails}
             placeholder={(isDetails && contactInfo?.name) || "Enter your name"}
+            value={isDetails && contactInfo?.name}
             className="w-48"
             onSelect={(value) => {
               const selectedContact = contacts.find(

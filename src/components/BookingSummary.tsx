@@ -42,14 +42,14 @@ const BookingSummary = ({
   const [transactionInfo, setTransactionInfo] = useState({} as Transaction);
 
   const [form] = Form.useForm();
-  const { bookingId } = useParams();
+  const { bookingId: booking } = useParams();
   const { data: transactionSummary, refetch } = useQuery(
     GET_TRANSACTION_BY_FILTER,
     {
       variables: {
         transactionFilter: {
-          hotelId: user?.hotels[0] || "",
-          bookingId: bookingId || "",
+          hotel: user?.hotels[0] || "",
+          booking: booking || "",
         },
       },
     }
@@ -212,7 +212,7 @@ const BookingSummary = ({
               Transactions
             </h1>
             {/* If transaction is successful */}
-            {transactionInfo && bookingId ? (
+            {transactionInfo && booking ? (
               <Table
                 className="custom_table"
                 dataSource={dataSource}
@@ -228,7 +228,7 @@ const BookingSummary = ({
             <div className="flex items-center justify-between">
               <p className="font-bold">Total Amount</p>
               <p>
-                {transactionInfo && bookingId ? (
+                {transactionInfo && booking ? (
                   <div>{totalTransactionAmount}</div>
                 ) : (
                   <div>
@@ -244,7 +244,7 @@ const BookingSummary = ({
               <p className="font-bold">Remaining</p>
 
               <p>
-                {transactionInfo && bookingId ? (
+                {transactionInfo && booking ? (
                   <div>{remainingAmount}</div>
                 ) : (
                   <div>
