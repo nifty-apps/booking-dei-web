@@ -107,6 +107,12 @@ const BookingSummary = ({
   // Handle transaction submission
   const onFinish = async (values: Transaction) => {
     try {
+      // Validate that the amount is not greater than the remaining amount
+      if (Number(values.amount) > remainingAmount) {
+        message.error("Amount cannot be greater than the remaining amount.");
+        return; // Exit the function if validation fails
+      }
+
       const res = await createTransaction({
         variables: {
           createTransactionInput: {
@@ -114,8 +120,6 @@ const BookingSummary = ({
             booking: createBookingId || null,
             hotel: user?.hotels[0] || "",
             date: values.date,
-            // category: values.category,
-            // subCategory: values.subCategory,
             category: TransactionType.Income,
             subCategory: TransactionSubCategory.Roomrent,
             method: values.method,
@@ -311,38 +315,6 @@ const BookingSummary = ({
             <Form.Item name="date" className="mb-0">
               <DatePicker className="w-full" />
             </Form.Item>
-
-            <div className="flex items-center justify-between gap-4">
-              {/* <Space direction="vertical" className="w-full">
-                <h3>Category</h3>
-                <Form.Item name="category" className="mb-0">
-                  <Select
-                    placeholder="Select category"
-                    options={[
-                      { value: "INCOME", label: "Income" },
-                      { value: "EXPENSE", label: "Expense" },
-                    ]}
-                  />
-                </Form.Item>
-              </Space> */}
-              {/* 
-              <Space direction="vertical" className="w-full">
-                <h3>Sub-Category</h3>
-                <Form.Item name="subCategory" className="mb-0">
-                  <Select
-                    placeholder="Select sub-category"
-                    options={[
-                      { value: "SALARY", label: "Salary" },
-                      { value: "ELECTRICITY", label: "Electricity" },
-                      { value: "WATER", label: "Water" },
-                      { value: "RENT", label: "Rent" },
-                      { value: "OTHEREXPENSE", label: "Other Expense" },
-                      { value: "ROOMRENT", label: "Room Rent" },
-                    ]}
-                  />
-                </Form.Item>
-              </Space> */}
-            </div>
 
             <h3>Payment Method</h3>
             <Form.Item name="method" className="mb-0">

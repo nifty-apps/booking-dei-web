@@ -9,8 +9,8 @@ import {
   Table,
   message,
 } from "antd";
-import TextArea from "antd/es/input/TextArea";
-import dayjs from "dayjs"; // Import dayjs
+import TextArea from "antd/es/input/TextArea"; 
+import dayjs from "dayjs"; 
 import { useState } from "react";
 import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
@@ -81,8 +81,8 @@ const Transactions = () => {
       await updateTransaction({
         variables: {
           updateTransactionInput: {
-            _id: transactionId, // Use the dynamic ID here
-            date: values.date.format("YYYY-MM-DD"), // Format the date
+            _id: transactionId,
+            date: values.date.format("YYYY-MM-DD"),
             contact: values.contact._id,
             description: values.description,
             method: values.method,
