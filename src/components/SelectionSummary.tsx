@@ -1,5 +1,4 @@
 import { AiOutlineClose } from "react-icons/ai";
-import { Link } from "react-router-dom";
 import { Room } from "./FloorPlan";
 
 interface CurrentSelectionProps {
@@ -26,7 +25,7 @@ const SelectionSummary = ({
       </div>
     );
 
-  console.log("selection summary : ", selectedRooms);
+  console.log("selected Rooms : ", selectedRooms);
 
   return (
     <div className="col-span-3 bg-gray-200 p-4 rounded-sm ml-4">
@@ -57,7 +56,7 @@ const SelectionSummary = ({
 
       {/* edit btn  */}
 
-      {selectedRooms.length > 0 && (
+      {/* {selectedRooms.length > 0 && (
         <div className="mt-72">
           <Link to={`/edit-booking/id`}>
             <button className="bg-blue-900 text-white px-4 py-2 rounded-md w-full mb-2 font-semibold">
@@ -69,7 +68,7 @@ const SelectionSummary = ({
             View Booking Details
           </button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

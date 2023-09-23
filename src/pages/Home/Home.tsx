@@ -14,7 +14,7 @@ const Home = () => {
     RangeValue<dayjs.Dayjs>
   >([dayjs(), dayjs().add(1, "day")]);
 
-  // Function to handle changing the date range to the previous day
+  //  previous day
   const handlePreviousDay = () => {
     setSelectedDateRange((prevRange) => {
       if (prevRange) {
@@ -27,7 +27,7 @@ const Home = () => {
     });
   };
 
-  // Function to handle changing the date range to the next day
+  //  next day
   const handleNextDay = () => {
     setSelectedDateRange((prevRange) => {
       if (prevRange) {
