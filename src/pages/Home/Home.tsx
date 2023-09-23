@@ -5,7 +5,7 @@ import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import FloorPlan, { Room } from "../../components/FloorPlan";
-import SelectionSummary from "../../components/SelectionSummary";
+import RemainingRooms from "../../components/RemainingRooms";
 import TitleText from "../../components/Title";
 
 const Home = () => {
@@ -81,10 +81,10 @@ const Home = () => {
           startDate={selectedDateRange?.[0]?.toDate() as Date}
           endDate={selectedDateRange?.[1]?.toDate() as Date}
         />
-        {/* current selection part */}
-        <SelectionSummary
-          selectedRooms={selectedRooms}
-          onChange={(rooms) => setSelectedRooms(rooms)}
+        {/* current selection part  */}
+        <RemainingRooms
+          startDate={selectedDateRange?.[0]?.toDate() as Date}
+          endDate={selectedDateRange?.[1]?.toDate() as Date}
         />
       </div>
     </>
