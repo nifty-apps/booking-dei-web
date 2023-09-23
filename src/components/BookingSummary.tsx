@@ -238,7 +238,7 @@ const BookingSummary = ({
             <div className="border border-gray-400 my-2"></div>
 
             <div className="flex items-center justify-between">
-              <p className="font-bold">Total Amount</p>
+              <p className="font-bold">Total Amount Paid</p>
               <p>
                 {transactionInfo && booking ? (
                   <div>{totalTransactionAmount}</div>
