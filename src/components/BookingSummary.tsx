@@ -235,11 +235,7 @@ const BookingSummary = ({
                 {transactionInfo && booking ? (
                   <div>{totalTransactionAmount}</div>
                 ) : (
-                  <div>
-                    {totalBookingRent && discount
-                      ? totalBookingRent - discount
-                      : totalBookingRent}
-                  </div>
+                  0
                 )}
               </p>
             </div>
