@@ -107,8 +107,16 @@ const BookingSummary = ({
   // Handle transaction submission
   const onFinish = async (values: Transaction) => {
     try {
+      const amount = Number(values.amount);
+
+      // Validate that the amount is not negative
+      if (amount < 0) {
+        message.error("Amount cannot be negative.");
+        return; // Exit the function if validation fails
+      }
+
       // Validate that the amount is not greater than the remaining amount
-      if (Number(values.amount) > remainingAmount) {
+      if (amount > remainingAmount) {
         message.error("Amount cannot be greater than the remaining amount.");
         return; // Exit the function if validation fails
       }
@@ -124,7 +132,7 @@ const BookingSummary = ({
             subCategory: TransactionSubCategory.Roomrent,
             method: values.method,
             description: values.description,
-            amount: Number(values.amount),
+            amount: amount, // Use the validated amount here
           },
         },
       });
