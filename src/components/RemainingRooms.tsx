@@ -35,18 +35,29 @@ const RemainingRooms = ({ startDate, endDate }: FloorPlanProps) => {
     )
     .filter((room) => room.number !== "Staff" && room.type.title !== "Lift");
 
+  // Count remaining rooms by room type
+  const remainingRoomsByType: { [key: string]: number } = {};
+  unBookedRooms?.forEach((room) => {
+    const roomType = room.type.title;
+    if (remainingRoomsByType[roomType]) {
+      remainingRoomsByType[roomType] += 1;
+    } else {
+      remainingRoomsByType[roomType] = 1;
+    }
+  });
+
   return (
     <>
       <Card
-        title="Remaining Rooms"
+        title="Remaining Rooms By Room Type"
         bordered={false}
-        style={{ width: 400 }}
+        style={{ width: 300 }}
         className="bg-transparent"
       >
-        {unBookedRooms?.map((room) => (
-          <div key={room._id}>
+        {Object.keys(remainingRoomsByType).map((roomType) => (
+          <div key={roomType}>
             <p className="mb-2">
-              {room.type.title} - {room.number}
+              {roomType} - {remainingRoomsByType[roomType]}
             </p>
           </div>
         ))}
