@@ -9,8 +9,8 @@ import {
   Table,
   message,
 } from "antd";
-import TextArea from "antd/es/input/TextArea"; 
-import dayjs from "dayjs"; 
+import TextArea from "antd/es/input/TextArea";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";

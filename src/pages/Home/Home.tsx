@@ -14,6 +14,32 @@ const Home = () => {
     RangeValue<dayjs.Dayjs>
   >([dayjs(), dayjs().add(1, "day")]);
 
+  // Function to handle changing the date range to the previous day
+  const handlePreviousDay = () => {
+    setSelectedDateRange((prevRange) => {
+      if (prevRange) {
+        return [
+          prevRange[0]?.subtract(1, "day") || dayjs(),
+          prevRange[1]?.subtract(1, "day") || dayjs().add(1, "day"),
+        ];
+      }
+      return prevRange;
+    });
+  };
+
+  // Function to handle changing the date range to the next day
+  const handleNextDay = () => {
+    setSelectedDateRange((prevRange) => {
+      if (prevRange) {
+        return [
+          prevRange[0]?.add(1, "day") || dayjs(),
+          prevRange[1]?.add(1, "day") || dayjs().add(1, "day"),
+        ];
+      }
+      return prevRange;
+    });
+  };
+
   return (
     <>
       <div className="flex items-center">
@@ -21,7 +47,7 @@ const Home = () => {
         <TitleText text="Home" />
         {/* Date range picker */}
         <div className="mx-auto flex items-center">
-          <Button type="primary" ghost>
+          <Button type="primary" ghost onClick={handlePreviousDay}>
             Previous Day
           </Button>
           <div>
@@ -31,7 +57,7 @@ const Home = () => {
               value={selectedDateRange}
               onChange={(value) => setSelectedDateRange(value)}
             />
-            <Button type="primary" ghost>
+            <Button type="primary" ghost onClick={handleNextDay}>
               Next Day
             </Button>
           </div>
