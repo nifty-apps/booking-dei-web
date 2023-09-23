@@ -1,4 +1,4 @@
-import { DatePicker } from "antd";
+import { Button, DatePicker } from "antd";
 import dayjs from "dayjs";
 import { RangeValue } from "rc-picker/lib/interface";
 import { useState } from "react";
@@ -16,17 +16,25 @@ const Home = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center">
         {/* new booking title */}
         <TitleText text="Home" />
         {/* Date range picker */}
-        <div>
-          <DatePicker.RangePicker
-            allowClear={false}
-            format="YYYY-MM-DD"
-            value={selectedDateRange}
-            onChange={(value) => setSelectedDateRange(value)}
-          />
+        <div className="mx-auto flex items-center">
+          <Button type="primary" ghost>
+            Previous Day
+          </Button>
+          <div>
+            <DatePicker.RangePicker
+              allowClear={false}
+              format="YYYY-MM-DD"
+              value={selectedDateRange}
+              onChange={(value) => setSelectedDateRange(value)}
+            />
+            <Button type="primary" ghost>
+              Next Day
+            </Button>
+          </div>
         </div>
 
         <Link
