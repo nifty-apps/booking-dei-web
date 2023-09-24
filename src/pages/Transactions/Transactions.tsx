@@ -17,10 +17,12 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TitleText from "../../components/Title";
 import { Transaction } from "../../graphql/__generated__/graphql";
+import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import {
   REMOVE_TRANSACTION,
   UPDATE_TRANSACTION,
 } from "../../graphql/mutations/transactionMutations";
+import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import {
   GET_TRANSACTIONS,
   GET_TRANSACTIONS_BY_DATE_RANGE,
@@ -46,6 +48,11 @@ const Transactions = () => {
   const { data: transactionsData, loading, error } = useQuery(GET_TRANSACTIONS);
   const [updateTransaction] = useMutation(UPDATE_TRANSACTION, {
     refetchQueries: [{ query: GET_TRANSACTIONS }],
+  });
+
+  // update contact API call
+  const [updateContact] = useMutation(UPDATE_CONTACT, {
+    refetchQueries: [{ query: GET_CONTACTS }],
   });
 
   // Fetch data based on the selected date range
@@ -77,8 +84,9 @@ const Transactions = () => {
 
   // Update transaction
   const onFinish = async (values: Transaction, transactionId: string) => {
+    console.log(typeof values);
     try {
-      await updateTransaction({
+      const res = await updateTransaction({
         variables: {
           updateTransactionInput: {
             _id: transactionId,
@@ -90,6 +98,19 @@ const Transactions = () => {
           },
         },
       });
+
+      // update contact
+      if (res.data?.updateTransaction?.contact?._id) {
+        await updateContact({
+          variables: {
+            updateContactInput: {
+              _id: res?.data?.updateTransaction.contact._id,
+              name: values.contact.toString(),
+            },
+          },
+        });
+      }
+
       message.success("Transaction updated successfully.");
       setIsModalOpen(false);
     } catch (error) {
