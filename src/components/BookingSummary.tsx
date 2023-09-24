@@ -42,7 +42,9 @@ const BookingSummary = ({
   const [transactionInfo, setTransactionInfo] = useState({} as Transaction);
 
   const [form] = Form.useForm();
+
   const { bookingId: booking } = useParams();
+
   const { data: transactionSummary, refetch } = useQuery(
     GET_TRANSACTION_BY_FILTER,
     {
@@ -79,6 +81,43 @@ const BookingSummary = ({
     );
   });
 
+  // Define columns for the transaction table
+  const columns = [
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Method",
+      dataIndex: "method",
+      key: "method",
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+    },
+  ];
+
+  // Prepare data source for the transaction table
+  const dataSource = transactionSummary?.transactionByFilter
+    .filter((transaction) => transaction?.booking === createBookingId)
+    .map((transaction) => {
+      return {
+        key: transaction?._id,
+        date: format(new Date(transaction?.date), "dd-MM-yyyy"),
+        description: transaction?.description,
+        method: transaction?.method,
+        amount: transaction?.amount,
+      };
+    });
+
   // Calculate the total rent for all room bookings
   const totalBookingRent = roomBookings?.reduce(
     (total, roomBooking) => total + (roomBooking?.rent ?? 0),
@@ -91,18 +130,17 @@ const BookingSummary = ({
     0
   );
 
-  // Calculate the total transaction amount
-  const totalTransactionAmount =
-    transactionSummary?.transactionByFilter?.reduce(
-      (total, transaction) => total + (transaction?.amount || 0),
-      0
-    );
+  // Calculate the total amount paid from the table data
+  const totalAmountPaid = dataSource?.reduce(
+    (total, transaction) => total + (transaction?.amount || 0),
+    0
+  );
 
-  // Calculate the remaining amount after deducting totalTransactionAmount
+  // Calculate the remaining amount based on the grand total and total amount paid
   const remainingAmount =
-    ((totalBookingRent && discount
+    (totalBookingRent && discount
       ? totalBookingRent - discount
-      : totalBookingRent) ?? 0) - (totalTransactionAmount ?? 0);
+      : totalBookingRent) - (totalAmountPaid || 0);
 
   // Handle transaction submission
   const onFinish = async (values: Transaction) => {
@@ -149,43 +187,6 @@ const BookingSummary = ({
       message.error("Something went wrong!");
     }
   };
-
-  // Define columns for the transaction table
-  const columns = [
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-    },
-    {
-      title: "Method",
-      dataIndex: "method",
-      key: "method",
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-    },
-  ];
-
-  // Prepare data source for the transaction table
-  const dataSource = transactionSummary?.transactionByFilter?.map(
-    (transaction) => {
-      return {
-        key: transaction?._id,
-        date: format(new Date(transaction?.date), "dd-MM-yyyy"),
-        description: transaction?.description,
-        method: transaction?.method,
-        amount: transaction?.amount,
-      };
-    }
-  );
 
   return (
     <>
@@ -240,11 +241,7 @@ const BookingSummary = ({
             <div className="flex items-center justify-between">
               <p className="font-bold">Total Amount Paid</p>
               <p>
-                {transactionInfo && booking ? (
-                  <div>{totalTransactionAmount}</div>
-                ) : (
-                  0
-                )}
+                {transactionInfo && booking ? <div>{totalAmountPaid}</div> : 0}
               </p>
             </div>
 

@@ -18,7 +18,7 @@ import {
   ContactTypes,
   CreateContactInput,
 } from "../graphql/__generated__/graphql";
-import { CREATE_CONTACT } from "../graphql/mutations/createContactMutations";
+import { CREATE_CONTACT } from "../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../graphql/queries/contactQueries";
 import { RootState } from "../store";
 interface GuestDetailsInfoProps {

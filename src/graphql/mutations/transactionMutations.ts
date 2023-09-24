@@ -44,6 +44,10 @@ export const UPDATE_TRANSACTION = gql(`
       method
       description
       amount
+       contact {
+        _id
+        name
+    }
     }
 }
 `);
@@ -57,4 +61,3 @@ export const REMOVE_TRANSACTION = gql(`
 }
 
 `);
-
