@@ -22,8 +22,11 @@ export const CREATE_CONTACT = gql(`
 export const UPDATE_CONTACT = gql(`
 mutation UpdateContact($updateContactInput: UpdateContactInput!) {
     updateContact(updateContactInput:$updateContactInput){
-    _id
-    name	
+      _id
+      name	
+      phone
+      idType
+      idNo
   }
 }
 

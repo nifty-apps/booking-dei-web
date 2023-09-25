@@ -73,8 +73,6 @@ const RoomBookingFinancials = () => {
     },
   ];
 
-  console.log(`data: `, data);
-
   const dataSource = data?.roomBookingFinancials
     .filter((transaction) => transaction?.roombookings?.length > 0)
     .filter((transaction) => {
