@@ -17,8 +17,12 @@ import {
   ContactFilterInput,
   ContactTypes,
   CreateContactInput,
+  UpdateContactInput,
 } from "../graphql/__generated__/graphql";
-import { CREATE_CONTACT } from "../graphql/mutations/contactMutations";
+import {
+  CREATE_CONTACT,
+  UPDATE_CONTACT,
+} from "../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../graphql/queries/contactQueries";
 import { RootState } from "../store";
 interface GuestDetailsInfoProps {
@@ -35,8 +39,12 @@ const GuestDetailsInfo = ({
   isEditing,
 }: GuestDetailsInfoProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
-  const [createContact] = useMutation(CREATE_CONTACT);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
+
+  const [createContact] = useMutation(CREATE_CONTACT);
+  const [updateContact] = useMutation(UPDATE_CONTACT);
 
   const memoizedOnContact = useMemo(() => onSelect, [onSelect]);
 
@@ -78,6 +86,28 @@ const GuestDetailsInfo = ({
         form.setFieldsValue(response.data.createContact);
         setIsModalOpen(false);
       }
+    } catch (err) {
+      message.error(`Something went wrong!`);
+    }
+  };
+
+  // update contact
+  const handleUpdateContact = async (values: UpdateContactInput) => {
+    try {
+      await updateContact({
+        variables: {
+          updateContactInput: {
+            ...values,
+            _id: contact._id,
+            name: values.name || "",
+            phone: values.phone || "",
+            idNo: Number(values.idNo),
+            type: ContactTypes.Customer,
+          },
+        },
+      });
+      message.success("Contact updated successfully!");
+      setIsModalOpenUpdate(false);
     } catch (err) {
       message.error(`Something went wrong!`);
     }
@@ -212,6 +242,17 @@ const GuestDetailsInfo = ({
           />
         </Form.Item>
       </Form>
+      {/* Update contact */}
+      <Button
+        type="primary"
+        size="middle"
+        ghost
+        onClick={() => {
+          setIsModalOpenUpdate(true);
+        }}
+      >
+        Update Contact
+      </Button>
 
       {/* modal for guest details */}
       <Modal
@@ -257,6 +298,64 @@ const GuestDetailsInfo = ({
             className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
           >
             Submit
+          </button>
+        </Form>
+      </Modal>
+
+      {/*update contact modal */}
+      <Modal
+        title="Update Contact"
+        open={isModalOpenUpdate}
+        onOk={() => setIsModalOpenUpdate(false)}
+        onCancel={() => {
+          setIsModalOpenUpdate(false);
+        }}
+        footer={null}
+      >
+        <Form
+          form={form}
+          onValuesChange={(values) => {
+            setContact({ ...contact, ...values });
+          }}
+          onFinish={handleUpdateContact}
+        >
+          <Space direction="vertical" className="w-full">
+            <h3>Full Name</h3>
+            <Form.Item name="name" className="mb-0">
+              <Input
+                type="text"
+                placeholder="Enter name"
+                value={contactInfo?.name}
+              />
+            </Form.Item>
+
+            <h3>Phone</h3>
+            <Form.Item name="phone" className="mb-0">
+              <Input type="text" placeholder="Enter your phone" />
+            </Form.Item>
+
+            <h3>ID Type</h3>
+            <Form.Item name="idType" className="mb-0">
+              <Select
+                className="w-full"
+                placeholder="Select ID Type"
+                options={[
+                  { value: "NID", label: "NID" },
+                  { value: "PASSPORT", label: "PASSPORT" },
+                ]}
+              />
+            </Form.Item>
+
+            <h3>ID No</h3>
+            <Form.Item name="idNo" className="mb-0">
+              <Input placeholder="Enter your ID number" />
+            </Form.Item>
+          </Space>
+          <button
+            type="submit"
+            className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+          >
+            Update
           </button>
         </Form>
       </Modal>
