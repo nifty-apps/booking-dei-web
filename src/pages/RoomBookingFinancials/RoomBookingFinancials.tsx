@@ -99,7 +99,7 @@ const RoomBookingFinancials = () => {
       key: transaction?._id,
       roomNumber: transaction?.number,
       contact: transaction?.roombookings?.[0]?.bookingCustomer,
-      bookingAmount: transaction?.type?.rent,
+      bookingAmount: transaction?.roombookings?.[0]?.bookingRent,
       paidAmount: transaction?.roombookings?.[0]?.bookingPayment,
       dueAmount: transaction?.roombookings?.[0]?.bookingDue,
       action: transaction?.roombookings?.[0]?.booking,

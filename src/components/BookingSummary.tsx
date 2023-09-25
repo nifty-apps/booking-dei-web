@@ -32,6 +32,13 @@ interface BookingSummaryProps {
   contactId: string | null;
 }
 
+interface Column {
+  title: string;
+  dataIndex: string;
+  key: string;
+  align?: "left" | "center" | "right"; // Align property
+}
+
 const BookingSummary = ({
   roomBookings,
   bookingId: createBookingId,
@@ -82,7 +89,7 @@ const BookingSummary = ({
   });
 
   // Define columns for the transaction table
-  const columns = [
+  const columns: Column[] = [
     {
       title: "Date",
       dataIndex: "date",
@@ -102,6 +109,7 @@ const BookingSummary = ({
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
+      align: "right",
     },
   ];
 
@@ -150,13 +158,13 @@ const BookingSummary = ({
       // Validate that the amount is not negative
       if (amount < 0) {
         message.error("Amount cannot be negative.");
-        return; // Exit the function if validation fails
+        return;
       }
 
       // Validate that the amount is not greater than the remaining amount
       if (amount > remainingAmount) {
         message.error("Amount cannot be greater than the remaining amount.");
-        return; // Exit the function if validation fails
+        return;
       }
 
       const res = await createTransaction({
@@ -170,7 +178,7 @@ const BookingSummary = ({
             subCategory: TransactionSubCategory.Roomrent,
             method: values.method,
             description: values.description,
-            amount: amount, // Use the validated amount here
+            amount: amount,
           },
         },
       });
