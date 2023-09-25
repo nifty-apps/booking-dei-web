@@ -84,7 +84,6 @@ const Transactions = () => {
 
   // Update transaction
   const onFinish = async (values: Transaction, transactionId: string) => {
-    console.log(typeof values);
     try {
       const res = await updateTransaction({
         variables: {
