@@ -8,8 +8,8 @@ import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
 import { Link, useLocation } from "react-router-dom";
 import version from "../../package.json";
 import logo from "../assets/logo.png";
-const { Sider } = Layout;
 
+const { Sider } = Layout;
 interface SidebarProps {
   collapsed: boolean;
 }
@@ -98,7 +98,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
         </Menu>
 
         {/* footer part for sidebar */}
-        <p className="mt-40 mb-0 text-gray-500 text-center pt-40 text-sm">
+        <p className="mt-40 text-gray-500 text-center pt-40 text-sm pb-2">
           All Rights Reserved, {currentYear} Version - {appVersion}
         </p>
       </Sider>
