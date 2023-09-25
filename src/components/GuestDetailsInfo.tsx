@@ -58,8 +58,6 @@ const GuestDetailsInfo = ({
     type: ContactTypes.Customer,
   });
 
-  console.log(contact._id);
-
   const { data, loading, error } = useQuery(GET_CONTACTS, {
     variables: {
       filter: {
@@ -96,7 +94,7 @@ const GuestDetailsInfo = ({
   // update contact
   const handleUpdateContact = async (values: UpdateContactInput) => {
     try {
-      const res = await updateContact({
+      await updateContact({
         variables: {
           updateContactInput: {
             ...values,
@@ -108,8 +106,6 @@ const GuestDetailsInfo = ({
           },
         },
       });
-
-      console.log(res);
       message.success("Contact updated successfully!");
       setIsModalOpenUpdate(false);
     } catch (err) {
@@ -245,11 +241,11 @@ const GuestDetailsInfo = ({
             placeholder={contactInfo?.idNo?.toString() || "Enter ID Type"}
           />
         </Form.Item>
-
-        {/* update contact */}
       </Form>
+      {/* Update contact */}
       <Button
         type="primary"
+        size="middle"
         ghost
         onClick={() => {
           setIsModalOpenUpdate(true);
