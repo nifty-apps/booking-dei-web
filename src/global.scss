@@ -56,12 +56,18 @@ li.ant-menu-item.ant-menu-item-selected {
 // table 
 .custom_table .ant-table {
     background-color: transparent !important;
-  
-
 }
 
 .custom_table .ant-table-thead > tr > th {
     background-color: transparent !important;
+}
+
+.custom_table table>thead>tr:first-child >*:last-child {
+    padding-left: 3rem;
+}
+
+:where(.css-dev-only-do-not-override-txh9fw).ant-table-wrapper .ant-table-thead>tr>th, :where(.css-dev-only-do-not-override-txh9fw).ant-table-wrapper .ant-table-tbody>tr>th, :where(.css-dev-only-do-not-override-txh9fw).ant-table-wrapper .ant-table-tbody>tr>td, :where(.css-dev-only-do-not-override-txh9fw).ant-table-wrapper tfoot>tr>th, :where(.css-dev-only-do-not-override-txh9fw).ant-table-wrapper tfoot>tr>td {
+    padding: 16px 0;
 }
 
 // booking details page
@@ -72,3 +78,4 @@ li.ant-menu-item.ant-menu-item-selected {
 .custom__input::placeholder{
     color: #000 !important;
 }
+
