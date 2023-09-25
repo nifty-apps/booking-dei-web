@@ -14,7 +14,11 @@ import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Transaction } from "../graphql/__generated__/graphql";
+import {
+  Transaction,
+  TransactionSubCategory,
+  TransactionType,
+} from "../graphql/__generated__/graphql";
 import { CREATE_TRANSACTION } from "../graphql/mutations/transactionMutations";
 import { GET_TRANSACTION_BY_FILTER } from "../graphql/queries/transactionsQueries";
 import { BookingDetails } from "../pages/NewBooking/NewBooking";
@@ -36,17 +40,18 @@ const BookingSummary = ({
   const { user } = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transactionInfo, setTransactionInfo] = useState({} as Transaction);
-  const [overView, setOverView] = useState(false);
 
   const [form] = Form.useForm();
-  const { bookingId } = useParams();
+
+  const { bookingId: booking } = useParams();
+
   const { data: transactionSummary, refetch } = useQuery(
     GET_TRANSACTION_BY_FILTER,
     {
       variables: {
         transactionFilter: {
-          hotelId: user?.hotels[0] || "",
-          bookingId: bookingId || "",
+          hotel: user?.hotels[0] || "",
+          booking: booking || "",
         },
       },
     }
@@ -76,64 +81,6 @@ const BookingSummary = ({
     );
   });
 
-  // Calculate the total rent for all room bookings
-  const totalBookingRent = roomBookings?.reduce(
-    (total, roomBooking) => total + (roomBooking?.rent ?? 0),
-    0
-  );
-
-  // Calculate the total discount
-  const discount = roomBookings?.reduce(
-    (total, room) => total + (room?.discount ?? 0),
-    0
-  );
-
-  // Calculate the total transaction amount
-  const totalTransactionAmount =
-    transactionSummary?.transactionByFilter?.reduce(
-      (total, transaction) => total + (transaction?.amount || 0),
-      0
-    );
-
-  // Calculate the remaining amount after deducting totalTransactionAmount
-  const remainingAmount =
-    ((totalBookingRent && discount
-      ? totalBookingRent - discount
-      : totalBookingRent) ?? 0) - (totalTransactionAmount ?? 0);
-
-  // Handle transaction submission
-  const onFinish = async (values: Transaction) => {
-    try {
-      const res = await createTransaction({
-        variables: {
-          createTransactionInput: {
-            contact: contactId || "",
-            booking: createBookingId || null,
-            hotel: user?.hotels[0] || "",
-            date: values.date,
-            category: values.category,
-            subCategory: values.subCategory,
-            method: values.method,
-            description: values.description,
-            amount: Number(values.amount),
-          },
-        },
-      });
-
-      if (res?.data?.createTransaction) {
-        message.success("Transaction created successfully!");
-        form.resetFields();
-        setIsModalOpen(false);
-        setTransactionInfo(res?.data?.createTransaction);
-        setOverView(true);
-        // Refetch the transaction data to update the table
-        refetch();
-      }
-    } catch (err) {
-      message.error("Something went wrong!");
-    }
-  };
-
   // Define columns for the transaction table
   const columns = [
     {
@@ -159,8 +106,9 @@ const BookingSummary = ({
   ];
 
   // Prepare data source for the transaction table
-  const dataSource = transactionSummary?.transactionByFilter?.map(
-    (transaction) => {
+  const dataSource = transactionSummary?.transactionByFilter
+    .filter((transaction) => transaction?.booking === createBookingId)
+    .map((transaction) => {
       return {
         key: transaction?._id,
         date: format(new Date(transaction?.date), "dd-MM-yyyy"),
@@ -168,8 +116,77 @@ const BookingSummary = ({
         method: transaction?.method,
         amount: transaction?.amount,
       };
-    }
+    });
+
+  // Calculate the total rent for all room bookings
+  const totalBookingRent = roomBookings?.reduce(
+    (total, roomBooking) => total + (roomBooking?.rent ?? 0),
+    0
   );
+
+  // Calculate the total discount
+  const discount = roomBookings?.reduce(
+    (total, room) => total + (room?.discount ?? 0),
+    0
+  );
+
+  // Calculate the total amount paid from the table data
+  const totalAmountPaid = dataSource?.reduce(
+    (total, transaction) => total + (transaction?.amount || 0),
+    0
+  );
+
+  // Calculate the remaining amount based on the grand total and total amount paid
+  const remainingAmount =
+    (totalBookingRent && discount
+      ? totalBookingRent - discount
+      : totalBookingRent) - (totalAmountPaid || 0);
+
+  // Handle transaction submission
+  const onFinish = async (values: Transaction) => {
+    try {
+      const amount = Number(values.amount);
+
+      // Validate that the amount is not negative
+      if (amount < 0) {
+        message.error("Amount cannot be negative.");
+        return; // Exit the function if validation fails
+      }
+
+      // Validate that the amount is not greater than the remaining amount
+      if (amount > remainingAmount) {
+        message.error("Amount cannot be greater than the remaining amount.");
+        return; // Exit the function if validation fails
+      }
+
+      const res = await createTransaction({
+        variables: {
+          createTransactionInput: {
+            contact: contactId || "",
+            booking: createBookingId || null,
+            hotel: user?.hotels[0] || "",
+            date: values.date,
+            category: TransactionType.Income,
+            subCategory: TransactionSubCategory.Roomrent,
+            method: values.method,
+            description: values.description,
+            amount: amount, // Use the validated amount here
+          },
+        },
+      });
+
+      if (res?.data?.createTransaction) {
+        message.success("Transaction created successfully!");
+        form.resetFields();
+        setIsModalOpen(false);
+        setTransactionInfo(res?.data?.createTransaction);
+        // Refetch the transaction data to update the table
+        refetch();
+      }
+    } catch (err) {
+      message.error("Something went wrong!");
+    }
+  };
 
   return (
     <>
@@ -208,28 +225,39 @@ const BookingSummary = ({
               Transactions
             </h1>
             {/* If transaction is successful */}
-            {overView && transactionInfo && (
-              <div>
-                <Table
-                  className="custom_table"
-                  dataSource={dataSource}
-                  columns={columns}
-                  pagination={false}
-                />
-              </div>
+            {transactionInfo && booking ? (
+              <Table
+                className="custom_table"
+                dataSource={dataSource}
+                columns={columns}
+                pagination={false}
+              />
+            ) : (
+              ""
             )}
 
             <div className="border border-gray-400 my-2"></div>
 
             <div className="flex items-center justify-between">
-              <p className="font-bold">Total Amount</p>
-              <p>{totalTransactionAmount}</p>
+              <p className="font-bold">Total Amount Paid</p>
+              <p>
+                {transactionInfo && booking ? <div>{totalAmountPaid}</div> : 0}
+              </p>
             </div>
 
             <div className="flex items-center justify-between">
               <p className="font-bold">Remaining</p>
+
               <p>
-                {overView && transactionInfo && <div>{remainingAmount}</div>}
+                {transactionInfo && booking ? (
+                  <div>{remainingAmount}</div>
+                ) : (
+                  <div>
+                    {totalBookingRent && discount
+                      ? totalBookingRent - discount
+                      : totalBookingRent}
+                  </div>
+                )}
               </p>
             </div>
           </div>
@@ -288,38 +316,6 @@ const BookingSummary = ({
             <Form.Item name="date" className="mb-0">
               <DatePicker className="w-full" />
             </Form.Item>
-
-            <div className="flex items-center justify-between gap-4">
-              <Space direction="vertical" className="w-full">
-                <h3>Category</h3>
-                <Form.Item name="category" className="mb-0">
-                  <Select
-                    placeholder="Select category"
-                    options={[
-                      { value: "INCOME", label: "Income" },
-                      { value: "EXPENSE", label: "Expense" },
-                    ]}
-                  />
-                </Form.Item>
-              </Space>
-
-              <Space direction="vertical" className="w-full">
-                <h3>Sub-Category</h3>
-                <Form.Item name="subCategory" className="mb-0">
-                  <Select
-                    placeholder="Select sub-category"
-                    options={[
-                      { value: "SALARY", label: "Salary" },
-                      { value: "ELECTRICITY", label: "Electricity" },
-                      { value: "WATER", label: "Water" },
-                      { value: "RENT", label: "Rent" },
-                      { value: "OTHEREXPENSE", label: "Other Expense" },
-                      { value: "ROOMRENT", label: "Room Rent" },
-                    ]}
-                  />
-                </Form.Item>
-              </Space>
-            </div>
 
             <h3>Payment Method</h3>
             <Form.Item name="method" className="mb-0">

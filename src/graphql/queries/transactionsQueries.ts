@@ -65,7 +65,7 @@ export const GET_TRANSACTIONS_BY_DATE_RANGE = gql(`
       $endDate: DateTime!
 ) {
     transactionsByDateRange(
-      hotelId: $hotelId,
+      hotel: $hotelId,
       startDate: $startDate,
       endDate: $endDate
     ) {

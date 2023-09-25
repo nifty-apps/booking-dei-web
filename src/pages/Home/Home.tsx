@@ -1,11 +1,11 @@
-import { DatePicker } from "antd";
+import { Button, DatePicker } from "antd";
 import dayjs from "dayjs";
 import { RangeValue } from "rc-picker/lib/interface";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import FloorPlan, { Room } from "../../components/FloorPlan";
-import SelectionSummary from "../../components/SelectionSummary";
+import RemainingRooms from "../../components/RemainingRooms";
 import TitleText from "../../components/Title";
 
 const Home = () => {
@@ -14,19 +14,53 @@ const Home = () => {
     RangeValue<dayjs.Dayjs>
   >([dayjs(), dayjs().add(1, "day")]);
 
+  //  previous day
+  const handlePreviousDay = () => {
+    setSelectedDateRange((prevRange) => {
+      if (prevRange) {
+        return [
+          prevRange[0]?.subtract(1, "day") || dayjs(),
+          prevRange[1]?.subtract(1, "day") || dayjs().add(1, "day"),
+        ];
+      }
+      return prevRange;
+    });
+  };
+
+  //  next day
+  const handleNextDay = () => {
+    setSelectedDateRange((prevRange) => {
+      if (prevRange) {
+        return [
+          prevRange[0]?.add(1, "day") || dayjs(),
+          prevRange[1]?.add(1, "day") || dayjs().add(1, "day"),
+        ];
+      }
+      return prevRange;
+    });
+  };
+
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center">
         {/* new booking title */}
         <TitleText text="Home" />
         {/* Date range picker */}
-        <div>
-          <DatePicker.RangePicker
-            allowClear={false}
-            format="YYYY-MM-DD"
-            value={selectedDateRange}
-            onChange={(value) => setSelectedDateRange(value)}
-          />
+        <div className="mx-auto flex items-center">
+          <Button type="primary" ghost onClick={handlePreviousDay}>
+            Previous Day
+          </Button>
+          <div>
+            <DatePicker.RangePicker
+              allowClear={false}
+              format="YYYY-MM-DD"
+              value={selectedDateRange}
+              onChange={(value) => setSelectedDateRange(value)}
+            />
+            <Button type="primary" ghost onClick={handleNextDay}>
+              Next Day
+            </Button>
+          </div>
         </div>
 
         <Link
@@ -47,10 +81,10 @@ const Home = () => {
           startDate={selectedDateRange?.[0]?.toDate() as Date}
           endDate={selectedDateRange?.[1]?.toDate() as Date}
         />
-        {/* current selection part */}
-        <SelectionSummary
-          selectedRooms={selectedRooms}
-          onChange={(rooms) => setSelectedRooms(rooms)}
+        {/* current selection part  */}
+        <RemainingRooms
+          startDate={selectedDateRange?.[0]?.toDate() as Date}
+          endDate={selectedDateRange?.[1]?.toDate() as Date}
         />
       </div>
     </>
