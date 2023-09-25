@@ -6,12 +6,15 @@ import {
 } from "react-icons/ai";
 import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
 import { Link, useLocation } from "react-router-dom";
+import version from "../../package.json";
 import logo from "../assets/logo.png";
 const { Sider } = Layout;
 
 interface SidebarProps {
   collapsed: boolean;
 }
+
+const appVersion = version.version;
 
 const Sidebar = ({ collapsed }: SidebarProps) => {
   const location = useLocation();
@@ -95,8 +98,8 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
         </Menu>
 
         {/* footer part for sidebar */}
-        <p className="mt-48 mb-0 text-gray-500 text-center pt-40 text-sm">
-          All Rights Reserved, {currentYear}
+        <p className="mt-40 mb-0 text-gray-500 text-center pt-40 text-sm">
+          All Rights Reserved, {currentYear} Version - {appVersion}
         </p>
       </Sider>
     </>

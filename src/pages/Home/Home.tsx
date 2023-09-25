@@ -12,7 +12,23 @@ const Home = () => {
   const [selectedRooms, setSelectedRooms] = useState<Room[]>([]);
   const [selectedDateRange, setSelectedDateRange] = useState<
     RangeValue<dayjs.Dayjs>
-  >([dayjs(), dayjs().add(1, "day")]);
+  >([
+    dayjs(
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate()
+      )
+    ),
+
+    dayjs(
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate() + 1
+      )
+    ),
+  ]);
 
   //  previous day
   const handlePreviousDay = () => {
