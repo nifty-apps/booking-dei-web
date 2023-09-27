@@ -14,6 +14,7 @@ import {
   PaymentStatus,
   RoomBookingInput,
   RoomBookingStatus,
+  UpdateBookingInput,
 } from "../../graphql/__generated__/graphql";
 import {
   REMOVE_ROOM_BOOKING,
@@ -25,6 +26,7 @@ import {
   GET_CONTACT,
 } from "../../graphql/queries/bookingDetailsQueries";
 import { GET_ROOM_BOOKING } from "../../graphql/queries/roomBookingQueries";
+import { GET_ROOMS_BY_FLOOR } from "../../graphql/queries/roomQueries";
 import { RootState } from "../../store";
 
 interface RoomBooking {
@@ -61,7 +63,9 @@ export interface RoomBookingInfo extends CreateBookingInput {
 const EditRoomBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [updateBooking] = useMutation(UPDATE_BOOKING);
-  const [updateRoomBooking] = useMutation(UPDATE_ROOM_BOOKING);
+  const [updateRoomBooking] = useMutation(UPDATE_ROOM_BOOKING, {
+    refetchQueries: [GET_ROOMS_BY_FLOOR, GET_ROOM_BOOKING],
+  });
   const [removeRoomBooking] = useMutation(REMOVE_ROOM_BOOKING, {
     refetchQueries: [GET_ROOM_BOOKING],
   });
@@ -193,7 +197,7 @@ const EditRoomBooking = () => {
     status: (
       <div className="flex">
         <Select
-          defaultValue={RoomBookingStatus.Booked}
+          defaultValue={roomBooking.status as RoomBookingStatus}
           className="w-40"
           options={[
             { value: RoomBookingStatus.Booked, label: "Booked" },
@@ -218,16 +222,18 @@ const EditRoomBooking = () => {
   // Update booking
   const handleUpdateBooking = async () => {
     try {
-      const variables = {
-        updateBookingInput: {
-          _id: bookingId,
-          customer: bookingDetails.customer,
-          hotel: bookingDetails.hotel,
-          paymentStatus: bookingDetails.paymentStatus,
-        },
+      const updateBookingInput: UpdateBookingInput = {
+        _id: bookingId,
+        customer: bookingDetails.customer,
+        hotel: bookingDetails.hotel,
+        paymentStatus: bookingDetails.paymentStatus,
       };
 
-      await updateBooking({ variables });
+      if (!bookingDetails.customer) {
+        delete updateBookingInput.customer;
+      }
+
+      await updateBooking({ variables: { updateBookingInput } });
 
       for (const roomBooking of bookingDetails.roomBookings) {
         const res = await updateRoomBooking({

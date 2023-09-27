@@ -19,6 +19,7 @@ import {
   RoomBookingStatus,
 } from "../../graphql/__generated__/graphql";
 import { CREATE_BOOKING } from "../../graphql/mutations/bookingMutations";
+import { GET_ROOMS_BY_FLOOR } from "../../graphql/queries/roomQueries";
 import { RootState } from "../../store";
 
 export interface BookingDetails extends CreateBookingInput {
@@ -38,7 +39,9 @@ const NewBooking = () => {
   const [bookingId, setCreateBookingId] = useState<string | null>(null);
   const [contactId, setContactId] = useState<string | null>(null);
 
-  const [createBooking] = useMutation(CREATE_BOOKING);
+  const [createBooking] = useMutation(CREATE_BOOKING, {
+    refetchQueries: [GET_ROOMS_BY_FLOOR],
+  });
 
   const navigate = useNavigate();
 

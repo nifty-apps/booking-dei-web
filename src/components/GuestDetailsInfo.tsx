@@ -152,7 +152,7 @@ const GuestDetailsInfo = ({
           <Select
             disabled={!isEditing && isDetails}
             placeholder={(isDetails && contactInfo?.name) || "Enter your name"}
-            value={isDetails && contactInfo?.name}
+            defaultValue={contactInfo?.name}
             className="w-48 custom__select"
             onSelect={(value) => {
               const selectedContact = contacts.find(
@@ -187,7 +187,7 @@ const GuestDetailsInfo = ({
         <Form.Item name="phone" label="Phone" className="w-48">
           <Select
             disabled={!isEditing && isDetails}
-            value={contactInfo?.phone}
+            defaultValue={contactInfo?.phone}
             placeholder={contactInfo?.phone || "Enter phone number"}
             className="w-48 custom__select"
             onSelect={(value) => {
@@ -224,7 +224,7 @@ const GuestDetailsInfo = ({
           <Select
             disabled={!isEditing && isDetails}
             placeholder={contactInfo?.idType || "Enter ID Type"}
-            value={contact?.idType}
+            defaultValue={contact?.idType}
             className="w-48 custom__select"
             options={[
               { value: "NID", label: "NID" },
@@ -237,7 +237,7 @@ const GuestDetailsInfo = ({
           <Input
             className="custom__input w-48"
             disabled={!isEditing && isDetails}
-            value={contact?.idNo?.toString()}
+            defaultValue={contactInfo?.idNo?.toString()}
             placeholder={contactInfo?.idNo?.toString() || "Enter ID Type"}
           />
         </Form.Item>
