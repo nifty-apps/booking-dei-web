@@ -20,7 +20,10 @@ import {
   TransactionType,
 } from "../graphql/__generated__/graphql";
 import { CREATE_TRANSACTION } from "../graphql/mutations/transactionMutations";
-import { GET_TRANSACTION_BY_FILTER } from "../graphql/queries/transactionsQueries";
+import {
+  GET_TRANSACTIONS,
+  GET_TRANSACTION_BY_FILTER,
+} from "../graphql/queries/transactionsQueries";
 import { BookingDetails } from "../pages/NewBooking/NewBooking";
 import { RootState } from "../store";
 
@@ -65,7 +68,9 @@ const BookingSummary = ({
   );
 
   // Create transaction API call
-  const [createTransaction] = useMutation(CREATE_TRANSACTION);
+  const [createTransaction] = useMutation(CREATE_TRANSACTION, {
+    refetchQueries: [GET_TRANSACTIONS],
+  });
 
   const roomBookingInfo = roomBookings?.map((roomBooking) => {
     return (
