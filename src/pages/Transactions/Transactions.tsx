@@ -1,3 +1,4 @@
+import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   DatePicker,
@@ -28,6 +29,8 @@ import {
   GET_TRANSACTIONS_BY_DATE_RANGE,
 } from "../../graphql/queries/transactionsQueries";
 import { RootState } from "../../store";
+
+const { confirm } = Modal;
 
 const { RangePicker } = DatePicker;
 
@@ -74,12 +77,19 @@ const Transactions = () => {
   });
 
   const handleRemoveTransaction = async (transactionId: string) => {
-    try {
-      await removeTransaction({ variables: { id: transactionId } });
-      message.success("Transaction deleted successfully.");
-    } catch (error) {
-      message.error("An error occurred while deleting the transaction.");
-    }
+    confirm({
+      title: "Do you want to delete this transaction?",
+      icon: <ExclamationCircleFilled />,
+      okType: "danger",
+      async onOk() {
+        try {
+          await removeTransaction({ variables: { id: transactionId } });
+          message.success("Transaction deleted successfully.");
+        } catch (error) {
+          message.error("An error occurred while deleting the transaction.");
+        }
+      },
+    });
   };
 
   // Update transaction
