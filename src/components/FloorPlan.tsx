@@ -110,19 +110,66 @@ const FloorPlan = ({
                 {floorDetails.rooms.map((room) => {
                   const { _id, number, type, roombookings } = room;
 
-                  const status =
-                    roombookings.length > 0
-                      ? RoomBookingStatus.Booked
-                      : "AVAILABLE";
+                  let status = "AVAILABLE";
+                  let bgClass;
 
-                  const bgClass = classNames({
-                    "bg-red-100": status === RoomBookingStatus.Booked,
-                    "bg-blue-600 text-white": selectedRooms.includes(room),
-                    "cursor-pointer":
-                      room.number !== "Lift" && room.number !== "Staff",
-                    "cursor-not-allowed bg-gray-100":
-                      room.number === "Lift" || room.number === "Staff",
-                  });
+                  if (roombookings.length > 0) {
+                    if (
+                      roombookings.some(
+                        (booking) =>
+                          booking.status === RoomBookingStatus.Checkedin
+                      )
+                    ) {
+                      status = RoomBookingStatus.Checkedin;
+                    } else if (
+                      roombookings.some(
+                        (booking) =>
+                          booking.status === RoomBookingStatus.Checkedout
+                      )
+                    ) {
+                      status = RoomBookingStatus.Checkedout;
+                    } else {
+                      status = RoomBookingStatus.Booked;
+                    }
+                  }
+
+                  if (status === RoomBookingStatus.Booked) {
+                    bgClass = classNames({
+                      "bg-red-100": true,
+                      "bg-blue-600 text-white": selectedRooms.includes(room),
+                      "cursor-pointer":
+                        room.number !== "Lift" && room.number !== "Staff",
+                      "cursor-not-allowed bg-gray-100":
+                        room.number === "Lift" || room.number === "Staff",
+                    });
+                  } else if (status === RoomBookingStatus.Checkedin) {
+                    bgClass = classNames({
+                      "bg-green-50": true,
+                      "bg-blue-600 text-white": selectedRooms.includes(room),
+                      "cursor-pointer":
+                        room.number !== "Lift" && room.number !== "Staff",
+                      "cursor-not-allowed bg-gray-100":
+                        room.number === "Lift" || room.number === "Staff",
+                    });
+                  } else if (status === RoomBookingStatus.Checkedout) {
+                    bgClass = classNames({
+                      "bg-yellow-100": true,
+                      "bg-blue-600 text-white": selectedRooms.includes(room),
+                      "cursor-pointer":
+                        room.number !== "Lift" && room.number !== "Staff",
+                      "cursor-not-allowed bg-gray-100":
+                        room.number === "Lift" || room.number === "Staff",
+                    });
+                  } else {
+                    bgClass = classNames({
+                      "bg-white": true,
+                      "bg-blue-700 text-white": selectedRooms.includes(room),
+                      "cursor-pointer":
+                        room.number !== "Lift" && room.number !== "Staff",
+                      "cursor-not-allowed bg-gray-100":
+                        room.number === "Lift" || room.number === "Staff",
+                    });
+                  }
 
                   return (
                     <div key={_id}>
@@ -156,13 +203,13 @@ const FloorPlan = ({
           <div className="w-5 h-5 rounded-full bg-white border border-gray-500"></div>
           <span className="text-gray-500 font-semibold">Available</span>
 
-          <div className="w-5 h-5 rounded-full bg-blue-100 border border-gray-500"></div>
+          <div className="w-5 h-5 rounded-full bg-red-100 border border-gray-500"></div>
           <span className="text-gray-500 font-semibold">Booked</span>
 
           <div className="w-5 h-5 rounded-full bg-green-100 border border-gray-500"></div>
           <span className="text-gray-500 font-semibold">Check In</span>
 
-          <div className="w-5 h-5 rounded-full bg-gray-100 border border-gray-500"></div>
+          <div className="w-5 h-5 rounded-full bg-yellow-100 border border-gray-500"></div>
           <span className="text-gray-500 font-semibold">Check Out</span>
 
           <div className="w-5 h-5 rounded-full bg-orange-100  border border-gray-500"></div>
