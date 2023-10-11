@@ -135,8 +135,8 @@ const FloorPlan = ({
 
                   if (status === RoomBookingStatus.Booked) {
                     bgClass = classNames({
-                      "bg-red-100": true,
-                      "bg-blue-600 text-white": selectedRooms.includes(room),
+                      "bg-yellow-100": true,
+                      "bg-yellow-600 text-white": selectedRooms.includes(room),
                       "cursor-pointer":
                         room.number !== "Lift" && room.number !== "Staff",
                       "cursor-not-allowed bg-gray-100":
@@ -144,7 +144,7 @@ const FloorPlan = ({
                     });
                   } else if (status === RoomBookingStatus.Checkedin) {
                     bgClass = classNames({
-                      "bg-green-50": true,
+                      "bg-blue-100": true,
                       "bg-blue-600 text-white": selectedRooms.includes(room),
                       "cursor-pointer":
                         room.number !== "Lift" && room.number !== "Staff",
@@ -153,8 +153,8 @@ const FloorPlan = ({
                     });
                   } else if (status === RoomBookingStatus.Checkedout) {
                     bgClass = classNames({
-                      "bg-yellow-100": true,
-                      "bg-blue-600 text-white": selectedRooms.includes(room),
+                      "bg-red-100": true,
+                      "bg-red-600 text-white": selectedRooms.includes(room),
                       "cursor-pointer":
                         room.number !== "Lift" && room.number !== "Staff",
                       "cursor-not-allowed bg-gray-100":
@@ -203,13 +203,13 @@ const FloorPlan = ({
           <div className="w-5 h-5 rounded-full bg-white border border-gray-500"></div>
           <span className="text-gray-500 font-semibold">Available</span>
 
-          <div className="w-5 h-5 rounded-full bg-red-100 border border-gray-500"></div>
+          <div className="w-5 h-5 rounded-full bg-yellow-100 border border-gray-500"></div>
           <span className="text-gray-500 font-semibold">Booked</span>
 
-          <div className="w-5 h-5 rounded-full bg-green-100 border border-gray-500"></div>
+          <div className="w-5 h-5 rounded-full bg-blue-100 border border-gray-500"></div>
           <span className="text-gray-500 font-semibold">Check In</span>
 
-          <div className="w-5 h-5 rounded-full bg-yellow-100 border border-gray-500"></div>
+          <div className="w-5 h-5 rounded-full bg-red-100 border border-gray-500"></div>
           <span className="text-gray-500 font-semibold">Check Out</span>
 
           <div className="w-5 h-5 rounded-full bg-orange-100  border border-gray-500"></div>
