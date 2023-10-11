@@ -162,7 +162,7 @@ const FloorPlan = ({
                     });
                   } else {
                     bgClass = classNames({
-                      "bg-white": true,
+                      "bg-white": false,
                       "bg-blue-700 text-white": selectedRooms.includes(room),
                       "cursor-pointer":
                         room.number !== "Lift" && room.number !== "Staff",
