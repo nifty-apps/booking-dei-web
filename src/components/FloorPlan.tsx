@@ -75,6 +75,7 @@ const FloorPlan = ({
       startDate,
       endDate,
     },
+    
   });
 
   if (loading) return <p>Loading...</p>;

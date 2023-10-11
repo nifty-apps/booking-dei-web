@@ -62,7 +62,9 @@ export interface RoomBookingInfo extends CreateBookingInput {
 
 const EditRoomBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
-  const [updateBooking] = useMutation(UPDATE_BOOKING);
+  const [updateBooking] = useMutation(UPDATE_BOOKING, {
+    refetchQueries: [GET_ROOMS_BY_FLOOR, GET_ROOM_BOOKING],
+  });
   const [updateRoomBooking] = useMutation(UPDATE_ROOM_BOOKING, {
     refetchQueries: [GET_ROOMS_BY_FLOOR, GET_ROOM_BOOKING],
   });
