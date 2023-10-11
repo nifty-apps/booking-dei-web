@@ -140,7 +140,7 @@ const BookingDetails = () => {
           <>
             <TitleText text="Booking Details" />
             <Link
-              className="text-white  py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2  bg-blue-900 px-20 hover:text-white"
+              className="text-white py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2  bg-blue-900 px-20 hover:text-white"
               to={`/edit-booking/${bookingId}`}
             >
               Edit Booking

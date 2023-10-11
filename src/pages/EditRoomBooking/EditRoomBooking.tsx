@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Button, Select, Table, message } from "antd";
+import { Select, Table, message } from "antd";
 import { format } from "date-fns"; // Import date-fns for date formatting
 import { useEffect, useState } from "react";
 import { FaEllipsisVertical, FaXmark } from "react-icons/fa6";
@@ -221,6 +221,8 @@ const EditRoomBooking = () => {
 
   // Update booking
   const handleUpdateBooking = async () => {
+    let successMessageDisplayed = false;
+
     try {
       const updateBookingInput: UpdateBookingInput = {
         _id: bookingId,
@@ -254,8 +256,9 @@ const EditRoomBooking = () => {
           },
         });
 
-        if (res?.data && res) {
+        if (res.data && !successMessageDisplayed) {
           message.success("Booking updated successfully!");
+          successMessageDisplayed = true;
         }
       }
     } catch (error) {
@@ -280,12 +283,12 @@ const EditRoomBooking = () => {
         {location.pathname === `/edit-booking/${bookingId}` && (
           <>
             <TitleText text="Edit Booking" />
-            <Button
-              className="text-white  py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2  bg-blue-900 px-20"
+            <button
+              className="text-white py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2  bg-blue-900 px-20 hover:text-white"
               onClick={() => handleUpdateBooking()}
             >
-              Edit Booking
-            </Button>
+              Update Booking
+            </button>
           </>
         )}
       </div>

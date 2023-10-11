@@ -142,6 +142,7 @@ const RoomBookingFinancials = () => {
           </Button>
 
           <DatePicker
+            className="mx-1"
             allowClear={false}
             placeholder="Select Date"
             value={dayjs(formattedDate)}

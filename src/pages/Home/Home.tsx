@@ -72,6 +72,7 @@ const Home = () => {
               format="YYYY-MM-DD"
               value={selectedDateRange}
               onChange={(value) => setSelectedDateRange(value)}
+              className="mx-1"
             />
             <Button type="primary" ghost onClick={handleNextDay}>
               Next Day
