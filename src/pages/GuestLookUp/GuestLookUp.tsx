@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
-  Button,
   Form,
   Input,
   Modal,
@@ -136,9 +135,9 @@ const GuestLookUp = () => {
       render: (record: string) => {
         return (
           <div className="flex gap-4">
-            <Button type="text" className=" text-blue-500">
+            <button  className="text-blue-500 hover:text-blue-700">
               Guest Details
-            </Button>
+            </button>
             <div className="flex items-center gap-3 cursor-pointer">
               <FaRegEdit
                 onClick={() => {
@@ -214,7 +213,7 @@ const GuestLookUp = () => {
               <Select
                 placeholder="Select Type"
                 options={[
-                  { value: "DRIVING_LICENSE", label: "DrivingLicense" },
+                  { value: "DRIVING_LICENSE", label: "Driving License" },
                   { value: "NID", label: "Nid" },
                   { value: "PASSPORT", label: "Passport" },
                 ]}
