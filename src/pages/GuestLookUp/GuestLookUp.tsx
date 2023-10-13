@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
-import { ContactsQuery } from "../../graphql/__generated__/graphql";
 import { FaRegEdit } from "react-icons/fa";
 
 const GuestLookUp = () => {
@@ -20,7 +19,7 @@ const GuestLookUp = () => {
     data: contactsData,
     loading,
     error,
-  } = useQuery<ContactsQuery>(GET_CONTACTS, {
+  } = useQuery(GET_CONTACTS, {
     variables: {
       filter: {
         hotel: user?.hotels[0] || "",
