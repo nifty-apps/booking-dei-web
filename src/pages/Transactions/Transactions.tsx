@@ -49,6 +49,7 @@ const Transactions = () => {
   const [form] = Form.useForm();
 
   const { data: transactionsData, loading, error } = useQuery(GET_TRANSACTIONS);
+  console.log(transactionsData)
   const [updateTransaction] = useMutation(UPDATE_TRANSACTION, {
     refetchQueries: [{ query: GET_TRANSACTIONS }],
   });

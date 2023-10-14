@@ -24,6 +24,8 @@ export type Booking = {
   _id: Scalars['ID']['output'];
   /** Customer who made the booking */
   customer: Scalars['ID']['output'];
+  /** Guests for the booking */
+  guests?: Maybe<Array<Guest>>;
   /** Hotel where the booking were generated */
   hotel: Scalars['ID']['output'];
   /** Payment status of the booking */
@@ -85,6 +87,8 @@ export enum ContactTypes {
 export type CreateBookingInput = {
   /** Customer who made the booking */
   customer: Scalars['ID']['input'];
+  /** Guests for the booking */
+  guests?: InputMaybe<Array<GuestInput>>;
   /** Hotel where the booking were generated */
   hotel: Scalars['ID']['input'];
   /** Payment status of the booking */
@@ -185,6 +189,21 @@ export type CreateUserInput = {
   password: Scalars['String']['input'];
   /** Phone number of the user */
   phone: Scalars['String']['input'];
+};
+
+export type Guest = {
+  __typename?: 'Guest';
+  /** Name of the guest */
+  name: Scalars['String']['output'];
+  /** Phone number of the guest */
+  phone?: Maybe<Scalars['String']['output']>;
+};
+
+export type GuestInput = {
+  /** Name of the guest */
+  name: Scalars['String']['input'];
+  /** Phone number of the guest */
+  phone?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Hotel = {
@@ -694,6 +713,8 @@ export type Transaction = {
   method: TransactionMethod;
   /** Sub Category of the transaction */
   subCategory?: Maybe<TransactionSubCategory>;
+  /** Who created the transaction */
+  user: Scalars['ID']['output'];
 };
 
 export type TransactionFilter = {
@@ -720,6 +741,8 @@ export type TransactionFilter = {
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
   /** Sub Category of the transaction */
   subCategory?: InputMaybe<TransactionSubCategory>;
+  /** Who created the transaction */
+  user?: InputMaybe<Scalars['ID']['input']>;
 };
 
 /** Method of the transaction */
@@ -750,6 +773,8 @@ export type UpdateBookingInput = {
   _id?: InputMaybe<Scalars['ID']['input']>;
   /** Customer who made the booking */
   customer?: InputMaybe<Scalars['ID']['input']>;
+  /** Guests for the booking */
+  guests?: InputMaybe<Array<GuestInput>>;
   /** Hotel where the booking were generated */
   hotel?: InputMaybe<Scalars['ID']['input']>;
   /** Payment status of the booking */
@@ -844,6 +869,8 @@ export type UpdateTransactionInput = {
   method?: InputMaybe<TransactionMethod>;
   /** Sub Category of the transaction */
   subCategory?: InputMaybe<TransactionSubCategory>;
+  /** Who created the transaction */
+  user?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type UpdateUserInput = {
