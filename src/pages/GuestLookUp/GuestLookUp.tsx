@@ -1,40 +1,55 @@
 import { useQuery } from "@apollo/client";
 import {
-  DatePicker,
+  Input,
   Table,
 } from "antd";
-import dayjs from "dayjs";
-import { useState } from "react";
 import TitleText from "../../components/Title";
+import { Modal } from 'antd';
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
-
-const { RangePicker } = DatePicker;
+import { useState } from "react";
+import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 
 const GuestLookUp = () => {
-  const { user } = useSelector((state: RootState) => state.auth);  
-  const [selectedDateRange, setSelectedDateRange] = useState<[string, string]>([
-    dayjs().subtract(1, "month").format("YYYY-MM-DD"),
-    dayjs().format("YYYY-MM-DD"),
-  ]);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const filter = {
     filter: {
       hotel: user!.hotels[0],
     },
   };
+  const [searchText, setSearchText] = useState(""); 
 
   const { data: contactsData, error: contactError, loading } = useQuery(GET_CONTACTS, {
     variables: filter,
-  }); 
+  });
 
   if (loading) return <p>Loading...</p>;
   if (contactError) return <p>Error: {contactError.message}</p>;
 
   const contacts = contactsData?.contacts || [];
-
-  const dataSource = contacts.map((contact) => ({
+  // filtered contacts
+  const filteredContacts = contacts.filter((contact) => {
+    const lowercaseSearchText = searchText.toLowerCase();
+    return (
+      contact.name.toLowerCase().includes(lowercaseSearchText) ||
+      contact.phone.toLowerCase().includes(lowercaseSearchText) ||
+      contact.idType?.toLowerCase().includes(lowercaseSearchText) ||
+      (contact.idNo !== null && contact.idNo?.toString().includes(lowercaseSearchText)) ||
+      contact.hotel?.toLowerCase().includes(lowercaseSearchText) ||
+      contact.type?.toLowerCase().includes(lowercaseSearchText)
+    );
+  });
+  const dataSource = filteredContacts.map((contact) => ({
     key: contact._id,
     name: contact.name,
     phone: contact.phone,
@@ -43,6 +58,7 @@ const GuestLookUp = () => {
     address: contact.address,
     hotel: contact.hotel,
     type: contact.type,
+    action: "delete"
   }));
 
   const columns = [
@@ -81,29 +97,51 @@ const GuestLookUp = () => {
       dataIndex: "type",
       key: "type",
     },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      render: () => (
+        <div className="flex gap-4 cursor-pointer">
+          <span onClick={openModal}>
+            <FaRegEdit />
+          </span>
+          <span onClick={openModal}>
+            <FaRegTrashAlt />
+          </span>
+        </div>
+      )
+    },
   ];
 
   return (
     <>
-      <div className="flex align-middle justify-between mb-3">
+      <div className="mb-5">
         <TitleText text="Guest LookUp" />
-        <RangePicker
-          allowClear={true}
-          format="YYYY-MM-DD"
-          value={
-            selectedDateRange[0] && selectedDateRange[1]
-              ? [dayjs(selectedDateRange[0]), dayjs(selectedDateRange[1])]
-              : undefined
-          }
-          onChange={(dates) =>
-            setSelectedDateRange([
-              dates?.[0]?.format("YYYY-MM-DD") || "",
-              dates?.[1]?.format("YYYY-MM-DD") || "",
-            ])
-          }
-        />
+      </div>
+      <div className="flex align-middle justify-between mb-3">
+        <div className="w-3/12">
+          <Input
+            placeholder="Search here.."
+            allowClear
+            size="middle"
+            onChange={(e) => setSearchText(e.target.value)}
+            value={searchText}
+          />
+        </div>
       </div>
       <Table dataSource={dataSource} columns={columns} pagination={false} />
+      {/* demo modal */}
+      <Modal
+        title="This Feature is under development"
+        open={isModalOpen}
+        onOk={closeModal}
+        onCancel={closeModal}
+      >
+        <p>
+          Comming soon !
+        </p>
+      </Modal>
     </>
   );
 };

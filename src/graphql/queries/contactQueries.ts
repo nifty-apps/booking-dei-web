@@ -14,3 +14,20 @@ export const GET_CONTACTS = gql(`
     }
  }
 `);
+
+// filtering contacts with search tags
+export const GET_CONTACTS_BY_FILTER = gql(`
+  query ContactsByFilter($contactFilter: ContactFilterInput!) {
+    contactsByFilter(filter: $contactFilter) {
+      _id
+      name
+      phone
+      idType
+      idNo
+      address
+      hotel
+      type
+    }
+  }
+`);
+
