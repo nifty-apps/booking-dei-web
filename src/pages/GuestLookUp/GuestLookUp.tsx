@@ -14,6 +14,7 @@ import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const openModal = () => {
     setIsModalOpen(true);
   };
