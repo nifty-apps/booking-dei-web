@@ -41,12 +41,13 @@ const GuestLookUp = () => {
 
   // Filter contacts based on search text
   const filteredContacts = contacts?.contacts?.filter((contact) => {
-    const { name, phone, type } = contact;
+    const { name, phone, type, address } = contact;
     const lowercaseSearchText = searchText.toLowerCase();
     return (
       name.toLowerCase().includes(lowercaseSearchText) ||
       phone.toLowerCase().includes(lowercaseSearchText) ||
-      type.toLowerCase().includes(lowercaseSearchText)
+      type.toLowerCase().includes(lowercaseSearchText) || 
+      address?.toLowerCase().includes(lowercaseSearchText)
     );
   });
 
@@ -68,6 +69,7 @@ const GuestLookUp = () => {
             phone: values.phone,
             idNo: Number(values.idNo),
             idType: values.idType,
+            address:values.address
           },
         },
       });
@@ -151,6 +153,7 @@ const GuestLookUp = () => {
                     phone: editedContact?.phone,
                     idNo: editedContact?.idNo,
                     idType: editedContact?.idType,
+                    address: editedContact?.address
                   });
                 }}
               />
@@ -218,6 +221,11 @@ const GuestLookUp = () => {
                   { value: "PASSPORT", label: "Passport" },
                 ]}
               />
+            </Form.Item>
+
+            <h3>Address</h3>
+            <Form.Item name="address" className="mb-0">
+              <Input placeholder="Address" autoComplete="off" />
             </Form.Item>
           </Space>
 
