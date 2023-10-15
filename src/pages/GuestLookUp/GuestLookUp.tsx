@@ -12,7 +12,6 @@ import { Contact } from "../../graphql/__generated__/graphql";
 const GuestLookUp = () => {
 
   const { user } = useSelector((state: RootState) => state.auth);
-  // console.log(user)
   const [searchText, setSearchText] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingContactId, setEditingContactId] = useState<string | null>(null);
@@ -31,7 +30,6 @@ const GuestLookUp = () => {
       },
     },
   });
-  // console.log(contactsData);
 
   // Filter contacts based on search text
   const filteredContacts = contactsData?.contacts?.filter((Contact) => {
@@ -55,7 +53,6 @@ const GuestLookUp = () => {
 
   // Update contact
   const onFinish = async (values: Contact, contactId: string) => {
-    console.log(values, contactId);
     try {
       // update contact
       await updateContact({
