@@ -192,7 +192,7 @@ const BookingSummary = ({
         message.success("Transaction created successfully!");
         form.resetFields();
         setIsModalOpen(false);
-        setTransactionInfo(res?.data?.createTransaction);
+        setTransactionInfo(res?.data?.createTransaction as Transaction);
         // Refetch the transaction data to update the table
         refetch();
       }
