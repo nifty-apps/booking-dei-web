@@ -144,6 +144,7 @@ const GuestLookUp = () => {
                     name: editedContact?.name,
                     phone: editedContact?.phone,
                     idNo: editedContact?.idNo,
+                    address:editedContact?.address,
                     idType: editedContact?.idType,
                   });
                 }}
