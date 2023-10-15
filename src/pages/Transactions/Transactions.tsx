@@ -70,7 +70,8 @@ const Transactions = () => {
       skip: !selectedDateRange[0] || !selectedDateRange[1], // Skip the query if dates are not selected
     }
   );
-
+console.log(transactionsByDateRangeData);
+console.log(transactionsData);
   // remove transaction
   const [removeTransaction] = useMutation(REMOVE_TRANSACTION, {
     refetchQueries: [{ query: GET_TRANSACTIONS }],

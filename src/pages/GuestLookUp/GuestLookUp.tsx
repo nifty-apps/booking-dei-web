@@ -64,6 +64,7 @@ const GuestLookUp = () => {
             _id: contactId,
             name: values.name,
             phone: values.phone,
+            address: values.address,
             idNo: Number(values.idNo),
             idType: values.idType,
           },
@@ -194,6 +195,11 @@ const GuestLookUp = () => {
             <h3>Phone</h3>
             <Form.Item name="phone" className="mb-0">
               <Input placeholder="phone" autoComplete="off" />
+            </Form.Item>
+
+            <h3>Address</h3>
+            <Form.Item name="address" className="mb-0">
+              <Input placeholder="address" autoComplete="off" />
             </Form.Item>
 
             <h3>ID No</h3>
