@@ -1,18 +1,19 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { Form, Input, Modal, Select, Space, Table, message } from "antd";
+import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
 import { RootState } from "../../store";
-import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { Contact, ContactTypes } from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
-
+const { confirm } = Modal;
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
-  const [searchText, setSearchText] = useState("");
-  const [handleModalOpen, setHandleModalOpen] = useState(false);
+  const [searchText, setSearchText] = useState<string>("");
+  const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
 
   const [form] = Form.useForm();
@@ -72,6 +73,23 @@ const GuestLookUp = () => {
     }
   };
 
+  // remove contact function
+  const handleRemoveContact = async (guestID: string) => {
+    const selectedGuestInformation = dataSource?.find(
+      (data) => data.key === guestID
+    );
+    confirm({
+      title: `Do you want to delete this ${selectedGuestInformation?.name}'s Information?`,
+      icon: <ExclamationCircleFilled />,
+      okType: "danger",
+      async onOk() {
+        message.warning(
+          `Ops! can't accept the request write now, This feature is under Development`
+        );
+      },
+    });
+  };
+
   // setting loading and error message on page load
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -124,29 +142,31 @@ const GuestLookUp = () => {
       key: "action",
       render: (record: string) => {
         return (
-          <div className="flex gap-4">
-            <div className="flex items-center gap-3 cursor-pointer">
-              <FaRegEdit
-                size={18}
-                onClick={() => {
-                  setHandleModalOpen(true);
-                  setGuestID(record);
-                  // find clicked guest information
-                  const selectedGuestInformation = dataSource?.find(
-                    (item) => item.key === record
-                  );
-                  // setting the clicked information on modal
-                  form.setFieldsValue({
-                    name: selectedGuestInformation?.name,
-                    phone: selectedGuestInformation?.phone,
-                    idNo: selectedGuestInformation?.idNo,
-                    idType: selectedGuestInformation?.idType,
-                    type: selectedGuestInformation?.type,
-                    address: selectedGuestInformation?.address,
-                  });
-                }}
-              />
-            </div>
+          <div className="flex gap-3 items-center cursor-pointer">
+            <FaRegEdit
+              onClick={() => {
+                setHandleModalOpen(true);
+                setGuestID(record);
+                // find clicked guest information
+                const selectedGuestInformation = dataSource?.find(
+                  (data) => data.key === record
+                );
+                // setting the clicked information on modal
+                form.setFieldsValue({
+                  name: selectedGuestInformation?.name,
+                  phone: selectedGuestInformation?.phone,
+                  idNo: selectedGuestInformation?.idNo,
+                  idType: selectedGuestInformation?.idType,
+                  type: selectedGuestInformation?.type,
+                  address: selectedGuestInformation?.address,
+                });
+              }}
+            />
+            <FaRegTrashAlt
+              onClick={() => {
+                handleRemoveContact(record);
+              }}
+            />
           </div>
         );
       },
