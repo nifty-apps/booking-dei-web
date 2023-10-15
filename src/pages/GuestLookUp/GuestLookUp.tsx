@@ -14,7 +14,7 @@ import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -28,7 +28,7 @@ const GuestLookUp = () => {
       hotel: user!.hotels[0],
     },
   };
-  const [searchText, setSearchText] = useState(""); 
+  const [searchText, setSearchText] = useState("");
 
   const { data: contactsData, error: contactError, loading } = useQuery(GET_CONTACTS, {
     variables: filter,
@@ -57,7 +57,6 @@ const GuestLookUp = () => {
     idType: contact.idType,
     idNo: contact.idNo,
     address: contact.address,
-    hotel: contact.hotel,
     type: contact.type,
     action: "delete"
   }));
@@ -87,11 +86,6 @@ const GuestLookUp = () => {
       title: "ADDRESS",
       dataIndex: "address",
       key: "address",
-    },
-    {
-      title: "HOTEL",
-      dataIndex: "hotel",
-      key: "hotel",
     },
     {
       title: "TYPE",
