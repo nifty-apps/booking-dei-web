@@ -1,3 +1,4 @@
+import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   Button,
@@ -9,16 +10,15 @@ import {
   Table,
   message,
 } from "antd";
-import { ExclamationCircleFilled } from "@ant-design/icons";
+import dayjs from "dayjs";
 import { useState } from "react";
+import { FaRegEdit } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
-import { RootState } from "../../store";
-import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { Contact, ContactTypes } from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
-import dayjs from "dayjs";
+import { RootState } from "../../store";
 const { confirm } = Modal;
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -80,23 +80,6 @@ const GuestLookUp = () => {
     } catch (error) {
       message.error("Failed to update information. Please try again");
     }
-  };
-
-  // remove contact function
-  const handleRemoveContact = async (guestID: string) => {
-    const selectedGuestInformation = dataSource?.find(
-      (data) => data.key === guestID
-    );
-    confirm({
-      title: `Do you want to delete ${selectedGuestInformation?.name}'s Information?`,
-      icon: <ExclamationCircleFilled />,
-      okType: "danger",
-      async onOk() {
-        message.warning(
-          `Ops! can't accept the request write now, This feature is under Development`
-        );
-      },
-    });
   };
 
   // deactivate function to add deactivateAt field in the database
@@ -208,11 +191,7 @@ const GuestLookUp = () => {
                 });
               }}
             />
-            <FaRegTrashAlt
-              onClick={() => {
-                handleRemoveContact(record);
-              }}
-            />
+
             {selectedGuestInformation?.status == "Deactive" ? (
               <Button
                 onClick={() => {
