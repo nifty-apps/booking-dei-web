@@ -179,7 +179,7 @@ const FloorPlan = ({
                   return (
                     <div key={_id}>
                       <div
-                        className={`h-28 w-full rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center ${bgClass}`}
+                        className={`min-h-[7.5rem] w-full relative rounded-lg shadow-sm p-2 border border-gray-500 text-center cursor-pointer flex flex-col justify-center ${bgClass}`}
                         onClick={() => handleRoomClick(room)}
                         title={
                           roombookings?.length > 0
@@ -191,7 +191,16 @@ const FloorPlan = ({
                             : ""
                         }
                       >
-                        <h4 className="font-bold text-lg">{number}</h4>
+                        <span className="absolute top-0.5 text-xs rounded-md right-0.5 text-white bg-orange-400 px-1.5 py-0.5 hidden">
+                          Partial
+                        </span>
+                        <span className="absolute top-0.5 text-xs rounded-md right-0.5 text-white bg-green-500 px-1.5 py-0.5 hidden">
+                          Paid
+                        </span>
+                        <span className="absolute top-0.5 text-xs rounded-md right-0.5 text-white bg-red-400 px-1.5 py-0.5">
+                          Unpaid
+                        </span>
+                        <h4 className="font-bold text-lg pt-3">{number}</h4>
                         {number !== "Lift" && number !== "Staff" && (
                           <span>{type.title}</span>
                         )}
