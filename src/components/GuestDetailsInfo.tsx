@@ -42,6 +42,7 @@ const GuestDetailsInfo = ({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
+  const [editContact, setEditContact] = useState(false);
 
   const [createContact] = useMutation(CREATE_CONTACT);
   const [updateContact] = useMutation(UPDATE_CONTACT);
@@ -51,12 +52,15 @@ const GuestDetailsInfo = ({
   const [form] = Form.useForm();
 
   const [contact, setContact] = useState<Contact>({
-    _id: "",
+    _id: contactInfo?._id || "",
     hotel: user?.hotels[0] || "",
     name: contactInfo?.name || "",
     phone: contactInfo?.phone || "",
     type: ContactTypes.Customer,
     detactivatedAt: "",
+    idType: contactInfo?.idType,
+    idNo: contactInfo?.idNo || "",
+    address: contactInfo?.address || "",
   });
 
   const { data, loading, error } = useQuery(GET_CONTACTS, {
@@ -96,7 +100,7 @@ const GuestDetailsInfo = ({
   // update contact
   const handleUpdateContact = async (values: UpdateContactInput) => {
     try {
-      await updateContact({
+      const res = await updateContact({
         variables: {
           updateContactInput: {
             ...values,
@@ -105,9 +109,11 @@ const GuestDetailsInfo = ({
             phone: values.phone || "",
             idNo: values.idNo,
             type: ContactTypes.Customer,
+            address: values.address || "",
           },
         },
       });
+      console.log(res);
       message.success("Contact updated successfully!");
       setIsModalOpenUpdate(false);
     } catch (err) {
@@ -142,119 +148,178 @@ const GuestDetailsInfo = ({
         </h1>
       </div>
 
-      <Form
-        form={form}
-        onValuesChange={(values) => {
-          setContact({ ...contact, ...values });
-        }}
-        layout="vertical"
-        className="flex items-center justify-between"
-      >
-        <Form.Item name="name" label="Full Name" className="w-48">
-          <Select
-            disabled={!isEditing && isDetails}
-            placeholder={(isDetails && contactInfo?.name) || "Enter your name"}
-            defaultValue={contactInfo?.name}
-            className="w-48 custom__select"
-            onSelect={(value) => {
-              const selectedContact = contacts.find(
-                (contact) => contact._id === value
-              );
-              if (selectedContact) {
-                searchContact(selectedContact);
-              }
-            }}
-            dropdownRender={(option) => (
-              <>
-                <Button
-                  className="bg-gray-100"
-                  block
-                  type="text"
-                  icon={<PlusOutlined style={{ verticalAlign: "0" }} />}
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  Add new contact
-                </Button>
-                <Divider className="my-2" />
-                <span>{option}</span>
-              </>
-            )}
-            options={contacts.map((contact) => ({
-              label: contact.name,
-              value: contact._id,
-            }))}
-          />
-        </Form.Item>
+      {!editContact && (
+        <div className="mb-4 grid grid-cols-5 gap-4">
+          <div>
+            <h3 className="mb-1">Full Name</h3>
+            <p className="text-gray-600">
+              {contactInfo?.name || "No name found"}
+            </p>
+          </div>
+          <div>
+            <h3 className="mb-1">Phone</h3>
+            <p className="text-gray-600">
+              {contactInfo?.phone || "No phone found"}
+            </p>
+          </div>
+          <div>
+            <h3 className="mb-1">ID Type</h3>
+            <p className="text-gray-600">{contactInfo?.idType || "N/A"}</p>
+          </div>
+          <div>
+            <h3 className="mb-1">ID No</h3>
+            <p className="text-gray-600">{contactInfo?.idNo || "N/A"}</p>
+          </div>
+          <div>
+            <h3 className="mb-1">Address</h3>
+            <p className="text-gray-600">{contactInfo?.address || "N/A"}</p>
+          </div>
+        </div>
+      )}
 
-        <Form.Item name="phone" label="Phone" className="w-48">
-          <Select
-            disabled={!isEditing && isDetails}
-            defaultValue={contactInfo?.phone}
-            placeholder={contactInfo?.phone || "Enter phone number"}
-            className="w-48 custom__select"
-            onSelect={(value) => {
-              const selectedContact = contacts.find(
-                (contact) => contact._id === value
-              );
-              if (selectedContact) {
-                searchContact(selectedContact);
-              }
-            }}
-            dropdownRender={(option) => (
-              <>
-                <Button
-                  className="bg-gray-100"
-                  block
-                  type="text"
-                  icon={<PlusOutlined style={{ verticalAlign: "0" }} />}
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  Add new contact
-                </Button>
-                <Divider className="my-2" />
-                <span>{option}</span>
-              </>
-            )}
-            options={contacts.map((contact) => ({
-              label: contact.phone,
-              value: contact._id,
-            }))}
-          />
-        </Form.Item>
+      {editContact && (
+        <Form
+          form={form}
+          onValuesChange={(values) => {
+            setContact({ ...contact, ...values });
+          }}
+          layout="vertical"
+          className="flex items-center justify-between"
+        >
+          <Form.Item
+            name="name"
+            label="Full Name"
+            className="w-48"
+            initialValue={contactInfo?.name}
+          >
+            <Select
+              disabled={!isEditing && isDetails}
+              placeholder="Enter your name"
+              className="w-48 custom__select"
+              onSelect={(value) => {
+                const selectedContact = contacts.find(
+                  (contact) => contact._id === value
+                );
+                if (selectedContact) {
+                  searchContact(selectedContact);
+                }
+              }}
+              dropdownRender={(option) => (
+                <>
+                  <Button
+                    className="bg-gray-100"
+                    block
+                    type="text"
+                    icon={<PlusOutlined style={{ verticalAlign: "0" }} />}
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Add new contact
+                  </Button>
+                  <Divider className="my-2" />
+                  <span>{option}</span>
+                </>
+              )}
+              options={contacts.map((contact) => ({
+                label: contact.name,
+                value: contact._id,
+              }))}
+            />
+          </Form.Item>
 
-        <Form.Item name="idType" label="ID Type" className="w-48">
-          <Select
-            disabled={!isEditing && isDetails}
-            placeholder={contactInfo?.idType || "Enter ID Type"}
-            defaultValue={contact?.idType}
-            className="w-48 custom__select"
-            options={[
-              { value: "NID", label: "NID" },
-              { value: "PASSPORT", label: "PASSPORT" },
-            ]}
-          />
-        </Form.Item>
+          <Form.Item
+            name="phone"
+            label="Phone"
+            className="w-48"
+            initialValue={contactInfo?.phone}
+          >
+            <Select
+              disabled={!isEditing && isDetails}
+              placeholder="Enter phone number"
+              className="w-48 custom__select"
+              onSelect={(value) => {
+                const selectedContact = contacts.find(
+                  (contact) => contact._id === value
+                );
+                if (selectedContact) {
+                  searchContact(selectedContact);
+                }
+              }}
+              dropdownRender={(option) => (
+                <>
+                  <Button
+                    className="bg-gray-100"
+                    block
+                    type="text"
+                    icon={<PlusOutlined style={{ verticalAlign: "0" }} />}
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Add new contact
+                  </Button>
+                  <Divider className="my-2" />
+                  <span>{option}</span>
+                </>
+              )}
+              options={contacts.map((contact) => ({
+                label: contact.phone,
+                value: contact._id,
+              }))}
+            />
+          </Form.Item>
 
-        <Form.Item className="w-48" name="idNo" label="ID No">
-          <Input
-            className="custom__input w-48"
-            disabled={!isEditing && isDetails}
-            defaultValue={contactInfo?.idNo?.toString()}
-            placeholder={contactInfo?.idNo?.toString() || "Enter ID Type"}
-          />
-        </Form.Item>
-      </Form>
+          <Form.Item
+            name="idType"
+            label="ID Type"
+            className="w-48"
+            initialValue={contact?.idType}
+          >
+            <Select
+              disabled={!isEditing && isDetails}
+              placeholder="Enter ID Type"
+              className="w-48 custom__select"
+              options={[
+                { value: "NID", label: "NID" },
+                { value: "PASSPORT", label: "PASSPORT" },
+              ]}
+            />
+          </Form.Item>
+
+          <Form.Item
+            className="w-48"
+            name="idNo"
+            label="ID No"
+            initialValue={contactInfo?.idNo?.toString()}
+          >
+            <Input
+              className="custom__input w-48"
+              disabled={!isEditing && isDetails}
+              placeholder="Enter ID Type"
+            />
+          </Form.Item>
+          <Form.Item
+            className="w-48"
+            name="address"
+            label="Address"
+            initialValue={contactInfo?.address?.toString()}
+          >
+            <Input
+              className="custom__input w-48"
+              disabled={!isEditing && isDetails}
+              placeholder="Enter ID Type"
+            />
+          </Form.Item>
+        </Form>
+      )}
       {/* Update contact */}
-      <Button
-        type="primary"
-        size="middle"
-        ghost
-        onClick={() => {
-          setIsModalOpenUpdate(true);
-        }}
-      >
-        Update Contact
-      </Button>
+      {isEditing && (
+        <Button
+          onClick={() => setEditContact(!editContact)}
+          type="primary"
+          size="middle"
+          ghost
+        >
+          {editContact ? "Update Contact" : "Edit Contact"}
+        </Button>
+      )}
 
       {/* modal for guest details */}
       <Modal
@@ -314,33 +379,41 @@ const GuestDetailsInfo = ({
         }}
         footer={null}
       >
-        <Form
-          form={form}
-          onValuesChange={(values) => {
-            setContact({ ...contact, ...values });
-          }}
-          onFinish={handleUpdateContact}
-        >
+        <Form form={form} onFinish={handleUpdateContact}>
           <Space direction="vertical" className="w-full">
             <h3>Full Name</h3>
-            <Form.Item name="name" className="mb-0">
+            <Form.Item
+              className="w-full mb-0"
+              name="name"
+              initialValue={contactInfo?.name?.toString()}
+            >
               <Input
-                type="text"
-                placeholder="Enter name"
-                value={contactInfo?.name}
+                className="custom__input guest w-full"
+                placeholder="Enter your name"
               />
             </Form.Item>
 
             <h3>Phone</h3>
-            <Form.Item name="phone" className="mb-0">
-              <Input type="text" placeholder="Enter your phone" />
+            <Form.Item
+              className="w-full mb-0"
+              name="phone"
+              initialValue={contactInfo?.phone?.toString()}
+            >
+              <Input
+                className="custom__input guest w-full"
+                placeholder="Enter phone number"
+              />
             </Form.Item>
 
             <h3>ID Type</h3>
-            <Form.Item name="idType" className="mb-0">
+            <Form.Item
+              name="idType"
+              className="w-full mb-0"
+              initialValue={contact?.idType?.toString()}
+            >
               <Select
-                className="w-full"
-                placeholder="Select ID Type"
+                placeholder="Enter ID Type"
+                className="w-full guest custom__select"
                 options={[
                   { value: "NID", label: "NID" },
                   { value: "PASSPORT", label: "PASSPORT" },
@@ -349,8 +422,27 @@ const GuestDetailsInfo = ({
             </Form.Item>
 
             <h3>ID No</h3>
-            <Form.Item name="idNo" className="mb-0">
-              <Input placeholder="Enter your ID number" />
+            <Form.Item
+              className="w-full mb-0"
+              name="idNo"
+              initialValue={contactInfo?.idNo?.toString()}
+            >
+              <Input
+                className="custom__input guest w-full"
+                placeholder="Enter ID Type"
+              />
+            </Form.Item>
+
+            <h3>Address</h3>
+            <Form.Item
+              className="w-full mb-0"
+              name="address"
+              initialValue={contactInfo?.address?.toString()}
+            >
+              <Input
+                className="custom__input guest w-full"
+                placeholder="Enter Address"
+              />
             </Form.Item>
           </Space>
           <button
