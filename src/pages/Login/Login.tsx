@@ -25,6 +25,7 @@ const Login = () => {
           password: values.password,
         },
       });
+
       if (response?.data?.login) {
         dispatch(login(response.data.login));
         message.success("Login successful!");

@@ -24,6 +24,7 @@ const documents = {
     "\n    mutation UpdateTransaction($updateTransactionInput: UpdateTransactionInput!) {\n    updateTransaction (\n      updateTransactionInput: $updateTransactionInput\n      ) {\n      _id\n      category\n      date\n      subCategory\n      method\n      description\n      amount\n       contact {\n        _id\n        name\n    }\n    }\n}\n": types.UpdateTransactionDocument,
     "\n  mutation RemoveTransaction($id: ID!) {\n    removeTransaction(id:$id) {\n        _id\n    }\n}\n\n": types.RemoveTransactionDocument,
     "\n query Booking($id:ID!) {\n      booking(id: $id) {\n        _id\n        customer\n        hotel\n        paymentStatus\n     }\n }\n\n": types.BookingDocument,
+    "\n  query Bookings {\n    bookings {\n        _id\n        number\n        customer\n        hotel\n        paymentStatus\n    }\n }\n\n": types.BookingsDocument,
     "\n query Contact($id:ID!) {\n    contact(id: $id) {\n        _id\n        name\n        phone\n        idType\n        idNo\n        address\n        hotel\n        type\n    }\n}\n": types.ContactDocument,
     "\nquery Room($id:ID!) {\n    room(id:$id) {\n        _id\n        number\n        floor\n        position\n        type\n        hotel\n    }\n}\n\n": types.RoomDocument,
     "\n  query Contacts($filter: ContactFilterInput!) {\n    contacts(filter: $filter) {\n        _id\n        name\n        phone\n        idType\n        idNo\n        address\n        hotel\n        type\n    }\n }\n": types.ContactsDocument,
@@ -94,6 +95,10 @@ export function gql(source: "\n  mutation RemoveTransaction($id: ID!) {\n    rem
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n query Booking($id:ID!) {\n      booking(id: $id) {\n        _id\n        customer\n        hotel\n        paymentStatus\n     }\n }\n\n"): (typeof documents)["\n query Booking($id:ID!) {\n      booking(id: $id) {\n        _id\n        customer\n        hotel\n        paymentStatus\n     }\n }\n\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query Bookings {\n    bookings {\n        _id\n        number\n        customer\n        hotel\n        paymentStatus\n    }\n }\n\n"): (typeof documents)["\n  query Bookings {\n    bookings {\n        _id\n        number\n        customer\n        hotel\n        paymentStatus\n    }\n }\n\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

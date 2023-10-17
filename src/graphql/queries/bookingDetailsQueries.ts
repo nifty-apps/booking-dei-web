@@ -12,6 +12,19 @@ export const GET_BOOKING = gql(`
 
 `);
 
+export const GET_BOOKINGS = gql(`
+  query Bookings {
+    bookings {
+        _id
+        number
+        customer
+        hotel
+        paymentStatus
+    }
+ }
+
+`);
+
 export const GET_CONTACT = gql(`
  query Contact($id:ID!) {
     contact(id: $id) {
@@ -40,4 +53,3 @@ query Room($id:ID!) {
 }
 
 `);
-

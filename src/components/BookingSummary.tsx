@@ -15,13 +15,11 @@ import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
-  Contact,
   Transaction,
   TransactionSubCategory,
   TransactionType,
 } from "../graphql/__generated__/graphql";
 import { CREATE_TRANSACTION } from "../graphql/mutations/transactionMutations";
-import { GET_CONTACT } from "../graphql/queries/contactQueries";
 import {
   GET_TRANSACTIONS,
   GET_TRANSACTION_BY_FILTER,
@@ -52,13 +50,6 @@ const BookingSummary = ({
   const { user } = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transactionInfo, setTransactionInfo] = useState({} as Transaction);
-  const { data } = useQuery<{ contact: Contact }>(GET_CONTACT, {
-    variables: {
-      id: contactId || "",
-    },
-  });
-
-  console.log("data: ", data?.contact.name);
 
   const [form] = Form.useForm();
 
@@ -75,8 +66,6 @@ const BookingSummary = ({
       },
     }
   );
-
-  console.log(contactId);
 
   // Create transaction API call
   const [createTransaction] = useMutation(CREATE_TRANSACTION, {
@@ -296,10 +285,12 @@ const BookingSummary = ({
           </div>
           <div className="mt-4 flex flex-col gap-1">
             <div className="text-right text-gray-800 italic">
-              Created By: {data?.contact.name}
+              Created By: {user?.name} at {format(new Date(), "dd-MM-yyyy")}
+              12:00 PM
             </div>
             <div className="text-right text-gray-800 italic">
-              Updated By: {"Updated at 17/10/2023 12:00 PM"}
+              Updated By: {user?.name} at {format(new Date(), "dd-MM-yyyy")}
+              12:00 PM
             </div>
           </div>
         </div>

@@ -54,7 +54,6 @@ const columns: ColumnsType<RoomBookingDetails> = [
     dataIndex: "checkOut",
     render: (date) => format(new Date(date), "dd/MM/yyyy"),
   },
-
   { title: "Status", dataIndex: "status" },
 ];
 
@@ -81,6 +80,19 @@ const FloorPlan = ({
       endDate,
     },
   });
+
+  // for booking id showing payment status
+  // const bookingId = data?.roomsByFloor.map((room) =>
+  //   room.rooms.map((room) => room.roombookings.map((room) => room.booking))
+  // );
+
+  // const { data: bookingInfo } = useQuery(GET_BOOKING, {
+  //   variables: {
+  //     id: "652e0eaf9725309dcee90e1f",
+  //   },
+  // });
+
+  // console.log(bookingInfo);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
@@ -191,15 +203,16 @@ const FloorPlan = ({
                             : ""
                         }
                       >
-                        <span className="absolute top-0.5 text-xs rounded-md right-0.5 text-white bg-orange-400 px-1.5 py-0.5 hidden">
-                          Partial
-                        </span>
-                        <span className="absolute top-0.5 text-xs rounded-md right-0.5 text-white bg-green-500 px-1.5 py-0.5 hidden">
-                          Paid
-                        </span>
-                        <span className="absolute top-0.5 text-xs rounded-md right-0.5 text-white bg-red-400 px-1.5 py-0.5">
-                          Unpaid
-                        </span>
+                        {/* payment status */}
+                        {roombookings.map((bookingId) => {
+                          console.log("booking Id: ", bookingId);
+                          return (
+                            <div className="absolute top-0 right-0 bg-green-500 text-white px-1 rounded-tl-md rounded-br-md">
+                              {bookingId?.status}
+                            </div>
+                          );
+                        })}
+
                         <h4 className="font-bold text-lg pt-3">{number}</h4>
                         {number !== "Lift" && number !== "Staff" && (
                           <span>{type.title}</span>
