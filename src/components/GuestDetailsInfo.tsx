@@ -147,7 +147,7 @@ const GuestDetailsInfo = ({
         </h1>
       </div>
 
-      {
+      {isDetails ? (
         <div className="mb-4 grid grid-cols-5 gap-4">
           <div>
             <h3 className="mb-1">Full Name</h3>
@@ -174,9 +174,7 @@ const GuestDetailsInfo = ({
             <p className="text-gray-600">{contactInfo?.address || "N/A"}</p>
           </div>
         </div>
-      }
-
-      {
+      ) : (
         <Form
           form={form}
           onValuesChange={(values) => {
@@ -307,10 +305,18 @@ const GuestDetailsInfo = ({
             />
           </Form.Item>
         </Form>
-      }
+      )}
+
       {/* Update contact */}
       {isEditing && (
-        <Button type="primary" size="middle" ghost>
+        <Button
+          type="primary"
+          size="middle"
+          ghost
+          onClick={() => {
+            setIsModalOpenUpdate(true);
+          }}
+        >
           Update Contact
         </Button>
       )}
@@ -364,89 +370,91 @@ const GuestDetailsInfo = ({
       </Modal>
 
       {/*update contact modal */}
-      <Modal
-        title="Update Contact"
-        open={isModalOpenUpdate}
-        onOk={() => setIsModalOpenUpdate(false)}
-        onCancel={() => {
-          setIsModalOpenUpdate(false);
-        }}
-        footer={null}
-      >
-        <Form form={form} onFinish={handleUpdateContact}>
-          <Space direction="vertical" className="w-full">
-            <h3>Full Name</h3>
-            <Form.Item
-              className="w-full mb-0"
-              name="name"
-              initialValue={contactInfo?.name?.toString()}
-            >
-              <Input
-                className="custom__input guest w-full"
-                placeholder="Enter your name"
-              />
-            </Form.Item>
+      {isEditing && (
+        <Modal
+          title="Update Contact"
+          open={isModalOpenUpdate}
+          onOk={() => setIsModalOpenUpdate(false)}
+          onCancel={() => {
+            setIsModalOpenUpdate(false);
+          }}
+          footer={null}
+        >
+          <Form form={form} onFinish={handleUpdateContact}>
+            <Space direction="vertical" className="w-full">
+              <h3>Full Name</h3>
+              <Form.Item
+                className="w-full mb-0"
+                name="name"
+                initialValue={contactInfo?.name?.toString()}
+              >
+                <Input
+                  className="custom__input guest w-full"
+                  placeholder="Enter your name"
+                />
+              </Form.Item>
 
-            <h3>Phone</h3>
-            <Form.Item
-              className="w-full mb-0"
-              name="phone"
-              initialValue={contactInfo?.phone?.toString()}
-            >
-              <Input
-                className="custom__input guest w-full"
-                placeholder="Enter phone number"
-              />
-            </Form.Item>
+              <h3>Phone</h3>
+              <Form.Item
+                className="w-full mb-0"
+                name="phone"
+                initialValue={contactInfo?.phone?.toString()}
+              >
+                <Input
+                  className="custom__input guest w-full"
+                  placeholder="Enter phone number"
+                />
+              </Form.Item>
 
-            <h3>ID Type</h3>
-            <Form.Item
-              name="idType"
-              className="w-full mb-0"
-              initialValue={contact?.idType?.toString()}
-            >
-              <Select
-                placeholder="Enter ID Type"
-                className="w-full guest custom__select"
-                options={[
-                  { value: "NID", label: "NID" },
-                  { value: "PASSPORT", label: "PASSPORT" },
-                ]}
-              />
-            </Form.Item>
+              <h3>ID Type</h3>
+              <Form.Item
+                name="idType"
+                className="w-full mb-0"
+                initialValue={contact?.idType?.toString()}
+              >
+                <Select
+                  placeholder="Enter ID Type"
+                  className="w-full guest custom__select"
+                  options={[
+                    { value: "NID", label: "NID" },
+                    { value: "PASSPORT", label: "PASSPORT" },
+                  ]}
+                />
+              </Form.Item>
 
-            <h3>ID No</h3>
-            <Form.Item
-              className="w-full mb-0"
-              name="idNo"
-              initialValue={contactInfo?.idNo?.toString()}
-            >
-              <Input
-                className="custom__input guest w-full"
-                placeholder="Enter ID Type"
-              />
-            </Form.Item>
+              <h3>ID No</h3>
+              <Form.Item
+                className="w-full mb-0"
+                name="idNo"
+                initialValue={contactInfo?.idNo?.toString()}
+              >
+                <Input
+                  className="custom__input guest w-full"
+                  placeholder="Enter ID Type"
+                />
+              </Form.Item>
 
-            <h3>Address</h3>
-            <Form.Item
-              className="w-full mb-0"
-              name="address"
-              initialValue={contactInfo?.address?.toString()}
+              <h3>Address</h3>
+              <Form.Item
+                className="w-full mb-0"
+                name="address"
+                initialValue={contactInfo?.address?.toString()}
+              >
+                <Input
+                  className="custom__input guest w-full"
+                  placeholder="Enter Address"
+                />
+              </Form.Item>
+            </Space>
+            <button
+              type="submit"
+              className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
             >
-              <Input
-                className="custom__input guest w-full"
-                placeholder="Enter Address"
-              />
-            </Form.Item>
-          </Space>
-          <button
-            type="submit"
-            className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
-          >
-            Update
-          </button>
-        </Form>
-      </Modal>
+              Update
+            </button>
+          </Form>
+        </Modal>
+      )}
     </>
   );
 };
