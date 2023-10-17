@@ -328,7 +328,7 @@ const NewBooking = () => {
         onCancel={() => setShowFloorPlan(false)}
         cancelText="Cancel"
         okText="Apply"
-        width={1000}
+        width={1100}
         okButtonProps={{
           className: "bg-blue-600",
         }}

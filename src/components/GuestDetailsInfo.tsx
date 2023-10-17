@@ -99,7 +99,7 @@ const GuestDetailsInfo = ({
   // update contact
   const handleUpdateContact = async (values: UpdateContactInput) => {
     try {
-      const res = await updateContact({
+      await updateContact({
         variables: {
           updateContactInput: {
             ...values,
@@ -112,7 +112,7 @@ const GuestDetailsInfo = ({
           },
         },
       });
-      console.log(res);
+
       message.success("Contact updated successfully!");
       setIsModalOpenUpdate(false);
     } catch (err) {
@@ -181,18 +181,18 @@ const GuestDetailsInfo = ({
             setContact({ ...contact, ...values });
           }}
           layout="vertical"
-          className="flex items-center justify-between"
+          className="grid grid-cols-5 gap-2"
         >
           <Form.Item
             name="name"
             label="Full Name"
-            className="w-48"
+            className="w-full"
             initialValue={contactInfo?.name}
           >
             <Select
               disabled={!isEditing && isDetails}
               placeholder="Enter your name"
-              className="w-48 custom__select"
+              className="w-full custom__select"
               onSelect={(value) => {
                 const selectedContact = contacts.find(
                   (contact) => contact._id === value
@@ -226,13 +226,13 @@ const GuestDetailsInfo = ({
           <Form.Item
             name="phone"
             label="Phone"
-            className="w-48"
+            className="w-full"
             initialValue={contactInfo?.phone}
           >
             <Select
               disabled={!isEditing && isDetails}
               placeholder="Enter phone number"
-              className="w-48 custom__select"
+              className="w-full custom__select"
               onSelect={(value) => {
                 const selectedContact = contacts.find(
                   (contact) => contact._id === value
@@ -289,7 +289,7 @@ const GuestDetailsInfo = ({
             <Input
               className="custom__input w-48"
               disabled={!isEditing && isDetails}
-              placeholder="Enter ID Type"
+              placeholder="Enter ID No"
             />
           </Form.Item>
           <Form.Item
@@ -301,7 +301,7 @@ const GuestDetailsInfo = ({
             <Input
               className="custom__input w-48"
               disabled={!isEditing && isDetails}
-              placeholder="Enter ID Type"
+              placeholder="Enter Address"
             />
           </Form.Item>
         </Form>
