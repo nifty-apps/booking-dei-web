@@ -1,5 +1,14 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Form, Input, Modal, Select, Space, Table, message } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Table,
+  message,
+} from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -9,13 +18,13 @@ import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { Contact, ContactTypes } from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
+import dayjs from "dayjs";
 const { confirm } = Modal;
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
-
   const [form] = Form.useForm();
 
   // fetching data using Hotel ID
@@ -39,7 +48,7 @@ const GuestLookUp = () => {
       guestInformation?.phone?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.idNo?.toString().includes(lowercaseSearchText) || // ID no is in number formate, so convirted it into string
+      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.type?.toLowerCase().includes(lowercaseSearchText)
     );
   });
@@ -59,7 +68,7 @@ const GuestLookUp = () => {
             _id: guestID,
             name: values.name,
             phone: values.phone,
-            idNo: Number(values.idNo),
+            idNo: values.idNo,
             idType: values.idType,
             type: values.type,
             address: values.address,
@@ -79,13 +88,44 @@ const GuestLookUp = () => {
       (data) => data.key === guestID
     );
     confirm({
-      title: `Do you want to delete this ${selectedGuestInformation?.name}'s Information?`,
+      title: `Do you want to delete ${selectedGuestInformation?.name}'s Information?`,
       icon: <ExclamationCircleFilled />,
       okType: "danger",
       async onOk() {
         message.warning(
           `Ops! can't accept the request write now, This feature is under Development`
         );
+      },
+    });
+  };
+
+  // deactivate function to add deactivateAt field in the database
+  const handleDeactiveAccount = async (guestID: string, setActive: boolean) => {
+    const selectedGuestInformation = dataSource?.find(
+      (data) => data.key === guestID
+    );
+    confirm({
+      title: `Do you want to ${setActive ? "Deactivate" : "Activate"} ${
+        selectedGuestInformation?.name
+      }?`,
+      icon: <ExclamationCircleFilled />,
+      okType: setActive ? "danger" : "default",
+      async onOk() {
+        try {
+          await updateContact({
+            variables: {
+              updateContactInput: {
+                _id: guestID,
+                detactivatedAt: setActive
+                  ? dayjs().format("YYYY-MM-DDTHH:mm:ss[Z]")
+                  : null,
+              },
+            },
+          });
+          message.success("This Guest Account is Deactivated.");
+        } catch (error) {
+          message.error("Failed to deactive user. Please try again");
+        }
       },
     });
   };
@@ -103,6 +143,7 @@ const GuestLookUp = () => {
     type: guestInformation?.type,
     address: guestInformation?.address || null,
     action: guestInformation?._id,
+    status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
   }));
 
   const columns = [
@@ -137,20 +178,25 @@ const GuestLookUp = () => {
       key: "type",
     },
     {
-      title: "EDIT",
+      title: "STATUS",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "ACTION",
       dataIndex: "action",
       key: "action",
       render: (record: string) => {
+        // find clicked guest information
+        const selectedGuestInformation = dataSource?.find(
+          (data) => data.key === record
+        );
         return (
           <div className="flex gap-3 items-center cursor-pointer">
             <FaRegEdit
               onClick={() => {
                 setHandleModalOpen(true);
                 setGuestID(record);
-                // find clicked guest information
-                const selectedGuestInformation = dataSource?.find(
-                  (data) => data.key === record
-                );
                 // setting the clicked information on modal
                 form.setFieldsValue({
                   name: selectedGuestInformation?.name,
@@ -167,6 +213,24 @@ const GuestLookUp = () => {
                 handleRemoveContact(record);
               }}
             />
+            {selectedGuestInformation?.status == "Deactive" ? (
+              <Button
+                onClick={() => {
+                  handleDeactiveAccount(record, false);
+                }}
+              >
+                Activate
+              </Button>
+            ) : (
+              <Button
+                danger
+                onClick={() => {
+                  handleDeactiveAccount(record, true);
+                }}
+              >
+                Deactivate
+              </Button>
+            )}
           </div>
         );
       },
