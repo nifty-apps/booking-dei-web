@@ -28,6 +28,8 @@ mutation UpdateContact($updateContactInput: UpdateContactInput!) {
       phone
       idType
       idNo
+      address
+      type
   }
 }
 
