@@ -14,3 +14,18 @@ export const GET_CONTACTS = gql(`
     }
  }
 `);
+
+export const GET_CONTACT = gql(`
+  query Contact($id: ID!) {
+    contact(id: $id) {
+        _id
+        name
+        phone
+        idType
+        idNo
+        address
+        hotel
+        type
+    }
+ }
+`);

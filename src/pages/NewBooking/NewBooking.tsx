@@ -198,6 +198,8 @@ const NewBooking = () => {
         },
       });
 
+
+
       if (res.data?.createBooking?._id) {
         message.success("Yay! Your new booking was added successfully.");
         navigate({
@@ -243,6 +245,8 @@ const NewBooking = () => {
       }));
     }
   }, [selectedRoomsByDate, bookingDetails]);
+
+
 
   return (
     <>
