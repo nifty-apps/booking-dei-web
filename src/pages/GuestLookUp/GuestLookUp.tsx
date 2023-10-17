@@ -148,7 +148,7 @@ const columns = [
           <FaRegEdit
           />
         </span>
-        <span onClick={openModal}>
+        <span>
           <FaRegTrashAlt />
         </span>
       </div>
