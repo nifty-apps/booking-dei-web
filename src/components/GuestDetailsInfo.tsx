@@ -42,7 +42,6 @@ const GuestDetailsInfo = ({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
-  const [editContact, setEditContact] = useState(false);
 
   const [createContact] = useMutation(CREATE_CONTACT);
   const [updateContact] = useMutation(UPDATE_CONTACT);
@@ -148,7 +147,7 @@ const GuestDetailsInfo = ({
         </h1>
       </div>
 
-      {!editContact && (
+      {
         <div className="mb-4 grid grid-cols-5 gap-4">
           <div>
             <h3 className="mb-1">Full Name</h3>
@@ -175,9 +174,9 @@ const GuestDetailsInfo = ({
             <p className="text-gray-600">{contactInfo?.address || "N/A"}</p>
           </div>
         </div>
-      )}
+      }
 
-      {editContact && (
+      {
         <Form
           form={form}
           onValuesChange={(values) => {
@@ -308,16 +307,11 @@ const GuestDetailsInfo = ({
             />
           </Form.Item>
         </Form>
-      )}
+      }
       {/* Update contact */}
       {isEditing && (
-        <Button
-          onClick={() => setEditContact(!editContact)}
-          type="primary"
-          size="middle"
-          ghost
-        >
-          {editContact ? "Update Contact" : "Edit Contact"}
+        <Button type="primary" size="middle" ghost>
+          Update Contact
         </Button>
       )}
 
