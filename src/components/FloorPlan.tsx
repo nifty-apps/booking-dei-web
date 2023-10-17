@@ -38,6 +38,11 @@ const columns: ColumnsType<RoomBookingDetails> = [
       <Link to={`/booking-details/${booking}`}>{booking}</Link>
     ),
   },
+  {
+    title: "Customer Name",
+    dataIndex: "bookingCustomer",
+    render: (bookingCustomer) => <p>{bookingCustomer}</p>,
+  },
   { title: "Rent", dataIndex: "rent" },
   {
     title: "Check In",
@@ -75,7 +80,6 @@ const FloorPlan = ({
       startDate,
       endDate,
     },
-    
   });
 
   if (loading) return <p>Loading...</p>;

@@ -56,6 +56,7 @@ const GuestDetailsInfo = ({
     name: contactInfo?.name || "",
     phone: contactInfo?.phone || "",
     type: ContactTypes.Customer,
+    detactivatedAt: "",
   });
 
   const { data, loading, error } = useQuery(GET_CONTACTS, {
@@ -73,9 +74,10 @@ const GuestDetailsInfo = ({
         variables: {
           createContactInput: {
             ...values,
-            idNo: Number(values.idNo),
+            idNo: values.idNo,
             hotel: user?.hotels[0] || "",
             type: ContactTypes.Customer,
+            detactivatedAt: new Date().toISOString(),
           },
         },
       });
@@ -101,7 +103,7 @@ const GuestDetailsInfo = ({
             _id: contact._id,
             name: values.name || "",
             phone: values.phone || "",
-            idNo: Number(values.idNo),
+            idNo: values.idNo,
             type: ContactTypes.Customer,
           },
         },

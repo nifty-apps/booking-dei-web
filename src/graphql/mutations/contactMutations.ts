@@ -12,6 +12,7 @@ export const CREATE_CONTACT = gql(`
             address
             hotel
             type
+            detactivatedAt
       }
   
 }
