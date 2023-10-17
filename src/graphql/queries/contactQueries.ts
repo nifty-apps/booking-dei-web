@@ -11,6 +11,7 @@ export const GET_CONTACTS = gql(`
         address
         hotel
         type
+        detactivatedAt
     }
  }
 `);

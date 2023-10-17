@@ -29,6 +29,7 @@ mutation UpdateContact($updateContactInput: UpdateContactInput!) {
       idNo
       address
       type
+      detactivatedAt
   }
 }
 
