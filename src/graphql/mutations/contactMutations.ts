@@ -26,6 +26,8 @@ mutation UpdateContact($updateContactInput: UpdateContactInput!) {
       name	
       phone
       idType
+      address
+      type
       idNo
   }
 }
