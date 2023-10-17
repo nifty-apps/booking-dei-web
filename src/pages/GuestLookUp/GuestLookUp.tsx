@@ -61,17 +61,17 @@ const GuestLookUp = () => {
 // Then, in your onFinish function:
 
 const onFinish = async (values: Contact, contactId: string) => {
-  const idNoAsFloat = typeof values.idNo === 'number' ? (values.idNo as number).toString() : values.idNo;
+  const idNoAsStr = values.idNo?.toString();
 
   try {
-    const res = await updateContact({
+    await updateContact({
       variables: {
         updateContactInput: {
           _id: contactId,
           name: values.name,
           phone: values.phone,
           idType: values.idType,
-          idNo: idNoAsFloat,
+          idNo: idNoAsStr,
           address: values.address,
           type: values.type,
         },
