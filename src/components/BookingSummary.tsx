@@ -283,6 +283,14 @@ const BookingSummary = ({
               New Transaction
             </button>
           </div>
+          <div className="mt-4 flex flex-col gap-1">
+            <div className="text-right text-gray-800 italic">
+              Created By: {"Annur at 17/10/2023 12:00 PM"}
+            </div>
+            <div className="text-right text-gray-800 italic">
+              Updated By: {"Updated at 17/10/2023 12:00 PM"}
+            </div>
+          </div>
         </div>
       ) : (
         <div className="col-span-4 bg-gray-200 p-4 rounded-sm">
