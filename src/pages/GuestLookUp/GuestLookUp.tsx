@@ -154,7 +154,7 @@ const GuestLookUp = () => {
         };
       }
     })
-    .filter(Boolean);
+    .filter((item) => item !== undefined);
 
   const columns = [
     {
