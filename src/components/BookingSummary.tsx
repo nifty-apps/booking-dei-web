@@ -19,7 +19,9 @@ import {
   TransactionSubCategory,
   TransactionType,
 } from "../graphql/__generated__/graphql";
+import { UPDATE_BOOKING } from "../graphql/mutations/bookingMutations";
 import { CREATE_TRANSACTION } from "../graphql/mutations/transactionMutations";
+import { GET_BOOKING } from "../graphql/queries/bookingDetailsQueries";
 import {
   GET_TRANSACTIONS,
   GET_TRANSACTION_BY_FILTER,
@@ -39,7 +41,7 @@ interface Column {
   title: string;
   dataIndex: string;
   key: string;
-  align?: "left" | "center" | "right"; // Align property
+  align?: "left" | "center" | "right";
 }
 
 const BookingSummary = ({
@@ -70,6 +72,11 @@ const BookingSummary = ({
   // Create transaction API call
   const [createTransaction] = useMutation(CREATE_TRANSACTION, {
     refetchQueries: [GET_TRANSACTIONS],
+  });
+
+  // update booking info
+  const [updateBooking] = useMutation(UPDATE_BOOKING, {
+    refetchQueries: [GET_BOOKING],
   });
 
   const roomBookingInfo = roomBookings?.map((roomBooking) => {
@@ -189,6 +196,7 @@ const BookingSummary = ({
       });
 
       if (res?.data?.createTransaction) {
+        console.log(res.data.createTransaction);
         message.success("Transaction created successfully!");
         form.resetFields();
         setIsModalOpen(false);
@@ -200,6 +208,26 @@ const BookingSummary = ({
       message.error("Something went wrong!");
     }
   };
+
+  console.log("remaining amount: ", remainingAmount);
+  console.log("total amount paid: ", totalAmountPaid);
+
+  if (remainingAmount - transactionInfo.amount === 0) {
+    console.log(updateBooking);
+    // console.log("yea, paid");
+    // updateBooking({
+    //   variables: {
+    //     updateBookingInput: {
+    //       id: bookingId,
+    //       paymentStatus: "PAID",
+    //     },
+    //   },
+    // });
+  } else if (remainingAmount - transactionInfo.amount > 0) {
+    // console.log("partial paid");
+  } else {
+    // console.log("not paid");
+  }
 
   return (
     <>

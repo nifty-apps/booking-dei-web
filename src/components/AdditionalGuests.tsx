@@ -16,7 +16,7 @@ const AdditionalGuests = () => {
 
   return (
     <>
-      <h1 className="font-semibold text-xl text-gray-500 capitalize my-4">
+      <h1 className="font-semibold text-xl text-gray-500 capitalize my-4 mt-6">
         Additional Guest
       </h1>
 

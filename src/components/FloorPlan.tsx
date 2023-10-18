@@ -82,6 +82,16 @@ const FloorPlan = ({
     },
   });
 
+  // const { data: roomBookingInfo } = useQuery(GET_ROOM_BOOKING_FINANCIALS, {
+  //   variables: {
+  //     hotel: user?.hotels[0] || "",
+  //     startDate,
+  //     endDate,
+  //   },
+  // });
+
+  // const roomBookingFinancials = roomBookingInfo?.roomBookingFinancials;
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
@@ -192,11 +202,13 @@ const FloorPlan = ({
                         }
                       >
                         {/* payment status */}
-                        {roombookings.map((bookingInfo) => {
-                          return (
-                            <PaymentStatus bookingId={bookingInfo.booking} />
-                          );
-                        })}
+
+                        {roombookings?.map((bookingId) => (
+                          <PaymentStatus
+                            key={bookingId._id}
+                            bookingId={bookingId.booking}
+                          />
+                        ))}
 
                         <h4 className="font-bold text-lg pt-3">{number}</h4>
                         {number !== "Lift" && number !== "Staff" && (
