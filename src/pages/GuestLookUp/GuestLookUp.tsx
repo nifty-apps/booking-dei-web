@@ -50,12 +50,9 @@ const GuestLookUp = () => {
 
   // filter all active guest
   const findActiveGuest = guestData?.contacts.filter(guest=>guest.detactivatedAt !== null)
-
-  // filter all deactivate guest
-  const findDeactivateGuest = guestData?.contacts.filter(guest=>guest.detactivatedAt === null)
   
 
-  const guestList = activeGuest ? findActiveGuest : findDeactivateGuest
+  const guestList = activeGuest ? findActiveGuest : guestData?.contacts
 
   // filter Guest by name phone ID number
   const filteredGuestList = guestList?.filter((guestInformation) => {
