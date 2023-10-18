@@ -5,6 +5,7 @@ import {
   AiOutlineHome,
 } from "react-icons/ai";
 import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
+import { AiOutlineDollarCircle } from "react-icons/ai";
 import { Link, useLocation } from "react-router-dom";
 import version from "../../package.json";
 import logo from "../assets/logo.png";
@@ -39,8 +40,11 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     case "/transactions":
       selectedKey = "5";
       break;
-    case "/rooms-overview":
+    case "/booking-overview":
       selectedKey = "6";
+      break;
+    case "/rooms-overview":
+      selectedKey = "7";
       break;
 
     default:
@@ -90,7 +94,12 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               Transactions
             </Link>
           </Menu.Item>
-          <Menu.Item key="6" icon={<AiOutlineBarChart />}>
+          <Menu.Item key="6" icon={<AiOutlineDollarCircle />}>
+            <Link to="/booking-overview" className="menuLink">
+              Booking Overview
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="7" icon={<AiOutlineBarChart />}>
             <Link to="/rooms-overview" className="menuLink">
               Rooms Overview
             </Link>
