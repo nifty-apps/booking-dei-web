@@ -10,6 +10,7 @@ import {
   Table,
   message,
 } from "antd";
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 import dayjs from "dayjs";
 import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
@@ -250,15 +251,14 @@ const GuestLookUp = () => {
             value={searchText}
           />
         </div>
-        <div>
-          <Button
-            onClick={handleToggle}
-            type={isActivated ? 'default' : 'primary'}
-            style={{ color: isActivated ? 'red' : 'green' }} // Adjust the colors as needed
-          >
-            {isActivated ? 'Toggle' : 'Activate'}
-          </Button>
-        </div>
+        <Button
+  onClick={handleToggle}
+  type={isActivated ? 'default' : 'primary'}
+  style={{ color: isActivated ? 'red' : 'green' }}
+  icon={isActivated ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+>
+  {isActivated ? 'Show All' : ' Activated'}
+</Button>
 
       </div>
 
