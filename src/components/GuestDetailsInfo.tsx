@@ -130,8 +130,11 @@ const GuestDetailsInfo = ({
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  const contacts = data?.contacts ?? [];
 
+  // all active guest
+  const filterActiveGuest = data?.contacts.filter(guest=>guest.detactivatedAt !== null)
+
+  const contacts = filterActiveGuest ?? [];
   return (
     <>
       <div className="mt-8">
