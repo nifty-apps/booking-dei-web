@@ -9,13 +9,14 @@ import {
   Space,
   Table,
   message,
+  Switch,
 } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
-import { Contact, ContactTypes } from "../../graphql/__generated__/graphql";
+import { Contact } from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
@@ -25,6 +26,8 @@ const GuestLookUp = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
+  const [showDeactivateGuest, setShowDeactivateGuest] =
+    useState<boolean>(false);
   const [form] = Form.useForm();
 
   // fetching data using Hotel ID
@@ -40,16 +43,25 @@ const GuestLookUp = () => {
     },
   });
 
+  const allGuestData = showDeactivateGuest
+    ? guestData?.contacts?.filter((guest) => {
+        return guest;
+      })
+    : guestData?.contacts?.filter((guest) => {
+        return guest?.detactivatedAt == null;
+      });
+
   // filter Guest by name phone ID number
-  const filteredGuestList = guestData?.contacts?.filter((guestInformation) => {
+  const filteredGuestList = allGuestData?.filter((guestInformation) => {
     const lowercaseSearchText = searchText.toLowerCase();
+    const { name, phone, address, idType, idNo } = guestInformation || {};
+
     return (
-      guestInformation?.name?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.phone?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.type?.toLowerCase().includes(lowercaseSearchText)
+      name?.toLowerCase().includes(lowercaseSearchText) ||
+      phone?.toLowerCase().includes(lowercaseSearchText) ||
+      address?.toLowerCase().includes(lowercaseSearchText) ||
+      idType?.toLowerCase().includes(lowercaseSearchText) ||
+      idNo?.toLowerCase().includes(lowercaseSearchText)
     );
   });
 
@@ -123,10 +135,9 @@ const GuestLookUp = () => {
     phone: guestInformation?.phone,
     idType: guestInformation?.idType || null,
     idNo: guestInformation?.idNo || null,
-    type: guestInformation?.type,
     address: guestInformation?.address || null,
     action: guestInformation?._id,
-    status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
+    status: guestInformation?.detactivatedAt ? "Deactivate" : "Active",
   }));
 
   const columns = [
@@ -156,16 +167,6 @@ const GuestLookUp = () => {
       key: "idNo",
     },
     {
-      title: "TYPE",
-      dataIndex: "type",
-      key: "type",
-    },
-    {
-      title: "STATUS",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
       title: "ACTION",
       dataIndex: "action",
       key: "action",
@@ -186,7 +187,6 @@ const GuestLookUp = () => {
                   phone: selectedGuestInformation?.phone,
                   idNo: selectedGuestInformation?.idNo,
                   idType: selectedGuestInformation?.idType,
-                  type: selectedGuestInformation?.type,
                   address: selectedGuestInformation?.address,
                 });
               }}
@@ -220,7 +220,7 @@ const GuestLookUp = () => {
       <div className="mb-5">
         <TitleText text="Guest Look up" />
       </div>
-      <div className="flex align-middle justify-between mb-3">
+      <div className="flex items-center gap-3 mb-3">
         <div className="w-3/12">
           <Input
             placeholder="Search here.."
@@ -228,6 +228,19 @@ const GuestLookUp = () => {
             size="middle"
             onChange={(e) => setSearchText(e.target.value)}
             value={searchText}
+          />
+        </div>
+        <div className="flex items-center">
+          <p className="mr-2 w-24">
+            {showDeactivateGuest ? "All" : "Active"} Guest's
+          </p>
+          <Switch
+            className={`${showDeactivateGuest ? "" : "bg-gray-500"}`}
+            onChange={() => setShowDeactivateGuest(!showDeactivateGuest)}
+            defaultChecked={false}
+            title={
+              showDeactivateGuest ? "Show Active Guest's" : "Show All Guest's"
+            }
           />
         </div>
       </div>
@@ -276,17 +289,6 @@ const GuestLookUp = () => {
                   { value: "DRIVING_LICENSE", label: "Driving License" },
                   { value: "NID", label: "Nid" },
                   { value: "PASSPORT", label: "Passport" },
-                ]}
-              />
-            </Form.Item>
-            <h3>Type</h3>
-            <Form.Item name="type" className="mb-0">
-              <Select
-                placeholder="Select Type"
-                options={[
-                  { value: ContactTypes.Customer, label: "Customer" },
-                  { value: ContactTypes.Employee, label: "Employee" },
-                  { value: ContactTypes.Vendor, label: "Vendor" },
                 ]}
               />
             </Form.Item>
