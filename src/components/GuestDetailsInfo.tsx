@@ -73,7 +73,7 @@ const GuestDetailsInfo = ({
         variables: {
           createContactInput: {
             ...values,
-            idNo: Number(values.idNo),
+            idNo: Number(values.idNo).toString(),
             hotel: user?.hotels[0] || "",
             type: ContactTypes.Customer,
           },
@@ -101,7 +101,7 @@ const GuestDetailsInfo = ({
             _id: contact._id,
             name: values.name || "",
             phone: values.phone || "",
-            idNo: Number(values.idNo),
+            idNo: Number(values.idNo).toString(),
             type: ContactTypes.Customer,
           },
         },
