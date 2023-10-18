@@ -15,7 +15,7 @@ import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
-import { Contact, ContactTypes } from "../../graphql/__generated__/graphql";
+import { Contact } from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
@@ -24,6 +24,7 @@ const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
+  const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [form] = Form.useForm();
 
@@ -40,8 +41,16 @@ const GuestLookUp = () => {
     },
   });
 
+  const allGuestData = filterDeactivated
+    ? guestData?.contacts?.filter((guestInfo) => {
+        return guestInfo?.detactivatedAt;
+      })
+    : guestData?.contacts?.filter((guestInfo) => {
+        return guestInfo?.detactivatedAt == null;
+      });
+
   // filter Guest by name phone ID number
-  const filteredGuestList = guestData?.contacts?.filter((guestInformation) => {
+  const filteredGuestList = allGuestData?.filter((guestInformation) => {
     const lowercaseSearchText = searchText.toLowerCase();
     return (
       guestInformation?.name?.toLowerCase().includes(lowercaseSearchText) ||
@@ -49,10 +58,7 @@ const GuestLookUp = () => {
       guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.detactivatedAt
-        ?.toLowerCase()
-        .includes(lowercaseSearchText)
+      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText)
     );
   });
 
@@ -73,7 +79,6 @@ const GuestLookUp = () => {
             phone: values.phone,
             idNo: values.idNo,
             idType: values.idType,
-            type: values.type,
             address: values.address,
           },
         },
@@ -132,7 +137,6 @@ const GuestLookUp = () => {
     phone: guestInformation?.phone,
     idType: guestInformation?.idType || null,
     idNo: guestInformation?.idNo || null,
-    type: guestInformation?.type,
     address: guestInformation?.address || null,
     action: guestInformation?._id,
     status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
@@ -165,23 +169,6 @@ const GuestLookUp = () => {
       key: "idNo",
     },
     {
-      title: "TYPE",
-      dataIndex: "type",
-      key: "type",
-    },
-    {
-      title: "STATUS",
-      dataIndex: "status",
-      key: "status",
-      render: (record: string) => {
-        return (
-          <p className={`${record == "Deactive" ? "text-red-500" : " "}`}>
-            {record}
-          </p>
-        );
-      },
-    },
-    {
       title: "ACTION",
       dataIndex: "action",
       key: "action",
@@ -202,7 +189,6 @@ const GuestLookUp = () => {
                   phone: selectedGuestInformation?.phone,
                   idNo: selectedGuestInformation?.idNo,
                   idType: selectedGuestInformation?.idType,
-                  type: selectedGuestInformation?.type,
                   address: selectedGuestInformation?.address,
                 });
               }}
@@ -252,8 +238,8 @@ const GuestLookUp = () => {
             value={searchText}
           />
         </div>
-        <Button onClick={() => setSearchText("null")}>
-          See Deactive guest
+        <Button onClick={() => setFilterDeactivated(!filterDeactivated)}>
+          {filterDeactivated ? "see deactive guest" : "see active guest"}
         </Button>
       </div>
 
@@ -301,17 +287,6 @@ const GuestLookUp = () => {
                   { value: "DRIVING_LICENSE", label: "Driving License" },
                   { value: "NID", label: "Nid" },
                   { value: "PASSPORT", label: "Passport" },
-                ]}
-              />
-            </Form.Item>
-            <h3>Type</h3>
-            <Form.Item name="type" className="mb-0">
-              <Select
-                placeholder="Select Type"
-                options={[
-                  { value: ContactTypes.Customer, label: "Customer" },
-                  { value: ContactTypes.Employee, label: "Employee" },
-                  { value: ContactTypes.Vendor, label: "Vendor" },
                 ]}
               />
             </Form.Item>
