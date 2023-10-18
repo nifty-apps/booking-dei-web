@@ -7,6 +7,7 @@ import {
   Modal,
   Select,
   Space,
+  Switch,
   Table,
   message,
 } from "antd";
@@ -15,7 +16,7 @@ import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
-import { Contact, ContactTypes } from "../../graphql/__generated__/graphql";
+import { Contact } from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
@@ -23,10 +24,12 @@ const { confirm } = Modal;
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [searchText, setSearchText] = useState<string>("");
+  const [activeGuest, setActiveGuest] = useState(true)
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [form] = Form.useForm();
 
+  
   // fetching data using Hotel ID
   const {
     data: guestData,
@@ -40,16 +43,29 @@ const GuestLookUp = () => {
     },
   });
 
+  // handler for toggle active and deactive user
+  const onChange = (checked: boolean) => {
+    setActiveGuest(checked)
+  };
+
+  // filter all active guest
+  const findActiveGuest = guestData?.contacts.filter(guest=>guest.detactivatedAt !== null)
+
+  // filter all deactivate guest
+  const findDeactivateGuest = guestData?.contacts.filter(guest=>guest.detactivatedAt === null)
+  
+
+  const guestList = activeGuest ? findActiveGuest : findDeactivateGuest
+
   // filter Guest by name phone ID number
-  const filteredGuestList = guestData?.contacts?.filter((guestInformation) => {
+  const filteredGuestList = guestList?.filter((guestInformation) => {
     const lowercaseSearchText = searchText.toLowerCase();
     return (
       guestInformation?.name?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.phone?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.type?.toLowerCase().includes(lowercaseSearchText)
+      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText)
     );
   });
 
@@ -123,7 +139,6 @@ const GuestLookUp = () => {
     phone: guestInformation?.phone,
     idType: guestInformation?.idType || null,
     idNo: guestInformation?.idNo || null,
-    type: guestInformation?.type,
     address: guestInformation?.address || null,
     action: guestInformation?._id,
     status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
@@ -156,16 +171,6 @@ const GuestLookUp = () => {
       key: "idNo",
     },
     {
-      title: "TYPE",
-      dataIndex: "type",
-      key: "type",
-    },
-    {
-      title: "STATUS",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
       title: "ACTION",
       dataIndex: "action",
       key: "action",
@@ -186,7 +191,6 @@ const GuestLookUp = () => {
                   phone: selectedGuestInformation?.phone,
                   idNo: selectedGuestInformation?.idNo,
                   idType: selectedGuestInformation?.idType,
-                  type: selectedGuestInformation?.type,
                   address: selectedGuestInformation?.address,
                 });
               }}
@@ -220,7 +224,7 @@ const GuestLookUp = () => {
       <div className="mb-5">
         <TitleText text="Guest Look up" />
       </div>
-      <div className="flex align-middle justify-between mb-3">
+      <div className="flex align-middle items-center gap-5 mb-3">
         <div className="w-3/12">
           <Input
             placeholder="Search here.."
@@ -229,6 +233,12 @@ const GuestLookUp = () => {
             onChange={(e) => setSearchText(e.target.value)}
             value={searchText}
           />
+        </div>
+        {/* Active and Deactive guest toggle button */}
+        <div className="flex font-medium justify-center items-center gap-5">
+          <span>Deactive</span>
+          <Switch className="bg-gray-500" defaultChecked onChange={onChange} />
+          <span>Active</span>
         </div>
       </div>
 
@@ -279,17 +289,7 @@ const GuestLookUp = () => {
                 ]}
               />
             </Form.Item>
-            <h3>Type</h3>
-            <Form.Item name="type" className="mb-0">
-              <Select
-                placeholder="Select Type"
-                options={[
-                  { value: ContactTypes.Customer, label: "Customer" },
-                  { value: ContactTypes.Employee, label: "Employee" },
-                  { value: ContactTypes.Vendor, label: "Vendor" },
-                ]}
-              />
-            </Form.Item>
+            
           </Space>
 
           <div className="flex justify-end">
