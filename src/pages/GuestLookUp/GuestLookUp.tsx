@@ -44,7 +44,7 @@ const GuestLookUp = () => {
 
   const allGuestData = filterDeactivated
     ? guestData?.contacts?.filter((guestInfo) => {
-        return guestInfo?.detactivatedAt;
+        return guestInfo;
       })
     : guestData?.contacts?.filter((guestInfo) => {
         return guestInfo?.detactivatedAt == null;
@@ -239,7 +239,7 @@ const GuestLookUp = () => {
           />
         </div>
         <label htmlFor="activeDeactiveGuestFilter">
-          <span className="mr-1">See Deactive Guest's</span>
+          <span className="mr-1">See All Guest's</span>
           <Switch
             title="See Active/Deactive Guest's"
             className={`${filterDeactivated ? "" : "bg-gray-400"}`}
