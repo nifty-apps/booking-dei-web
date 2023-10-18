@@ -58,7 +58,6 @@ const GuestLookUp = () => {
       guestInformation?.phone?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText)
     );
   });
