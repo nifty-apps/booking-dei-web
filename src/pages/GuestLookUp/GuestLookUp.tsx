@@ -26,6 +26,7 @@ const GuestLookUp = () => {
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [form] = Form.useForm();
+  const [isActivated, setIsActivated]=useState<boolean>(true);
 
   // fetching data using Hotel ID
   const {
@@ -40,8 +41,23 @@ const GuestLookUp = () => {
     },
   });
 
-  // filter Guest by name phone ID number
-  const filteredGuestList = guestData?.contacts?.filter((guestInformation) => {
+
+  let  filteredGuestList ;
+
+// filter by activated or dectivated 
+ isActivated ? filteredGuestList = guestData?.contacts?.filter((guestInformation) =>!!guestInformation?.detactivatedAt) : filteredGuestList = guestData?.contacts?.filter((guestInformation) =>!guestInformation?.detactivatedAt) 
+
+
+
+
+
+
+
+
+
+
+  console.log(filteredGuestList)
+ filteredGuestList = filteredGuestList?.filter((guestInformation) => {
     const lowercaseSearchText = searchText.toLowerCase();
     return (
       guestInformation?.name?.toLowerCase().includes(lowercaseSearchText) ||
@@ -49,7 +65,9 @@ const GuestLookUp = () => {
       guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.type?.toLowerCase().includes(lowercaseSearchText)
+      guestInformation?.type?.toLowerCase().includes(lowercaseSearchText) || 
+      guestInformation?.detactivatedAt?.toLocaleLowerCase().includes('null')
+
     );
   });
 
@@ -68,7 +86,7 @@ const GuestLookUp = () => {
             _id: guestID,
             name: values.name,
             phone: values.phone,
-            idNo: values.idNo,
+            idNo:values.idNo,
             idType: values.idType,
             type: values.type,
             address: values.address,
@@ -122,13 +140,13 @@ const GuestLookUp = () => {
     name: guestInformation?.name,
     phone: guestInformation?.phone,
     idType: guestInformation?.idType || null,
-    idNo: guestInformation?.idNo || null,
+    idNo: guestInformation?.idNo || null ,
     type: guestInformation?.type,
     address: guestInformation?.address || null,
     action: guestInformation?._id,
     status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
   }));
-
+console.log(dataSource)
   const columns = [
     {
       title: "NAME",
@@ -160,11 +178,7 @@ const GuestLookUp = () => {
       dataIndex: "type",
       key: "type",
     },
-    {
-      title: "STATUS",
-      dataIndex: "status",
-      key: "status",
-    },
+  
     {
       title: "ACTION",
       dataIndex: "action",
@@ -215,12 +229,19 @@ const GuestLookUp = () => {
       },
     },
   ];
+
+
+
+  //handle Togggole button 
+  const handleToggle = () => {
+    setIsActivated(!isActivated);
+  }
   return (
     <>
       <div className="mb-5">
         <TitleText text="Guest Look up" />
       </div>
-      <div className="flex align-middle justify-between mb-3">
+      <div className="flex justify-start align-middle  gap-6 mb-3">
         <div className="w-3/12">
           <Input
             placeholder="Search here.."
@@ -230,7 +251,13 @@ const GuestLookUp = () => {
             value={searchText}
           />
         </div>
+        <div>
+      <Button onClick={handleToggle}>
+        {isActivated ? 'Deactivate' : 'Activate'}
+      </Button>
+    </div>
       </div>
+
 
       <Table dataSource={dataSource} columns={columns} pagination={false} />
 
