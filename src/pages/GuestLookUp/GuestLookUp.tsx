@@ -45,7 +45,7 @@ const GuestLookUp = () => {
   let  filteredGuestList ;
 
 // filter by activated or dectivated 
- isActivated ? filteredGuestList = guestData?.contacts?.filter((guestInformation) =>!!guestInformation?.detactivatedAt) : filteredGuestList = guestData?.contacts?.filter((guestInformation) =>!guestInformation?.detactivatedAt) 
+ isActivated ? filteredGuestList = guestData?.contacts?.filter((guestInformation) =>!!guestInformation?.detactivatedAt) : filteredGuestList = guestData?.contacts?.filter((guestInformation) =>!guestInformation?.detactivatedAt || !!guestInformation?.detactivatedAt ) 
 
 
 
@@ -252,10 +252,15 @@ console.log(dataSource)
           />
         </div>
         <div>
-      <Button onClick={handleToggle}>
-        {isActivated ? 'Deactivate' : 'Activate'}
-      </Button>
-    </div>
+  <Button
+    onClick={handleToggle}
+    type={isActivated ? 'default' : 'primary'}
+    style={{ color: isActivated ? 'red' : 'green' }} // Adjust the colors as needed
+  >
+    {isActivated ? 'Toggle' : 'Activate'}
+  </Button>
+</div>
+
       </div>
 
 
