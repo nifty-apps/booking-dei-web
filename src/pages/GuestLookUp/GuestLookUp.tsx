@@ -7,6 +7,7 @@ import {
   Modal,
   Select,
   Space,
+  Switch,
   Table,
   message,
 } from "antd";
@@ -228,7 +229,7 @@ const GuestLookUp = () => {
       <div className="mb-5">
         <TitleText text="Guest Look up" />
       </div>
-      <div className="flex gap-3 align-middle mb-3">
+      <div className="flex items-center justify-between mb-3">
         <div className="w-3/12">
           <Input
             placeholder="Search here.."
@@ -238,9 +239,15 @@ const GuestLookUp = () => {
             value={searchText}
           />
         </div>
-        <Button onClick={() => setFilterDeactivated(!filterDeactivated)}>
-          {filterDeactivated ? "see deactive guest" : "see active guest"}
-        </Button>
+        <label htmlFor="activeDeactiveGuestFilter">
+          <span className="mr-1">See Deactive Guest's</span>
+          <Switch
+            title="See Active/Deactive Guest's"
+            className={`${filterDeactivated ? "" : "bg-gray-400"}`}
+            defaultChecked={false}
+            onChange={() => setFilterDeactivated(!filterDeactivated)}
+          />
+        </label>
       </div>
 
       <Table dataSource={dataSource} columns={columns} pagination={false} />
