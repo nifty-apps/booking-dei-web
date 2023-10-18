@@ -26,7 +26,7 @@ const GuestLookUp = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
-  const [showDeacticvate, setShowDeacticvate] = useState<boolean>(false);
+  const [showActive, setShowActive] = useState<boolean>(true);
   const [form] = Form.useForm();
 
   // fetching data using Hotel ID
@@ -123,12 +123,13 @@ const GuestLookUp = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   // Now datasource will be render according to the showDeacticvate state
-  const dataSource = filteredGuestList
-    ?.map((guestInformation) => {
+  const dataSource = (filteredGuestList || [])
+    .map((guestInformation) => {
       const isDeactivated = guestInformation.detactivatedAt;
+      const isActive = !isDeactivated;
 
-      if (showDeacticvate) {
-        if (isDeactivated) {
+      if (showActive) {
+        if (isActive) {
           return {
             key: guestInformation?._id,
             name: guestInformation?.name,
@@ -137,20 +138,21 @@ const GuestLookUp = () => {
             idNo: guestInformation?.idNo || null,
             address: guestInformation?.address || null,
             action: guestInformation?._id,
-            status: "Deactive",
+            status: "Active",
           };
         }
+      } else {
+        return {
+          key: guestInformation?._id,
+          name: guestInformation?.name,
+          phone: guestInformation?.phone,
+          idType: guestInformation?.idType || null,
+          idNo: guestInformation?.idNo || null,
+          address: guestInformation?.address || null,
+          action: guestInformation?._id,
+          status: isActive ? "Active" : "Deactive",
+        };
       }
-      return {
-        key: guestInformation?._id,
-        name: guestInformation?.name,
-        phone: guestInformation?.phone,
-        idType: guestInformation?.idType || null,
-        idNo: guestInformation?.idNo || null,
-        address: guestInformation?.address || null,
-        action: guestInformation?._id,
-        status: "Active",
-      };
     })
     .filter(Boolean);
 
@@ -246,7 +248,7 @@ const GuestLookUp = () => {
           />
         </div>
         <Switch
-          onClick={() => setShowDeacticvate(!showDeacticvate)}
+          onClick={() => setShowActive(!showActive)}
           className={`bg-green-500 `}
           checkedChildren="Active"
           unCheckedChildren="All"
