@@ -12,6 +12,7 @@ import {
 } from "../graphql/__generated__/graphql";
 import { GET_ROOMS_BY_FLOOR } from "../graphql/queries/roomQueries";
 import { RootState } from "../store";
+import PaymentStatus from "./PaymentStatus";
 
 export type Room = {
   _id: string;
@@ -80,19 +81,6 @@ const FloorPlan = ({
       endDate,
     },
   });
-
-  // for booking id showing payment status
-  // const bookingId = data?.roomsByFloor.map((room) =>
-  //   room.rooms.map((room) => room.roombookings.map((room) => room.booking))
-  // );
-
-  // const { data: bookingInfo } = useQuery(GET_BOOKING, {
-  //   variables: {
-  //     id: "652e0eaf9725309dcee90e1f",
-  //   },
-  // });
-
-  // console.log(bookingInfo);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
@@ -204,12 +192,9 @@ const FloorPlan = ({
                         }
                       >
                         {/* payment status */}
-                        {roombookings.map((bookingId) => {
-                          console.log("booking Id: ", bookingId);
+                        {roombookings.map((bookingInfo) => {
                           return (
-                            <div className="absolute top-0 right-0 bg-green-500 text-white px-1 rounded-tl-md rounded-br-md">
-                              {bookingId?.status}
-                            </div>
+                            <PaymentStatus bookingId={bookingInfo.booking} />
                           );
                         })}
 
