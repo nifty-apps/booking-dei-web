@@ -7,6 +7,7 @@ import {
   Modal,
   Select,
   Space,
+  Switch,
   Table,
   message,
 } from "antd";
@@ -251,14 +252,22 @@ const GuestLookUp = () => {
             value={searchText}
           />
         </div>
-        <Button
-  onClick={handleToggle}
-  type={isActivated ? 'default' : 'primary'}
-  style={{ color: isActivated ? 'red' : 'green' }}
-  icon={isActivated ? <EyeInvisibleOutlined /> : <EyeOutlined />}
->
-  {isActivated ? 'Show All' : ' Activated'}
-</Button>
+        <Switch
+  checked={isActivated}
+  checkedChildren={
+    <div style={{ display: 'flex', alignItems: 'center', color: 'green' }}>
+      <EyeOutlined style={{ marginRight: 4 }} />
+      Show All
+    </div>
+  }
+  unCheckedChildren={
+    <div style={{ display: 'flex', alignItems: 'center', color: 'red' }}>
+      <EyeInvisibleOutlined style={{ marginRight: 4 }} />
+      Activated
+    </div>
+  }
+  onChange={handleToggle}
+/>
 
       </div>
 
