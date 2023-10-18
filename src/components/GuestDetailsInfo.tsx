@@ -177,10 +177,12 @@ const GuestDetailsInfo = ({
                 <span>{option}</span>
               </>
             )}
-            options={contacts.map((contact) => ({
-              label: contact.name,
-              value: contact._id,
-            }))}
+            options={contacts
+              .filter((contact) => !contact.detactivatedAt)
+              .map((contact) => ({
+                label: contact.name,
+                value: contact._id,
+              }))}
           />
         </Form.Item>
 
@@ -213,10 +215,12 @@ const GuestDetailsInfo = ({
                 <span>{option}</span>
               </>
             )}
-            options={contacts.map((contact) => ({
-              label: contact.phone,
-              value: contact._id,
-            }))}
+            options={contacts
+              .filter((contact) => !contact.detactivatedAt)
+              .map((contact) => ({
+                label: contact.phone,
+                value: contact._id,
+              }))}
           />
         </Form.Item>
 
