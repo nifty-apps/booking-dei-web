@@ -49,7 +49,10 @@ const GuestLookUp = () => {
       guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.type?.toLowerCase().includes(lowercaseSearchText)
+      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
+      guestInformation?.detactivatedAt
+        ?.toLowerCase()
+        .includes(lowercaseSearchText)
     );
   });
 
@@ -122,9 +125,15 @@ const GuestLookUp = () => {
               },
             },
           });
-          message.success("This Guest Account is Deactivated.");
+          message.success(
+            `This Guest Account is ${setActive ? "Deactivated" : "Activated"}.`
+          );
         } catch (error) {
-          message.error("Failed to deactive user. Please try again");
+          message.error(
+            `${
+              setActive ? "Deactivation" : "Activation"
+            } failed, Please try again`
+          );
         }
       },
     });
@@ -181,6 +190,13 @@ const GuestLookUp = () => {
       title: "STATUS",
       dataIndex: "status",
       key: "status",
+      render: (record: string) => {
+        return (
+          <p className={`${record == "Deactive" ? "text-red-500" : " "}`}>
+            {record}
+          </p>
+        );
+      },
     },
     {
       title: "ACTION",
@@ -215,6 +231,10 @@ const GuestLookUp = () => {
             />
             {selectedGuestInformation?.status == "Deactive" ? (
               <Button
+                style={{
+                  backgroundColor: "transparent",
+                }}
+                size="small"
                 onClick={() => {
                   handleDeactiveAccount(record, false);
                 }}
@@ -224,11 +244,13 @@ const GuestLookUp = () => {
             ) : (
               <Button
                 danger
+                style={{ backgroundColor: "transparent" }}
+                size="small"
                 onClick={() => {
                   handleDeactiveAccount(record, true);
                 }}
               >
-                Deactivate
+                Deactive
               </Button>
             )}
           </div>
@@ -241,7 +263,7 @@ const GuestLookUp = () => {
       <div className="mb-5">
         <TitleText text="Guest Look up" />
       </div>
-      <div className="flex align-middle justify-between mb-3">
+      <div className="flex gap-3 align-middle mb-3">
         <div className="w-3/12">
           <Input
             placeholder="Search here.."
@@ -251,6 +273,9 @@ const GuestLookUp = () => {
             value={searchText}
           />
         </div>
+        <Button onClick={() => setSearchText("null")}>
+          See Deactive guest
+        </Button>
       </div>
 
       <Table dataSource={dataSource} columns={columns} pagination={false} />
