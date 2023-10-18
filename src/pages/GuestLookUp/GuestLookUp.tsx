@@ -26,7 +26,7 @@ const GuestLookUp = () => {
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [form] = Form.useForm();
-  const [isActivated, setIsActivated]=useState<boolean>(true);
+  const [isActivated, setIsActivated] = useState<boolean>(true);
 
   // fetching data using Hotel ID
   const {
@@ -42,12 +42,10 @@ const GuestLookUp = () => {
   });
 
 
-  let  filteredGuestList ;
+  let filteredGuestList;
 
-// filter by activated or dectivated 
- isActivated ? filteredGuestList = guestData?.contacts?.filter((guestInformation) =>!!guestInformation?.detactivatedAt) : filteredGuestList = guestData?.contacts?.filter((guestInformation) =>!guestInformation?.detactivatedAt || !!guestInformation?.detactivatedAt ) 
-
-
+  // filter by activated or dectivated 
+  isActivated ? filteredGuestList = guestData?.contacts?.filter((guestInformation) => !!guestInformation?.detactivatedAt) : filteredGuestList = guestData?.contacts?.filter((guestInformation) => !guestInformation?.detactivatedAt || !!guestInformation?.detactivatedAt)
 
 
 
@@ -56,8 +54,10 @@ const GuestLookUp = () => {
 
 
 
-  console.log(filteredGuestList)
- filteredGuestList = filteredGuestList?.filter((guestInformation) => {
+
+
+
+  filteredGuestList = filteredGuestList?.filter((guestInformation) => {
     const lowercaseSearchText = searchText.toLowerCase();
     return (
       guestInformation?.name?.toLowerCase().includes(lowercaseSearchText) ||
@@ -65,7 +65,7 @@ const GuestLookUp = () => {
       guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.type?.toLowerCase().includes(lowercaseSearchText) || 
+      guestInformation?.type?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.detactivatedAt?.toLocaleLowerCase().includes('null')
 
     );
@@ -86,7 +86,7 @@ const GuestLookUp = () => {
             _id: guestID,
             name: values.name,
             phone: values.phone,
-            idNo:values.idNo,
+            idNo: values.idNo,
             idType: values.idType,
             type: values.type,
             address: values.address,
@@ -106,9 +106,8 @@ const GuestLookUp = () => {
       (data) => data.key === guestID
     );
     confirm({
-      title: `Do you want to ${setActive ? "Deactivate" : "Activate"} ${
-        selectedGuestInformation?.name
-      }?`,
+      title: `Do you want to ${setActive ? "Deactivate" : "Activate"} ${selectedGuestInformation?.name
+        }?`,
       icon: <ExclamationCircleFilled />,
       okType: setActive ? "danger" : "default",
       async onOk() {
@@ -140,13 +139,13 @@ const GuestLookUp = () => {
     name: guestInformation?.name,
     phone: guestInformation?.phone,
     idType: guestInformation?.idType || null,
-    idNo: guestInformation?.idNo || null ,
+    idNo: guestInformation?.idNo || null,
     type: guestInformation?.type,
     address: guestInformation?.address || null,
     action: guestInformation?._id,
     status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
   }));
-console.log(dataSource)
+
   const columns = [
     {
       title: "NAME",
@@ -178,7 +177,7 @@ console.log(dataSource)
       dataIndex: "type",
       key: "type",
     },
-  
+
     {
       title: "ACTION",
       dataIndex: "action",
@@ -252,14 +251,14 @@ console.log(dataSource)
           />
         </div>
         <div>
-  <Button
-    onClick={handleToggle}
-    type={isActivated ? 'default' : 'primary'}
-    style={{ color: isActivated ? 'red' : 'green' }} // Adjust the colors as needed
-  >
-    {isActivated ? 'Toggle' : 'Activate'}
-  </Button>
-</div>
+          <Button
+            onClick={handleToggle}
+            type={isActivated ? 'default' : 'primary'}
+            style={{ color: isActivated ? 'red' : 'green' }} // Adjust the colors as needed
+          >
+            {isActivated ? 'Toggle' : 'Activate'}
+          </Button>
+        </div>
 
       </div>
 
