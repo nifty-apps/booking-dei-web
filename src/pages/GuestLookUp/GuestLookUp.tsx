@@ -48,8 +48,7 @@ const GuestLookUp = () => {
       guestInformation?.phone?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.type?.toLowerCase().includes(lowercaseSearchText)
+      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText)
     );
   });
 
@@ -123,7 +122,6 @@ const GuestLookUp = () => {
     phone: guestInformation?.phone,
     idType: guestInformation?.idType || null,
     idNo: guestInformation?.idNo || null,
-    type: guestInformation?.type,
     address: guestInformation?.address || null,
     action: guestInformation?._id,
     status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
@@ -155,16 +153,7 @@ const GuestLookUp = () => {
       dataIndex: "idNo",
       key: "idNo",
     },
-    {
-      title: "TYPE",
-      dataIndex: "type",
-      key: "type",
-    },
-    {
-      title: "STATUS",
-      dataIndex: "status",
-      key: "status",
-    },
+
     {
       title: "ACTION",
       dataIndex: "action",
@@ -186,7 +175,6 @@ const GuestLookUp = () => {
                   phone: selectedGuestInformation?.phone,
                   idNo: selectedGuestInformation?.idNo,
                   idType: selectedGuestInformation?.idType,
-                  type: selectedGuestInformation?.type,
                   address: selectedGuestInformation?.address,
                 });
               }}
