@@ -7,6 +7,7 @@ import {
   Modal,
   Select,
   Space,
+  Switch,
   Table,
   message,
 } from "antd";
@@ -25,8 +26,10 @@ const GuestLookUp = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
+  const [showDeacticvate, setShowDeacticvate] = useState<boolean>(false);
   const [form] = Form.useForm();
-
+ 
+  
   // fetching data using Hotel ID
   const {
     data: guestData,
@@ -41,17 +44,20 @@ const GuestLookUp = () => {
   });
 
   // filter Guest by name phone ID number
-  const filteredGuestList = guestData?.contacts?.filter((guestInformation) => {
-    const lowercaseSearchText = searchText.toLowerCase();
-    return (
-      guestInformation?.name?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.phone?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.type?.toLowerCase().includes(lowercaseSearchText)
-    );
-  });
+  const filteredGuestList = guestData?.contacts?.filter(
+    (guestInformation: Contact) => {
+      const lowercaseSearchText = searchText.toLowerCase();
+      return (
+        guestInformation?.name?.toLowerCase().includes(lowercaseSearchText) ||
+        guestInformation?.phone?.toLowerCase().includes(lowercaseSearchText) ||
+        guestInformation?.address
+          ?.toLowerCase()
+          .includes(lowercaseSearchText) ||
+        guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
+        guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText)
+      );
+    }
+  );
 
   // update contact mutation query
   const [updateContact] = useMutation(UPDATE_CONTACT, {
@@ -85,7 +91,7 @@ const GuestLookUp = () => {
   // deactivate function to add deactivateAt field in the database
   const handleDeactiveAccount = async (guestID: string, setActive: boolean) => {
     const selectedGuestInformation = dataSource?.find(
-      (data) => data.key === guestID
+      (data) => data?.key === guestID
     );
     confirm({
       title: `Do you want to ${setActive ? "Deactivate" : "Activate"} ${
@@ -117,17 +123,23 @@ const GuestLookUp = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const dataSource = filteredGuestList?.map((guestInformation) => ({
-    key: guestInformation?._id,
-    name: guestInformation?.name,
-    phone: guestInformation?.phone,
-    idType: guestInformation?.idType || null,
-    idNo: guestInformation?.idNo || null,
-    type: guestInformation?.type,
-    address: guestInformation?.address || null,
-    action: guestInformation?._id,
-    status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
-  }));
+
+  const dataSource = filteredGuestList?.map((guestData) => {
+    const isDeactivate = guestData.detactivatedAt;
+    const status = showDeacticvate ? (isDeactivate ? "Deactive" : "Active") : "Active";
+  
+    return {
+      key: guestData._id,
+      name: guestData.name,
+      phone: guestData.phone,
+      idType: guestData.idType,
+      idNo: guestData.idNo,
+      address: guestData.address,
+      action: guestData._id,
+      status,
+    };
+  }).filter(Boolean);
+  
 
   const columns = [
     {
@@ -155,16 +167,7 @@ const GuestLookUp = () => {
       dataIndex: "idNo",
       key: "idNo",
     },
-    {
-      title: "TYPE",
-      dataIndex: "type",
-      key: "type",
-    },
-    {
-      title: "STATUS",
-      dataIndex: "status",
-      key: "status",
-    },
+
     {
       title: "ACTION",
       dataIndex: "action",
@@ -172,7 +175,7 @@ const GuestLookUp = () => {
       render: (record: string) => {
         // find clicked guest information
         const selectedGuestInformation = dataSource?.find(
-          (data) => data.key === record
+          (data) => data?.key === record
         );
         return (
           <div className="flex gap-3 items-center cursor-pointer">
@@ -186,7 +189,6 @@ const GuestLookUp = () => {
                   phone: selectedGuestInformation?.phone,
                   idNo: selectedGuestInformation?.idNo,
                   idType: selectedGuestInformation?.idType,
-                  type: selectedGuestInformation?.type,
                   address: selectedGuestInformation?.address,
                 });
               }}
@@ -220,7 +222,7 @@ const GuestLookUp = () => {
       <div className="mb-5">
         <TitleText text="Guest Look up" />
       </div>
-      <div className="flex align-middle justify-between mb-3">
+      <div className="flex items-center  gap-5 mb-3">
         <div className="w-3/12">
           <Input
             placeholder="Search here.."
@@ -230,9 +232,31 @@ const GuestLookUp = () => {
             value={searchText}
           />
         </div>
+        <Switch
+          onClick={() =>setShowDeacticvate(!showDeacticvate)}
+          className={`rounded-full bg-green-600 `}
+          checkedChildren="Active"
+          unCheckedChildren="All Status"
+          defaultChecked
+        />
       </div>
 
-      <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <Table
+        dataSource={
+          dataSource as {
+            key: string;
+            name: string;
+            phone: string;
+            idType: ContactTypes | null;
+            idNo: string | null;
+            address: string | null;
+            action: string;
+            status: string;
+          }[]
+        }
+        columns={columns}
+        pagination={false}
+      />
 
       {/* modal to edit guest information  */}
       <Modal
