@@ -8,19 +8,18 @@ import {
   ContactFilterInput,
 } from "../../graphql/__generated__/graphql";
 import TitleText from "../../components/Title";
-import {
-  Card,
-  Form,
-  Input,
-  Modal,
-  QRCode,
-  Select,
-  Space,
-  Table,
-  message,
-} from "antd";
+import { Form, Input, Modal, Select, Space, Table, message } from "antd";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
-import { FaDownload, FaRegEdit } from "react-icons/fa";
+import { FaEye, FaRegEdit } from "react-icons/fa";
+
+// custome interface for employee card modal
+interface employee {
+  name: string | undefined;
+  phone: string | undefined;
+  idNo: string | null | undefined;
+  idType: string | null | undefined;
+  address: string | null | undefined;
+}
 
 const Employees = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -29,6 +28,9 @@ const Employees = () => {
   const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
   const [employeeID, setEmployeeID] = useState<string | null>(null);
   const [form] = Form.useForm();
+
+  const [modal2Open, setModal2Open] = useState(false);
+  const [information, setInformation] = useState<employee>();
 
   const {
     data: allEmployeesData,
@@ -159,15 +161,15 @@ const Employees = () => {
                 });
               }}
             />
-            {/* <div id="myqrcode">
-              <QRCode
-                value={`${EmployeeDetails}`}
-                bgColor="#fff"
-                style={{ marginBottom: 16 }}
+            <div id="myqrcode">
+              <FaEye
+                title={"View Employee Card"}
+                onClick={() => {
+                  setModal2Open(true);
+                  setInformation(EmployeeDetails);
+                }}
               />
-
-              <FaDownload title={"Download Employee Data"} />
-            </div> */}
+            </div>
           </div>
         );
       },
@@ -249,6 +251,36 @@ const Employees = () => {
             </button>
           </div>
         </Form>
+      </Modal>
+
+      {/* employee data modal to show all others information of an employee */}
+      <Modal
+        centered
+        open={modal2Open}
+        onOk={() => setModal2Open(false)}
+        onCancel={() => setModal2Open(false)}
+        footer={null}
+      >
+        <div>
+          <h3 className="text-center font-semibold text-xl mb-5">
+            Employee ID Card
+          </h3>
+          <div className="flex gap-5">
+            <img
+              src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
+              alt=""
+              className="w-24 rounded"
+            />
+            <div className="font-semibold">
+              <p>Name: {information?.name}</p>
+              <p>Phone: {information?.phone}</p>
+              <p>Address: {information?.address}</p>
+              <p>
+                {information?.idType}: {information?.idNo}
+              </p>
+            </div>
+          </div>
+        </div>
       </Modal>
     </>
   );
