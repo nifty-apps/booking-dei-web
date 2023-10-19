@@ -1,17 +1,21 @@
 import { AutoComplete, Form } from "antd";
 import { useState } from "react";
 import { FaPlus, FaTimes } from "react-icons/fa";
+import { Guest } from "../graphql/__generated__/graphql";
 
 const AdditionalGuests = () => {
-  const [guests, setGuests] = useState([{ id: Date.now() }]);
+  const [form] = Form.useForm();
 
-  const handleAddGuest = () => {
-    setGuests([...guests, { id: Date.now() }]);
+  const [guests, setGuests] = useState([{ name: "", phone: "" }]);
+
+  // add guest multiple times
+  const addGuests = () => {
+    setGuests([...guests, { name: "", phone: "" }]);
   };
 
-  const handleRemoveGuest = (idToRemove: number) => {
-    const newGuests = guests.filter((guest) => guest.id !== idToRemove);
-    setGuests(newGuests);
+  // form submit handler
+  const onFinish = (values: Guest) => {
+    console.log("Received values of form:", values);
   };
 
   return (
@@ -21,39 +25,34 @@ const AdditionalGuests = () => {
       </h1>
 
       {guests?.map((guest) => (
-        <div key={guest.id}>
-          <Form layout="vertical" className="flex items-center">
-            <Form.Item
-              name={`name${guest.id}`}
-              label="Full Name"
-              className="w-1/2"
-            >
-              <AutoComplete placeholder="Enter your name" allowClear />
-            </Form.Item>
+        <Form
+          layout="vertical"
+          className="flex items-center"
+          key={guest.phone}
+          form={form}
+          onFinish={onFinish}
+        >
+          <Form.Item label="Full Name" className="w-1/2">
+            <AutoComplete placeholder="Enter your name" allowClear />
+          </Form.Item>
 
-            <Form.Item
-              name={`phone${guest.id}`}
-              label="Phone"
-              className="mx-5 w-1/2"
-            >
-              <AutoComplete placeholder="Enter your phone" allowClear />
-            </Form.Item>
-            {/* delete icon */}
-            <button
-              className="text-lg"
-              onClick={() => handleRemoveGuest(guest.id)}
-            >
-              <FaTimes />
-            </button>
-          </Form>
-        </div>
+          <Form.Item label="Phone" className="mx-5 w-1/2">
+            <AutoComplete placeholder="Enter your phone" allowClear />
+          </Form.Item>
+          {/* delete icon */}
+          <button className="text-lg">
+            <FaTimes />
+          </button>
+        </Form>
       ))}
 
       {/* Add Guest button */}
       <div className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1">
-        <button className="flex items-center gap-2" onClick={handleAddGuest}>
+        <button className="flex items-center gap-2" type="submit">
           <FaPlus />
-          <span className="font-semibold"> Add Guest</span>
+          <span className="font-semibold" onClick={addGuests}>
+            Add Guest
+          </span>
         </button>
       </div>
     </>
