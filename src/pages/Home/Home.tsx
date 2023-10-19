@@ -1,6 +1,5 @@
 import { Button, DatePicker } from "antd";
 import dayjs from "dayjs";
-import { RangeValue } from "rc-picker/lib/interface";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -10,50 +9,23 @@ import TitleText from "../../components/Title";
 
 const Home = () => {
   const [selectedRooms, setSelectedRooms] = useState<Room[]>([]);
-  const [selectedDateRange, setSelectedDateRange] = useState<
-    RangeValue<dayjs.Dayjs>
-  >([
-    dayjs(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate()
-      )
-    ),
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [formattedDate, setFormattedDate] = useState(
+    dayjs(selectedDate).format("YYYY-MM-DD")
+  );
 
-    dayjs(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() + 1
-      )
-    ),
-  ]);
-
-  //  previous day
-  const handlePreviousDay = () => {
-    setSelectedDateRange((prevRange) => {
-      if (prevRange) {
-        return [
-          prevRange[0]?.subtract(1, "day") || dayjs(),
-          prevRange[1]?.subtract(1, "day") || dayjs().add(1, "day"),
-        ];
-      }
-      return prevRange;
-    });
+  const handlePreviousClick = () => {
+    const newDate = new Date(selectedDate);
+    newDate.setDate(newDate.getDate() - 1);
+    setSelectedDate(newDate);
+    setFormattedDate(dayjs(newDate).format("YYYY-MM-DD"));
   };
 
-  //  next day
-  const handleNextDay = () => {
-    setSelectedDateRange((prevRange) => {
-      if (prevRange) {
-        return [
-          prevRange[0]?.add(1, "day") || dayjs(),
-          prevRange[1]?.add(1, "day") || dayjs().add(1, "day"),
-        ];
-      }
-      return prevRange;
-    });
+  const handleNextClick = () => {
+    const newDate = new Date(selectedDate);
+    newDate.setDate(newDate.getDate() + 1);
+    setSelectedDate(newDate);
+    setFormattedDate(dayjs(newDate).format("YYYY-MM-DD"));
   };
 
   return (
@@ -63,19 +35,24 @@ const Home = () => {
         <TitleText text="Home" />
         {/* Date range picker */}
         <div className="mx-auto flex items-center">
-          <Button type="primary" ghost onClick={handlePreviousDay}>
-            Previous Day
+          <Button type="primary" ghost onClick={handlePreviousClick}>
+            Previous
           </Button>
           <div>
-            <DatePicker.RangePicker
-              allowClear={false}
-              format="YYYY-MM-DD"
-              value={selectedDateRange}
-              onChange={(value) => setSelectedDateRange(value)}
+            <DatePicker
               className="mx-1"
+              allowClear={false}
+              placeholder="Select Date"
+              value={dayjs(formattedDate)}
+              onChange={(_, date) => {
+                const newDate = new Date(date);
+                setSelectedDate(newDate);
+                setFormattedDate(dayjs(newDate).format("YYYY-MM-DD"));
+              }}
             />
-            <Button type="primary" ghost onClick={handleNextDay}>
-              Next Day
+
+            <Button type="primary" ghost onClick={handleNextClick}>
+              Next
             </Button>
           </div>
         </div>
@@ -96,16 +73,13 @@ const Home = () => {
           <FloorPlan
             selectedRooms={selectedRooms}
             onSelectionChange={(rooms) => setSelectedRooms(rooms)}
-            startDate={selectedDateRange?.[0]?.toDate() as Date}
-            endDate={selectedDateRange?.[1]?.toDate() as Date}
+            startDate={selectedDate}
+            endDate={selectedDate}
           />
         </div>
         {/* current selection part  */}
         <div className="col-span-3">
-          <RemainingRooms
-            startDate={selectedDateRange?.[0]?.toDate() as Date}
-            endDate={selectedDateRange?.[1]?.toDate() as Date}
-          />
+          <RemainingRooms startDate={selectedDate} endDate={selectedDate} />
         </div>
       </div>
     </>
