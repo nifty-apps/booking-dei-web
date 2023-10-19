@@ -10,7 +10,7 @@ import {
   message,
 } from "antd";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -163,11 +163,26 @@ const BookingSummary = ({
       ? totalBookingRent - discount
       : totalBookingRent) - (totalAmountPaid || 0);
 
-  // Function to update payment status based on the total amount paid
+  useEffect(() => {
+    updatePaymentStatus();
+  }, [totalAmountPaid, totalBookingRent, discount, remainingAmount]);
+
+  // update payment status based on the total amount paid
   const updatePaymentStatus = async () => {
     try {
       if (typeof totalAmountPaid !== "undefined") {
-        if (totalAmountPaid > 0 && totalAmountPaid < totalBookingRent) {
+        if (totalAmountPaid === totalBookingRent) {
+          console.log("paid", totalAmountPaid, totalBookingRent);
+          await updateBooking({
+            variables: {
+              updateBookingInput: {
+                _id: booking,
+                paymentStatus: PaymentStatus.Paid,
+              },
+            },
+          });
+        } else if (totalAmountPaid > 0 && totalAmountPaid < totalBookingRent) {
+          console.log("partial paid", totalAmountPaid, totalBookingRent);
           await updateBooking({
             variables: {
               updateBookingInput: {
@@ -176,7 +191,8 @@ const BookingSummary = ({
               },
             },
           });
-        } else if (totalAmountPaid === totalBookingRent) {
+        } else if (totalAmountPaid === 0) {
+          console.log("paid", totalAmountPaid);
           await updateBooking({
             variables: {
               updateBookingInput: {

@@ -11,6 +11,7 @@ import AdditionalGuests from "../../components/AdditionalGuests";
 import BookingSummary from "../../components/BookingSummary";
 import FloorPlan, { Room } from "../../components/FloorPlan";
 import GuestDetailsInfo from "../../components/GuestDetailsInfo";
+import RemainingRooms from "../../components/RemainingRooms";
 import RoomOptionsModal from "../../components/RoomOptionsModal";
 import TitleText from "../../components/Title";
 import {
@@ -198,8 +199,6 @@ const NewBooking = () => {
         },
       });
 
-
-
       if (res.data?.createBooking?._id) {
         message.success("Yay! Your new booking was added successfully.");
         navigate({
@@ -245,8 +244,6 @@ const NewBooking = () => {
       }));
     }
   }, [selectedRoomsByDate, bookingDetails]);
-
-
 
   return (
     <>
@@ -332,7 +329,7 @@ const NewBooking = () => {
         onCancel={() => setShowFloorPlan(false)}
         cancelText="Cancel"
         okText="Apply"
-        width={1100}
+        width={1400}
         okButtonProps={{
           className: "bg-blue-600",
         }}
@@ -353,42 +350,49 @@ const NewBooking = () => {
           </span>
         </div>
         {/* floor plan */}
-        <FloorPlan
-          startDate={selectedDateRange?.[0]?.toDate() as Date}
-          endDate={selectedDateRange?.[1]?.toDate() as Date}
-          selectedRooms={
-            selectedRoomsByDate.find(
-              (room) =>
-                dayjs(room.dateRange?.[0]).isSame(
-                  selectedDateRange?.[0],
-                  "date"
-                ) &&
-                dayjs(room.dateRange?.[1]).isSame(
-                  selectedDateRange?.[1],
-                  "date"
-                )
-            )?.rooms || []
-          }
-          onSelectionChange={(rooms) => {
-            setSelectedRoomsByDate([
-              ...selectedRoomsByDate.filter(
+        <div className="flex gap-2">
+          <FloorPlan
+            startDate={selectedDateRange?.[0]?.toDate() as Date}
+            endDate={selectedDateRange?.[1]?.toDate() as Date}
+            selectedRooms={
+              selectedRoomsByDate.find(
                 (room) =>
-                  !dayjs(room.dateRange?.[0]).isSame(
+                  dayjs(room.dateRange?.[0]).isSame(
                     selectedDateRange?.[0],
                     "date"
                   ) &&
-                  !dayjs(room.dateRange?.[1]).isSame(
+                  dayjs(room.dateRange?.[1]).isSame(
                     selectedDateRange?.[1],
                     "date"
                   )
-              ),
-              {
-                dateRange: selectedDateRange,
-                rooms,
-              },
-            ]);
-          }}
-        />
+              )?.rooms || []
+            }
+            onSelectionChange={(rooms) => {
+              setSelectedRoomsByDate([
+                ...selectedRoomsByDate.filter(
+                  (room) =>
+                    !dayjs(room.dateRange?.[0]).isSame(
+                      selectedDateRange?.[0],
+                      "date"
+                    ) &&
+                    !dayjs(room.dateRange?.[1]).isSame(
+                      selectedDateRange?.[1],
+                      "date"
+                    )
+                ),
+                {
+                  dateRange: selectedDateRange,
+                  rooms,
+                },
+              ]);
+            }}
+          />
+
+          <RemainingRooms
+            startDate={selectedDateRange?.[0]?.toDate() as Date}
+            endDate={selectedDateRange?.[1]?.toDate() as Date}
+          />
+        </div>
       </Modal>
       {/* Room  options modal */}
       <RoomOptionsModal

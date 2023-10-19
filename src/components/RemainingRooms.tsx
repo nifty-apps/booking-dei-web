@@ -12,7 +12,7 @@ interface FloorPlanProps {
 const RemainingRooms = ({ startDate, endDate }: FloorPlanProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
 
-  const { data, loading, error } = useQuery(GET_ROOMS_BY_FLOOR, {
+  const { data, error } = useQuery(GET_ROOMS_BY_FLOOR, {
     variables: {
       hotel: user?.hotels[0] || "",
       startDate,
@@ -20,7 +20,6 @@ const RemainingRooms = ({ startDate, endDate }: FloorPlanProps) => {
     },
   });
 
-  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
   // Filter unbooked rooms and exclude "Staff" and other categories
@@ -49,7 +48,7 @@ const RemainingRooms = ({ startDate, endDate }: FloorPlanProps) => {
   return (
     <>
       <Card
-        title="Remaining Rooms By Room Type"
+        title="Available Rooms By Room Type"
         bordered={false}
         style={{ width: 300 }}
         className="bg-transparent"

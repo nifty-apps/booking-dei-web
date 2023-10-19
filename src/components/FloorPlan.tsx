@@ -3,7 +3,7 @@ import { Modal, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import classNames from "classnames";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
@@ -74,7 +74,7 @@ const FloorPlan = ({
     open: false,
   });
 
-  const { data, loading, error } = useQuery(GET_ROOMS_BY_FLOOR, {
+  const { data, loading, error, refetch } = useQuery(GET_ROOMS_BY_FLOOR, {
     variables: {
       hotel: user?.hotels[0] || "",
       startDate,
@@ -82,15 +82,9 @@ const FloorPlan = ({
     },
   });
 
-  // const { data: roomBookingInfo } = useQuery(GET_ROOM_BOOKING_FINANCIALS, {
-  //   variables: {
-  //     hotel: user?.hotels[0] || "",
-  //     startDate,
-  //     endDate,
-  //   },
-  // });
-
-  // const roomBookingFinancials = roomBookingInfo?.roomBookingFinancials;
+  useEffect(() => {
+    refetch({ startDate, endDate });
+  }, [refetch, startDate, endDate]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;

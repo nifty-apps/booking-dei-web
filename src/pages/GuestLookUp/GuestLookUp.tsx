@@ -1,14 +1,14 @@
+import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useMutation, useQuery } from "@apollo/client";
 import { Form, Input, Modal, Select, Space, Table, message } from "antd";
-import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useState } from "react";
+import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
-import { RootState } from "../../store";
-import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { Contact, ContactTypes } from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
+import { RootState } from "../../store";
 const { confirm } = Modal;
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -59,7 +59,7 @@ const GuestLookUp = () => {
             _id: guestID,
             name: values.name,
             phone: values.phone,
-            idNo: Number(values.idNo),
+            idNo: values.idNo,
             idType: values.idType,
             type: values.type,
             address: values.address,
