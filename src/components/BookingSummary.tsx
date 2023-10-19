@@ -10,7 +10,7 @@ import {
   message,
 } from "antd";
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -163,16 +163,10 @@ const BookingSummary = ({
       ? totalBookingRent - discount
       : totalBookingRent) - (totalAmountPaid || 0);
 
-  useEffect(() => {
-    updatePaymentStatus();
-  }, [totalAmountPaid, totalBookingRent, discount, remainingAmount]);
-
-  // update payment status based on the total amount paid
-  const updatePaymentStatus = async () => {
+  const updatePaymentStatus = useCallback(async () => {
     try {
       if (typeof totalAmountPaid !== "undefined") {
         if (totalAmountPaid === totalBookingRent) {
-          console.log("paid", totalAmountPaid, totalBookingRent);
           await updateBooking({
             variables: {
               updateBookingInput: {
@@ -182,7 +176,6 @@ const BookingSummary = ({
             },
           });
         } else if (totalAmountPaid > 0 && totalAmountPaid < totalBookingRent) {
-          console.log("partial paid", totalAmountPaid, totalBookingRent);
           await updateBooking({
             variables: {
               updateBookingInput: {
@@ -192,12 +185,11 @@ const BookingSummary = ({
             },
           });
         } else if (totalAmountPaid === 0) {
-          console.log("paid", totalAmountPaid);
           await updateBooking({
             variables: {
               updateBookingInput: {
                 _id: booking,
-                paymentStatus: PaymentStatus.Paid,
+                paymentStatus: PaymentStatus.Unpaid,
               },
             },
           });
@@ -206,7 +198,17 @@ const BookingSummary = ({
     } catch (err) {
       message.error("Error updating payment status.");
     }
-  };
+  }, [totalAmountPaid, totalBookingRent, booking, updateBooking]);
+
+  useEffect(() => {
+    updatePaymentStatus();
+  }, [
+    totalAmountPaid,
+    totalBookingRent,
+    discount,
+    remainingAmount,
+    updatePaymentStatus,
+  ]);
 
   // Handle transaction submission
   const onFinish = async (values: Transaction) => {

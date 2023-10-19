@@ -28,6 +28,7 @@ import {
 } from "../../graphql/queries/bookingDetailsQueries";
 import { GET_ROOM_BOOKING } from "../../graphql/queries/roomBookingQueries";
 import { GET_ROOMS_BY_FLOOR } from "../../graphql/queries/roomQueries";
+import { GET_TRANSACTIONS } from "../../graphql/queries/transactionsQueries";
 import { RootState } from "../../store";
 
 interface RoomBooking {
@@ -66,9 +67,17 @@ const EditRoomBooking = () => {
   const [updateBooking] = useMutation(UPDATE_BOOKING, {
     refetchQueries: [GET_ROOMS_BY_FLOOR, GET_ROOM_BOOKING],
   });
+
   const [updateRoomBooking] = useMutation(UPDATE_ROOM_BOOKING, {
-    refetchQueries: [GET_ROOMS_BY_FLOOR, GET_ROOM_BOOKING],
+    refetchQueries: [
+      GET_ROOMS_BY_FLOOR,
+      GET_ROOM_BOOKING,
+      GET_BOOKING,
+      GET_CONTACT,
+      GET_TRANSACTIONS,
+    ],
   });
+
   const [removeRoomBooking] = useMutation(REMOVE_ROOM_BOOKING, {
     refetchQueries: [GET_ROOM_BOOKING],
   });
