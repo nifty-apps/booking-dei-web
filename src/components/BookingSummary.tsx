@@ -167,16 +167,7 @@ const BookingSummary = ({
   const updatePaymentStatus = async () => {
     try {
       if (typeof totalAmountPaid !== "undefined") {
-        if (remainingAmount - totalAmountPaid === 0) {
-          await updateBooking({
-            variables: {
-              updateBookingInput: {
-                _id: booking,
-                paymentStatus: PaymentStatus.Paid,
-              },
-            },
-          });
-        } else if (remainingAmount - totalAmountPaid > 0) {
+        if (totalAmountPaid > 0 && totalAmountPaid < totalBookingRent) {
           await updateBooking({
             variables: {
               updateBookingInput: {
@@ -185,20 +176,16 @@ const BookingSummary = ({
               },
             },
           });
-        } else {
+        } else if (totalAmountPaid === totalBookingRent) {
           await updateBooking({
             variables: {
               updateBookingInput: {
                 _id: booking,
-                paymentStatus: PaymentStatus.Unpaid,
+                paymentStatus: PaymentStatus.Paid,
               },
             },
           });
         }
-      } else {
-        // Handle the case where totalAmount is undefined
-        console.error("totalAmount is undefined");
-        // You might want to add some error handling or take appropriate action here.
       }
     } catch (err) {
       message.error("Error updating payment status.");
@@ -253,7 +240,6 @@ const BookingSummary = ({
       message.error("Something went wrong!");
     }
   };
-
 
   return (
     <>
