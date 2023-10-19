@@ -184,6 +184,7 @@ const GuestLookUp = () => {
         return (
           <div className="flex gap-3 items-center cursor-pointer">
             <FaRegEdit
+              title={"Edit Guest Information"}
               onClick={() => {
                 setHandleModalOpen(true);
                 setGuestID(record);
@@ -284,11 +285,6 @@ const GuestLookUp = () => {
               <Input placeholder="Address" autoComplete="off" />
             </Form.Item>
 
-            <h3>ID No</h3>
-            <Form.Item name="idNo" className="mb-0">
-              <Input placeholder="ID No" autoComplete="off" />
-            </Form.Item>
-
             <h3>ID Type</h3>
             <Form.Item name="idType" className="mb-0">
               <Select
@@ -299,6 +295,11 @@ const GuestLookUp = () => {
                   { value: "PASSPORT", label: "Passport" },
                 ]}
               />
+            </Form.Item>
+
+            <h3>ID No</h3>
+            <Form.Item name="idNo" className="mb-0">
+              <Input placeholder="ID No" autoComplete="off" />
             </Form.Item>
           </Space>
 
