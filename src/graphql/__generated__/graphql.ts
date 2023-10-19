@@ -48,6 +48,37 @@ export type BookingFilter = {
   paymentStatus?: InputMaybe<PaymentStatus>;
 };
 
+export type BookingLog = {
+  __typename?: 'BookingLog';
+  /** Unique identifier for the log */
+  _id: Scalars['ID']['output'];
+  /** Unique identifier for the booking */
+  booking: Scalars['ID']['output'];
+  /** Log message creation date */
+  createdAt: Scalars['DateTime']['output'];
+  /** Payment status of the booking */
+  type: LogType;
+  /** Log message update date */
+  updatedAt: Scalars['DateTime']['output'];
+  /** User who made the action */
+  user: Scalars['ID']['output'];
+};
+
+export type BookingLogFilter = {
+  /** Unique identifier for the log */
+  _id?: InputMaybe<Scalars['ID']['input']>;
+  /** Unique identifier for the booking */
+  booking?: InputMaybe<Scalars['ID']['input']>;
+  /** Log message creation date */
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Payment status of the booking */
+  type?: InputMaybe<LogType>;
+  /** Log message update date */
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /** User who made the action */
+  user?: InputMaybe<Scalars['ID']['input']>;
+};
+
 export type Contact = {
   __typename?: 'Contact';
   /** Example field (placeholder) */
@@ -240,6 +271,12 @@ export type Hotel = {
   name: Scalars['String']['output'];
 };
 
+/** Log type for a booking */
+export enum LogType {
+  Booked = 'BOOKED',
+  Updated = 'UPDATED'
+}
+
 export type LoginResponseDto = {
   __typename?: 'LoginResponseDto';
   access_token: Scalars['String']['output'];
@@ -258,7 +295,6 @@ export type Mutation = {
   createUser: User;
   login: LoginResponseDto;
   removeBooking: Booking;
-  removeContact: Contact;
   removeHotel: Hotel;
   removeRoom: Room;
   removeRoomBooking: RoomBooking;
@@ -318,11 +354,6 @@ export type MutationLoginArgs = {
 
 
 export type MutationRemoveBookingArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type MutationRemoveContactArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -402,6 +433,7 @@ export enum PaymentStatus {
 export type Query = {
   __typename?: 'Query';
   booking: Booking;
+  bookingLogs: Array<BookingLog>;
   bookings: Array<Booking>;
   contact: Contact;
   contacts: Array<Contact>;
@@ -424,6 +456,11 @@ export type Query = {
 
 export type QueryBookingArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryBookingLogsArgs = {
+  filter: BookingLogFilter;
 };
 
 
@@ -561,6 +598,7 @@ export type RoomBookingDetails = {
   checkOut: Scalars['DateTime']['output'];
   /** Discount for the booking */
   discount?: Maybe<Scalars['Float']['output']>;
+  paymentStatus?: Maybe<Scalars['String']['output']>;
   /** Room rent for the booking */
   rent?: Maybe<Scalars['Float']['output']>;
   /** Room booking status of the booking */
@@ -956,7 +994,7 @@ export type UpdateBookingMutationVariables = Exact<{
 }>;
 
 
-export type UpdateBookingMutation = { __typename?: 'Mutation', updateBooking: { __typename?: 'Booking', _id: string, customer: string, hotel: string, paymentStatus: PaymentStatus } };
+export type UpdateBookingMutation = { __typename?: 'Mutation', updateBooking: { __typename?: 'Booking', _id: string, customer: string, hotel: string, paymentStatus: PaymentStatus, number?: number | null } };
 
 export type RemoveRoomBookingMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -1090,7 +1128,7 @@ export type TransactionsByDateRangeQuery = { __typename?: 'Query', transactionsB
 
 export const CreateBookingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateBooking"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateBookingInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createBooking"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createBookingInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createBookingInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"customer"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"paymentStatus"}}]}}]}}]} as unknown as DocumentNode<CreateBookingMutation, CreateBookingMutationVariables>;
 export const UpdateRoomBookingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateRoomBooking"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateRoomBookingInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateRoomBookingInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateRoomBooking"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updateRoomBookingInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateRoomBookingInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"room"}},{"kind":"Field","name":{"kind":"Name","value":"checkIn"}},{"kind":"Field","name":{"kind":"Name","value":"checkOut"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}},{"kind":"Field","name":{"kind":"Name","value":"discount"}},{"kind":"Field","name":{"kind":"Name","value":"extraBed"}},{"kind":"Field","name":{"kind":"Name","value":"extraBreakfast"}},{"kind":"Field","name":{"kind":"Name","value":"booking"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<UpdateRoomBookingMutation, UpdateRoomBookingMutationVariables>;
-export const UpdateBookingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateBooking"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateBookingInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateBookingInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateBooking"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updateBookingInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateBookingInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"customer"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"paymentStatus"}}]}}]}}]} as unknown as DocumentNode<UpdateBookingMutation, UpdateBookingMutationVariables>;
+export const UpdateBookingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateBooking"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateBookingInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateBookingInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateBooking"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updateBookingInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateBookingInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"customer"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"paymentStatus"}},{"kind":"Field","name":{"kind":"Name","value":"number"}}]}}]}}]} as unknown as DocumentNode<UpdateBookingMutation, UpdateBookingMutationVariables>;
 export const RemoveRoomBookingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RemoveRoomBooking"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeRoomBooking"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"checkIn"}},{"kind":"Field","name":{"kind":"Name","value":"checkOut"}},{"kind":"Field","name":{"kind":"Name","value":"rent"}},{"kind":"Field","name":{"kind":"Name","value":"discount"}},{"kind":"Field","name":{"kind":"Name","value":"extraBed"}},{"kind":"Field","name":{"kind":"Name","value":"extraBreakfast"}},{"kind":"Field","name":{"kind":"Name","value":"booking"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"room"}}]}}]}}]} as unknown as DocumentNode<RemoveRoomBookingMutation, RemoveRoomBookingMutationVariables>;
 export const CreateContactDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateContact"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createContactInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateContactInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createContact"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createContactInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createContactInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"idType"}},{"kind":"Field","name":{"kind":"Name","value":"idNo"}},{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"hotel"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"detactivatedAt"}}]}}]}}]} as unknown as DocumentNode<CreateContactMutation, CreateContactMutationVariables>;
 export const UpdateContactDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateContact"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateContactInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateContactInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateContact"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updateContactInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateContactInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone"}},{"kind":"Field","name":{"kind":"Name","value":"idType"}},{"kind":"Field","name":{"kind":"Name","value":"idNo"}},{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<UpdateContactMutation, UpdateContactMutationVariables>;

@@ -15,6 +15,7 @@ import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
+  PaymentStatus,
   Transaction,
   TransactionSubCategory,
   TransactionType,
@@ -162,6 +163,48 @@ const BookingSummary = ({
       ? totalBookingRent - discount
       : totalBookingRent) - (totalAmountPaid || 0);
 
+  // Function to update payment status based on the total amount paid
+  const updatePaymentStatus = async () => {
+    try {
+      if (typeof totalAmountPaid !== "undefined") {
+        if (remainingAmount - totalAmountPaid === 0) {
+          await updateBooking({
+            variables: {
+              updateBookingInput: {
+                _id: booking,
+                paymentStatus: PaymentStatus.Paid,
+              },
+            },
+          });
+        } else if (remainingAmount - totalAmountPaid > 0) {
+          await updateBooking({
+            variables: {
+              updateBookingInput: {
+                _id: booking,
+                paymentStatus: PaymentStatus.PartialPaid,
+              },
+            },
+          });
+        } else {
+          await updateBooking({
+            variables: {
+              updateBookingInput: {
+                _id: booking,
+                paymentStatus: PaymentStatus.Unpaid,
+              },
+            },
+          });
+        }
+      } else {
+        // Handle the case where totalAmount is undefined
+        console.error("totalAmount is undefined");
+        // You might want to add some error handling or take appropriate action here.
+      }
+    } catch (err) {
+      message.error("Error updating payment status.");
+    }
+  };
+
   // Handle transaction submission
   const onFinish = async (values: Transaction) => {
     try {
@@ -196,38 +239,21 @@ const BookingSummary = ({
       });
 
       if (res?.data?.createTransaction) {
-        console.log(res.data.createTransaction);
         message.success("Transaction created successfully!");
         form.resetFields();
         setIsModalOpen(false);
         setTransactionInfo(res?.data?.createTransaction as Transaction);
         // Refetch the transaction data to update the table
         refetch();
+
+        // Update payment status when a new transaction is created
+        updatePaymentStatus();
       }
     } catch (err) {
       message.error("Something went wrong!");
     }
   };
 
-  console.log("remaining amount: ", remainingAmount);
-  console.log("total amount paid: ", totalAmountPaid);
-
-  if (remainingAmount - transactionInfo.amount === 0) {
-    console.log(updateBooking);
-    // console.log("yea, paid");
-    // updateBooking({
-    //   variables: {
-    //     updateBookingInput: {
-    //       id: bookingId,
-    //       paymentStatus: "PAID",
-    //     },
-    //   },
-    // });
-  } else if (remainingAmount - transactionInfo.amount > 0) {
-    // console.log("partial paid");
-  } else {
-    // console.log("not paid");
-  }
 
   return (
     <>

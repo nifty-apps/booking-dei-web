@@ -42,6 +42,7 @@ mutation UpdateBooking($updateBookingInput: UpdateBookingInput!) {
         customer
         hotel
         paymentStatus
+        number
   }
 }
 `);
@@ -65,3 +66,5 @@ mutation RemoveRoomBooking($id:ID!) {
 }
 
 `);
+
+// bookingId : 6530ae363ae3b52d873afcf2
