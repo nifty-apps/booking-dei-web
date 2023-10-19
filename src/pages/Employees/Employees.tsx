@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
+import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -6,10 +7,15 @@ import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import {
   Contact,
   ContactFilterInput,
+  ContactTypes,
+  CreateContactInput,
 } from "../../graphql/__generated__/graphql";
 import TitleText from "../../components/Title";
 import { Form, Input, Modal, Select, Space, Table, message } from "antd";
-import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
+import {
+  CREATE_CONTACT,
+  UPDATE_CONTACT,
+} from "../../graphql/mutations/contactMutations";
 import { FaEye, FaRegEdit } from "react-icons/fa";
 
 // custome interface for employee card modal
@@ -28,8 +34,8 @@ const Employees = () => {
   const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
   const [employeeID, setEmployeeID] = useState<string | null>(null);
   const [form] = Form.useForm();
-
-  const [modal2Open, setModal2Open] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [informationModalOpen, setInformationModalOpen] = useState(false);
   const [information, setInformation] = useState<employee>();
 
   const {
@@ -58,7 +64,8 @@ const Employees = () => {
       );
     }
   );
-
+  // create employe mutation
+  const [createContact] = useMutation(CREATE_CONTACT);
   // update Employee mutation query
   const [updateContact] = useMutation(UPDATE_CONTACT, {
     refetchQueries: [{ query: GET_CONTACTS }],
@@ -84,6 +91,30 @@ const Employees = () => {
       setUpdateModalOpen(false);
     } catch (error) {
       message.error("Failed to update information. Please try again");
+    }
+  };
+
+  // create employe
+  const onFinish = async (values: CreateContactInput) => {
+    try {
+      const response = await createContact({
+        variables: {
+          createContactInput: {
+            ...values,
+            idNo: values.idNo,
+            hotel: user?.hotels[0] || "",
+            type: ContactTypes.Employee,
+          },
+        },
+      });
+
+      if (response?.data?.createContact) {
+        message.success("Employee Added successfully!");
+        form.setFieldsValue(response.data.createContact);
+        setIsModalOpen(false);
+      }
+    } catch (err) {
+      message.error(`Something went wrong!`);
     }
   };
 
@@ -165,7 +196,7 @@ const Employees = () => {
               <FaEye
                 title={"View Employee Card"}
                 onClick={() => {
-                  setModal2Open(true);
+                  setInformationModalOpen(true);
                   setInformation(EmployeeDetails);
                 }}
               />
@@ -179,7 +210,7 @@ const Employees = () => {
   return (
     <>
       <div className="mb-5">
-        <TitleText text="Guest Look up" />
+        <TitleText text="Employee Details" />
       </div>
       <div className="flex items-center justify-between mb-3">
         <div className="w-3/12">
@@ -191,7 +222,61 @@ const Employees = () => {
             value={searchText}
           />
         </div>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="hover:text-blue-700 px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 border border-blue-900 bg-blue-700 text-white hover:bg-white duration-200"
+        >
+          <PlusOutlined />
+          Add Employee
+        </button>
       </div>
+      {/* modal for create new employee  */}
+      <Modal
+        title="Create New Contact"
+        open={isModalOpen}
+        onOk={() => setIsModalOpen(false)}
+        onCancel={() => {
+          setIsModalOpen(false);
+        }}
+        footer={null}
+      >
+        <Form onFinish={onFinish}>
+          <Space direction="vertical" className="w-full">
+            <h3>Full Name</h3>
+            <Form.Item name="name" className="mb-0">
+              <Input type="text" placeholder="Enter name" />
+            </Form.Item>
+
+            <h3>Phone</h3>
+            <Form.Item name="phone" className="mb-0">
+              <Input type="text" placeholder="Enter your phone" />
+            </Form.Item>
+
+            <h3>ID Type</h3>
+            <Form.Item name="idType" className="mb-0">
+              <Select
+                className="w-full"
+                placeholder="Select ID Type"
+                options={[
+                  { value: "NID", label: "NID" },
+                  { value: "PASSPORT", label: "PASSPORT" },
+                ]}
+              />
+            </Form.Item>
+
+            <h3>ID No</h3>
+            <Form.Item name="idNo" className="mb-0">
+              <Input placeholder="Enter your ID number" />
+            </Form.Item>
+          </Space>
+          <button
+            type="submit"
+            className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+          >
+            Submit
+          </button>
+        </Form>
+      </Modal>
 
       <Table dataSource={dataSource} columns={columns} pagination={false} />
 
@@ -256,9 +341,9 @@ const Employees = () => {
       {/* employee data modal to show all others information of an employee */}
       <Modal
         centered
-        open={modal2Open}
-        onOk={() => setModal2Open(false)}
-        onCancel={() => setModal2Open(false)}
+        open={informationModalOpen}
+        onOk={() => setInformationModalOpen(false)}
+        onCancel={() => setInformationModalOpen(false)}
         footer={null}
       >
         <div>
@@ -271,7 +356,7 @@ const Employees = () => {
               alt=""
               className="w-24 rounded"
             />
-            <div className="font-semibold">
+            <div className="font-semibold space-y-1">
               <p>Name: {information?.name}</p>
               <p>Phone: {information?.phone}</p>
               <p>Address: {information?.address}</p>
