@@ -53,3 +53,18 @@ query Room($id:ID!) {
 }
 
 `);
+
+
+// booking logs 
+export const GET_BOOKING_LOGS = gql(`
+query BookingLogs($filter: BookingLogFilter!) {
+  bookingLogs (filter:$filter){
+    _id
+    booking
+    user
+    type
+    createdAt
+    updatedAt
+  }
+}
+`);

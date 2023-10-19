@@ -22,7 +22,10 @@ import {
 } from "../graphql/__generated__/graphql";
 import { UPDATE_BOOKING } from "../graphql/mutations/bookingMutations";
 import { CREATE_TRANSACTION } from "../graphql/mutations/transactionMutations";
-import { GET_BOOKING } from "../graphql/queries/bookingDetailsQueries";
+import {
+  GET_BOOKING,
+  GET_BOOKING_LOGS,
+} from "../graphql/queries/bookingDetailsQueries";
 import {
   GET_TRANSACTIONS,
   GET_TRANSACTION_BY_FILTER,
@@ -57,6 +60,22 @@ const BookingSummary = ({
   const [form] = Form.useForm();
 
   const { bookingId: booking } = useParams();
+
+  const { data: bookingLogsInfo } = useQuery(GET_BOOKING_LOGS, {
+    variables: {
+      filter: {
+        booking: booking,
+      },
+    },
+  });
+
+  // how to find array last length
+  console.log(
+    bookingLogsInfo?.bookingLogs[bookingLogsInfo?.bookingLogs.length - 1]
+      ?.updatedAt
+  );
+
+  console.log(bookingLogsInfo?.bookingLogs[0].createdAt);
 
   const { data: transactionSummary, refetch } = useQuery(
     GET_TRANSACTION_BY_FILTER,
@@ -343,12 +362,26 @@ const BookingSummary = ({
           </div>
           <div className="mt-4 flex flex-col gap-1">
             <div className="text-right text-gray-800 italic">
-              Created By: {user?.name} at {format(new Date(), "dd-MM-yyyy")}
-              12:00 PM
+              Created By: {user?.name} at{" "}
+              {bookingLogsInfo?.bookingLogs[0] &&
+                format(
+                  new Date(bookingLogsInfo?.bookingLogs[0].createdAt),
+                  "dd-MM-yyyy hh:mm a"
+                )}
             </div>
             <div className="text-right text-gray-800 italic">
-              Updated By: {user?.name} at {format(new Date(), "dd-MM-yyyy")}
-              12:00 PM
+              Updated By: {user?.name} at{" "}
+              {bookingLogsInfo?.bookingLogs[
+                bookingLogsInfo?.bookingLogs.length - 1
+              ] &&
+                format(
+                  new Date(
+                    bookingLogsInfo?.bookingLogs[
+                      bookingLogsInfo?.bookingLogs.length - 1
+                    ].updatedAt
+                  ),
+                  "dd-MM-yyyy hh:mm a"
+                )}
             </div>
           </div>
         </div>

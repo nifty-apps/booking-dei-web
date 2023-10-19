@@ -27,6 +27,7 @@ const documents = {
     "\n  query Bookings {\n    bookings {\n        _id\n        number\n        customer\n        hotel\n        paymentStatus\n    }\n }\n\n": types.BookingsDocument,
     "\n query Contact($id:ID!) {\n    contact(id: $id) {\n        _id\n        name\n        phone\n        idType\n        idNo\n        address\n        hotel\n        type\n    }\n}\n": types.ContactDocument,
     "\nquery Room($id:ID!) {\n    room(id:$id) {\n        _id\n        number\n        floor\n        position\n        type\n        hotel\n    }\n}\n\n": types.RoomDocument,
+    "\nquery BookingLogs($filter: BookingLogFilter!) {\n  bookingLogs (filter:$filter){\n    _id\n    booking\n    user\n    type\n    createdAt\n    updatedAt\n  }\n}\n": types.BookingLogsDocument,
     "\n  query Contacts($filter: ContactFilterInput!) {\n    contacts(filter: $filter) {\n        _id\n        name\n        phone\n        idType\n        idNo\n        address\n        hotel\n        type\n    }\n }\n": types.ContactsDocument,
     "\n  query Contact($id: ID!) {\n    contact(id: $id) {\n        _id\n        name\n        phone\n        idType\n        idNo\n        address\n        hotel\n        type\n    }\n }\n": types.ContactDocument,
     "\n  query RoomBookingFinancials(\n    $hotel: ID!,\n    $startDate: DateTime!,\n    $endDate: DateTime!\n  ) {\n    roomBookingFinancials(\n      hotel: $hotel, \n      startDate: $startDate,\n      endDate: $endDate\n    ) {\n      _id\n      number\n      type {\n        title\n        rent\n      }\n      floor\n      position\n      roombookings {\n        checkIn\n        checkOut\n        rent\n        discount\n        booking\n        status\n        bookingCustomer\n        bookingPayment\n        bookingRent\n        bookingDue\n        _id\n      }\n    }\n  }\n\n": types.RoomBookingFinancialsDocument,
@@ -107,6 +108,10 @@ export function gql(source: "\n query Contact($id:ID!) {\n    contact(id: $id) {
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\nquery Room($id:ID!) {\n    room(id:$id) {\n        _id\n        number\n        floor\n        position\n        type\n        hotel\n    }\n}\n\n"): (typeof documents)["\nquery Room($id:ID!) {\n    room(id:$id) {\n        _id\n        number\n        floor\n        position\n        type\n        hotel\n    }\n}\n\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\nquery BookingLogs($filter: BookingLogFilter!) {\n  bookingLogs (filter:$filter){\n    _id\n    booking\n    user\n    type\n    createdAt\n    updatedAt\n  }\n}\n"): (typeof documents)["\nquery BookingLogs($filter: BookingLogFilter!) {\n  bookingLogs (filter:$filter){\n    _id\n    booking\n    user\n    type\n    createdAt\n    updatedAt\n  }\n}\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
