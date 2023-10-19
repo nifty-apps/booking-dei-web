@@ -48,6 +48,37 @@ export type BookingFilter = {
   paymentStatus?: InputMaybe<PaymentStatus>;
 };
 
+export type BookingLog = {
+  __typename?: 'BookingLog';
+  /** Unique identifier for the log */
+  _id: Scalars['ID']['output'];
+  /** Unique identifier for the booking */
+  booking: Scalars['ID']['output'];
+  /** Log message creation date */
+  createdAt: Scalars['DateTime']['output'];
+  /** Payment status of the booking */
+  type: LogType;
+  /** Log message update date */
+  updatedAt: Scalars['DateTime']['output'];
+  /** User who made the action */
+  user: Scalars['ID']['output'];
+};
+
+export type BookingLogFilter = {
+  /** Unique identifier for the log */
+  _id?: InputMaybe<Scalars['ID']['input']>;
+  /** Unique identifier for the booking */
+  booking?: InputMaybe<Scalars['ID']['input']>;
+  /** Log message creation date */
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Payment status of the booking */
+  type?: InputMaybe<LogType>;
+  /** Log message update date */
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /** User who made the action */
+  user?: InputMaybe<Scalars['ID']['input']>;
+};
+
 export type Contact = {
   __typename?: 'Contact';
   /** Example field (placeholder) */
@@ -240,6 +271,12 @@ export type Hotel = {
   name: Scalars['String']['output'];
 };
 
+/** Log type for a booking */
+export enum LogType {
+  Booked = 'BOOKED',
+  Updated = 'UPDATED'
+}
+
 export type LoginResponseDto = {
   __typename?: 'LoginResponseDto';
   access_token: Scalars['String']['output'];
@@ -258,7 +295,6 @@ export type Mutation = {
   createUser: User;
   login: LoginResponseDto;
   removeBooking: Booking;
-  removeContact: Contact;
   removeHotel: Hotel;
   removeRoom: Room;
   removeRoomBooking: RoomBooking;
@@ -318,11 +354,6 @@ export type MutationLoginArgs = {
 
 
 export type MutationRemoveBookingArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type MutationRemoveContactArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -402,6 +433,7 @@ export enum PaymentStatus {
 export type Query = {
   __typename?: 'Query';
   booking: Booking;
+  bookingLogs: Array<BookingLog>;
   bookings: Array<Booking>;
   contact: Contact;
   contacts: Array<Contact>;
@@ -424,6 +456,11 @@ export type Query = {
 
 export type QueryBookingArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryBookingLogsArgs = {
+  filter: BookingLogFilter;
 };
 
 
@@ -561,6 +598,7 @@ export type RoomBookingDetails = {
   checkOut: Scalars['DateTime']['output'];
   /** Discount for the booking */
   discount?: Maybe<Scalars['Float']['output']>;
+  paymentStatus?: Maybe<Scalars['String']['output']>;
   /** Room rent for the booking */
   rent?: Maybe<Scalars['Float']['output']>;
   /** Room booking status of the booking */

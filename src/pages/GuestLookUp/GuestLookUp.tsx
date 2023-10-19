@@ -16,7 +16,10 @@ import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
-import { Contact } from "../../graphql/__generated__/graphql";
+import {
+  Contact,
+  ContactFilterInput,
+} from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
@@ -38,7 +41,8 @@ const GuestLookUp = () => {
     variables: {
       filter: {
         hotel: user?.hotels[0] || "",
-      },
+        type: "CUSTOMER",
+      } as ContactFilterInput,
     },
   });
 
