@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, ExclamationCircleFilled } from "@ant-design/icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -10,13 +10,25 @@ import {
   ContactTypes,
   CreateContactInput,
 } from "../../graphql/__generated__/graphql";
+import dayjs from "dayjs";
 import TitleText from "../../components/Title";
-import { Form, Input, Modal, Select, Space, Table, message } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Switch,
+  Table,
+  message,
+} from "antd";
 import {
   CREATE_CONTACT,
   UPDATE_CONTACT,
 } from "../../graphql/mutations/contactMutations";
 import { FaEye, FaRegEdit } from "react-icons/fa";
+const { confirm } = Modal;
 
 // custome interface for employee card modal
 interface employee {
@@ -33,13 +45,15 @@ const Employees = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
   const [employeeID, setEmployeeID] = useState<string | null>(null);
-  const [form] = Form.useForm();
+  const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [informationModalOpen, setInformationModalOpen] = useState(false);
   const [information, setInformation] = useState<employee>();
 
+  const [form] = Form.useForm();
+
   const {
-    data: allEmployeesData,
+    data: EmployeesData,
     loading,
     error,
   } = useQuery(GET_CONTACTS, {
@@ -51,21 +65,29 @@ const Employees = () => {
     },
   });
 
+  const allEmployeeData = filterDeactivated
+    ? EmployeesData?.contacts?.filter((employeesInfo) => {
+        return employeesInfo?.detactivatedAt;
+      })
+    : EmployeesData?.contacts?.filter((employeesInfo) => {
+        return employeesInfo?.detactivatedAt == null;
+      });
+
   // filter Employee by name phone ID number
-  const filteredEmployeeData = allEmployeesData?.contacts?.filter(
-    (employeeData) => {
-      const lowercaseSearchText = searchText.toLowerCase();
-      return (
-        employeeData?.name?.toLowerCase().includes(lowercaseSearchText) ||
-        employeeData?.phone?.toLowerCase().includes(lowercaseSearchText) ||
-        employeeData?.address?.toLowerCase().includes(lowercaseSearchText) ||
-        employeeData?.idType?.toLowerCase().includes(lowercaseSearchText) ||
-        employeeData?.idNo?.toLowerCase().includes(lowercaseSearchText)
-      );
-    }
-  );
+  const filteredEmployeeData = allEmployeeData?.filter((employeeData) => {
+    const lowercaseSearchText = searchText.toLowerCase();
+    return (
+      employeeData?.name?.toLowerCase().includes(lowercaseSearchText) ||
+      employeeData?.phone?.toLowerCase().includes(lowercaseSearchText) ||
+      employeeData?.address?.toLowerCase().includes(lowercaseSearchText) ||
+      employeeData?.idType?.toLowerCase().includes(lowercaseSearchText) ||
+      employeeData?.idNo?.toLowerCase().includes(lowercaseSearchText)
+    );
+  });
   // create employe mutation
-  const [createContact] = useMutation(CREATE_CONTACT);
+  const [createContact] = useMutation(CREATE_CONTACT, {
+    refetchQueries: [{ query: GET_CONTACTS }],
+  });
   // update Employee mutation query
   const [updateContact] = useMutation(UPDATE_CONTACT, {
     refetchQueries: [{ query: GET_CONTACTS }],
@@ -104,6 +126,7 @@ const Employees = () => {
             idNo: values.idNo,
             hotel: user?.hotels[0] || "",
             type: ContactTypes.Employee,
+            detactivatedAt: dayjs().format("YYYY-MM-DDTHH:mm:ss[Z]"),
           },
         },
       });
@@ -118,6 +141,43 @@ const Employees = () => {
     }
   };
 
+  // handle Deactivated account
+  const handleDeactiveAccount = async (guestID: string, setActive: boolean) => {
+    const selectedGuestInformation = dataSource?.find(
+      (data) => data.key === guestID
+    );
+    confirm({
+      title: `Do you want to ${setActive ? "Deactivate" : "Activate"} ${
+        selectedGuestInformation?.name
+      }?`,
+      icon: <ExclamationCircleFilled />,
+      okType: setActive ? "danger" : "default",
+      async onOk() {
+        try {
+          await updateContact({
+            variables: {
+              updateContactInput: {
+                _id: guestID,
+                detactivatedAt: setActive
+                  ? dayjs().format("YYYY-MM-DDTHH:mm:ss[Z]")
+                  : null,
+              },
+            },
+          });
+          message.success(
+            `This Guest Account is ${setActive ? "Deactivated" : "Activated"}.`
+          );
+        } catch (error) {
+          message.error(
+            `${
+              setActive ? "Deactivation" : "Activation"
+            } failed, Please try again`
+          );
+        }
+      },
+    });
+  };
+
   // handle loading and error
   if (loading) return <p>Loading</p>;
   if (error) return <p>{error?.message}</p>;
@@ -130,6 +190,7 @@ const Employees = () => {
     idNo: employeeData?.idNo || null,
     address: employeeData?.address || null,
     action: employeeData?._id,
+    status: employeeData?.detactivatedAt ? "Deactive" : "Active",
   }));
 
   const columns = [
@@ -201,6 +262,30 @@ const Employees = () => {
                 }}
               />
             </div>
+            {selectedGuestInformation?.status == "Deactive" ? (
+              <Button
+                style={{
+                  backgroundColor: "transparent",
+                }}
+                size="small"
+                onClick={() => {
+                  handleDeactiveAccount(record, false);
+                }}
+              >
+                Activate
+              </Button>
+            ) : (
+              <Button
+                danger
+                style={{ backgroundColor: "transparent" }}
+                size="small"
+                onClick={() => {
+                  handleDeactiveAccount(record, true);
+                }}
+              >
+                Deactive
+              </Button>
+            )}
           </div>
         );
       },
@@ -209,8 +294,15 @@ const Employees = () => {
 
   return (
     <>
-      <div className="mb-5">
+      <div className="mb-5 flex justify-between">
         <TitleText text="Employee Details" />
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="hover:text-blue-700 px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 border border-blue-900 bg-blue-700 text-white hover:bg-white duration-200"
+        >
+          <PlusOutlined />
+          Add Employee
+        </button>
       </div>
       <div className="flex items-center justify-between mb-3">
         <div className="w-3/12">
@@ -222,17 +314,19 @@ const Employees = () => {
             value={searchText}
           />
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="hover:text-blue-700 px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 border border-blue-900 bg-blue-700 text-white hover:bg-white duration-200"
-        >
-          <PlusOutlined />
-          Add Employee
-        </button>
+        <label htmlFor="activeDeactiveGuestFilter">
+          <span className="mr-1">Deactivated Employee's</span>
+          <Switch
+            title="See Active/Deactive Employee's"
+            className={`${filterDeactivated ? "" : "bg-gray-400"}`}
+            defaultChecked={false}
+            onChange={() => setFilterDeactivated(!filterDeactivated)}
+          />
+        </label>
       </div>
       {/* modal for create new employee  */}
       <Modal
-        title="Create New Contact"
+        title="Create New Employee"
         open={isModalOpen}
         onOk={() => setIsModalOpen(false)}
         onCancel={() => {
