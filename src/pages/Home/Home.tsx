@@ -92,17 +92,21 @@ const Home = () => {
       </div>
       <div className="grid grid-cols-12 mt-5">
         {/* room number part */}
-        <FloorPlan
-          selectedRooms={selectedRooms}
-          onSelectionChange={(rooms) => setSelectedRooms(rooms)}
-          startDate={selectedDateRange?.[0]?.toDate() as Date}
-          endDate={selectedDateRange?.[1]?.toDate() as Date}
-        />
+        <div className="col-span-9">
+          <FloorPlan
+            selectedRooms={selectedRooms}
+            onSelectionChange={(rooms) => setSelectedRooms(rooms)}
+            startDate={selectedDateRange?.[0]?.toDate() as Date}
+            endDate={selectedDateRange?.[1]?.toDate() as Date}
+          />
+        </div>
         {/* current selection part  */}
-        <RemainingRooms
-          startDate={selectedDateRange?.[0]?.toDate() as Date}
-          endDate={selectedDateRange?.[1]?.toDate() as Date}
-        />
+        <div className="col-span-3">
+          <RemainingRooms
+            startDate={selectedDateRange?.[0]?.toDate() as Date}
+            endDate={selectedDateRange?.[1]?.toDate() as Date}
+          />
+        </div>
       </div>
     </>
   );

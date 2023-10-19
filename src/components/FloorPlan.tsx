@@ -82,16 +82,6 @@ const FloorPlan = ({
     },
   });
 
-  // const { data: roomBookingInfo } = useQuery(GET_ROOM_BOOKING_FINANCIALS, {
-  //   variables: {
-  //     hotel: user?.hotels[0] || "",
-  //     startDate,
-  //     endDate,
-  //   },
-  // });
-
-  // const roomBookingFinancials = roomBookingInfo?.roomBookingFinancials;
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 

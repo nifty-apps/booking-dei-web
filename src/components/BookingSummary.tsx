@@ -10,7 +10,7 @@ import {
   message,
 } from "antd";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -163,11 +163,16 @@ const BookingSummary = ({
       ? totalBookingRent - discount
       : totalBookingRent) - (totalAmountPaid || 0);
 
-  // Function to update payment status based on the total amount paid
+  useEffect(() => {
+    updatePaymentStatus();
+  }, [totalAmountPaid, totalBookingRent, discount, remainingAmount]);
+
+  // update payment status based on the total amount paid
   const updatePaymentStatus = async () => {
     try {
       if (typeof totalAmountPaid !== "undefined") {
-        if (remainingAmount - totalAmountPaid === 0) {
+        if (totalAmountPaid === totalBookingRent) {
+          console.log("paid", totalAmountPaid, totalBookingRent);
           await updateBooking({
             variables: {
               updateBookingInput: {
@@ -176,7 +181,8 @@ const BookingSummary = ({
               },
             },
           });
-        } else if (remainingAmount - totalAmountPaid > 0) {
+        } else if (totalAmountPaid > 0 && totalAmountPaid < totalBookingRent) {
+          console.log("partial paid", totalAmountPaid, totalBookingRent);
           await updateBooking({
             variables: {
               updateBookingInput: {
@@ -185,7 +191,8 @@ const BookingSummary = ({
               },
             },
           });
-        } else {
+        } else if (totalAmountPaid === 0) {
+          console.log("paid", totalAmountPaid);
           await updateBooking({
             variables: {
               updateBookingInput: {
@@ -195,10 +202,6 @@ const BookingSummary = ({
             },
           });
         }
-      } else {
-        // Handle the case where totalAmount is undefined
-        console.error("totalAmount is undefined");
-        // You might want to add some error handling or take appropriate action here.
       }
     } catch (err) {
       message.error("Error updating payment status.");
@@ -253,7 +256,6 @@ const BookingSummary = ({
       message.error("Something went wrong!");
     }
   };
-
 
   return (
     <>
