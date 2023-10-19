@@ -69,14 +69,6 @@ const BookingSummary = ({
     },
   });
 
-  // how to find array last length
-  console.log(
-    bookingLogsInfo?.bookingLogs[bookingLogsInfo?.bookingLogs.length - 1]
-      ?.updatedAt
-  );
-
-  console.log(bookingLogsInfo?.bookingLogs[0].createdAt);
-
   const { data: transactionSummary, refetch } = useQuery(
     GET_TRANSACTION_BY_FILTER,
     {
@@ -363,25 +355,15 @@ const BookingSummary = ({
           <div className="mt-4 flex flex-col gap-1">
             <div className="text-right text-gray-800 italic">
               Created By: {user?.name} at{" "}
-              {bookingLogsInfo?.bookingLogs[0] &&
-                format(
-                  new Date(bookingLogsInfo?.bookingLogs[0].createdAt),
-                  "dd-MM-yyyy hh:mm a"
-                )}
+              {bookingLogsInfo?.bookingLogs[0]?.createdAt}
             </div>
             <div className="text-right text-gray-800 italic">
               Updated By: {user?.name} at{" "}
-              {bookingLogsInfo?.bookingLogs[
-                bookingLogsInfo?.bookingLogs.length - 1
-              ] &&
-                format(
-                  new Date(
-                    bookingLogsInfo?.bookingLogs[
-                      bookingLogsInfo?.bookingLogs.length - 1
-                    ].updatedAt
-                  ),
-                  "dd-MM-yyyy hh:mm a"
-                )}
+              {
+                bookingLogsInfo?.bookingLogs[
+                  bookingLogsInfo?.bookingLogs?.length - 1
+                ]?.updatedAt
+              }
             </div>
           </div>
         </div>
