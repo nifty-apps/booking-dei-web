@@ -245,7 +245,7 @@ const GuestLookUp = () => {
           />
         </div>
         <Tooltip
-          title={`See all ${filterDeactivated ? "Active" : "All"} Guest's`}
+          title={`See ${filterDeactivated ? "Active" : "All"} Guests`}
           placement="bottomRight"
           className="cursor-pointer"
         >

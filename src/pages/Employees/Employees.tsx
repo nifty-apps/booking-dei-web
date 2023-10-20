@@ -325,7 +325,7 @@ const Employees = () => {
         <Tooltip
           title={`See all ${
             filterDeactivated ? "Acive" : "Deactivated"
-          } Employee's`}
+          } Employees`}
           placement="bottomRight"
           className="cursor-pointer"
         >
