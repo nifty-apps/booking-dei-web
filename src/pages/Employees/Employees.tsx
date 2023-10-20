@@ -21,6 +21,7 @@ import {
   Space,
   Switch,
   Table,
+  Tooltip,
   message,
 } from "antd";
 import {
@@ -182,8 +183,9 @@ const Employees = () => {
   if (loading) return <p>Loading</p>;
   if (error) return <p>{error?.message}</p>;
 
-  const dataSource = filteredEmployeeData?.map((employeeData) => ({
+  const dataSource = filteredEmployeeData?.map((employeeData, index) => ({
     key: employeeData?._id,
+    employeeId: employeeData.hotel.slice(0, 2) + 0 + index,
     name: employeeData?.name,
     phone: employeeData?.phone,
     idType: employeeData?.idType || null,
@@ -194,6 +196,11 @@ const Employees = () => {
   }));
 
   const columns = [
+    {
+      title: "EMPLOYEE ID",
+      dataIndex: "employeeId",
+      key: "employeeId",
+    },
     {
       title: "NAME",
       dataIndex: "name",
@@ -314,15 +321,21 @@ const Employees = () => {
             value={searchText}
           />
         </div>
-        <label htmlFor="activeDeactiveGuestFilter">
+
+        <Tooltip
+          title={`See all ${
+            filterDeactivated ? "Acive" : "Deactivated"
+          } Employee's`}
+          placement="bottomRight"
+          className="cursor-pointer"
+        >
           <span className="mr-1">Deactivated Employee's</span>
           <Switch
-            title="See Active/Deactive Employee's"
             className={`${filterDeactivated ? "" : "bg-gray-400"}`}
             defaultChecked={false}
             onChange={() => setFilterDeactivated(!filterDeactivated)}
           />
-        </label>
+        </Tooltip>
       </div>
       {/* modal for create new employee  */}
       <Modal

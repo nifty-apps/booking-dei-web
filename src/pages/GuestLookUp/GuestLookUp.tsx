@@ -9,6 +9,7 @@ import {
   Space,
   Switch,
   Table,
+  Tooltip,
   message,
 } from "antd";
 import dayjs from "dayjs";
@@ -243,15 +244,18 @@ const GuestLookUp = () => {
             value={searchText}
           />
         </div>
-        <label htmlFor="activeDeactiveGuestFilter">
+        <Tooltip
+          title={`See all ${filterDeactivated ? "Active" : "All"} Guest's`}
+          placement="bottomRight"
+          className="cursor-pointer"
+        >
           <span className="mr-1">See All Guest's</span>
           <Switch
-            title="See Active/Deactive Guest's"
             className={`${filterDeactivated ? "" : "bg-gray-400"}`}
             defaultChecked={false}
             onChange={() => setFilterDeactivated(!filterDeactivated)}
           />
-        </label>
+        </Tooltip>
       </div>
 
       <Table dataSource={dataSource} columns={columns} pagination={false} />
