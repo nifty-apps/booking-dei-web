@@ -79,7 +79,7 @@ const Home = () => {
             </Button>
           </div>
         </div>
-
+  
         <Link
           to="/new-booking"
           className="bg-blue-900 text-white px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 hover:text-white"

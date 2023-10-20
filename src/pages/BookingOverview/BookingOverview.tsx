@@ -1,15 +1,24 @@
 import { useQuery } from "@apollo/client";
-import { Button, DatePicker, Input, Table } from "antd";
+import { Button, DatePicker, Input, Spin, Table } from "antd";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TitleText from "../../components/Title";
 import { GET_ROOM_BOOKING_FINANCIALS } from "../../graphql/queries/roomBookingFinancialQueries";
 import { RootState } from "../../store";
+import { PrinterOutlined } from "@ant-design/icons";
+import { useReactToPrint } from "react-to-print";
+const loadingStyles = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "100vh", // Make it full height of the viewport
+};
+const BookingOverview = () => {
 
-const RoomBookingFinancials = () => {
   const { user } = useSelector((state: RootState) => state.auth);
+  const componentPDF = useRef(null);
 
   const [searchText, setSearchText] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -32,7 +41,9 @@ const RoomBookingFinancials = () => {
     refetch({ startDate: selectedDate, endDate: selectedDate });
   }, [refetch, selectedDate]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <div style={loadingStyles}>
+    <Spin size="large" tip="Loading..." style={loadingStyles} />
+  </div>
   if (error) return <p>Error occurred - {error.message}</p>;
 
   const columns = [
@@ -47,7 +58,7 @@ const RoomBookingFinancials = () => {
       key: "contact",
     },
     {
-      title: "BOOKING AMOUNT",
+      title: "RENT AMOUNT",
       dataIndex: "bookingAmount",
       key: "bookingAmount",
     },
@@ -120,12 +131,29 @@ const RoomBookingFinancials = () => {
     setFormattedDate(dayjs(newDate).format("YYYY-MM-DD"));
     refetch({ startDate: newDate, endDate: newDate });
   };
- 
+  const handleDownloadPrint = ()=>{
+    window.print();
+  };
+    
+  
+  
 
   return (
+
     <>
-      <div className="mb-5">
-        <TitleText text="Rooms Overview" />
+     <>
+      <div>
+        <div className="mb-5 flex justify-between">
+          <TitleText text="Booking Overview" />
+          <Button
+            icon={<PrinterOutlined />}
+            style={{ color: 'blue' }}
+            onClick={handleDownloadPrint}
+          >
+            Download/Print
+          </Button>
+        </div>
+        {/* ... (your other content) ... */}
       </div>
       <div className="flex align-middle mb-3 justify-between">
         <div className="w-3/12">
@@ -136,12 +164,10 @@ const RoomBookingFinancials = () => {
             onChange={(event) => setSearchText(event.target.value)}
           />
         </div>
-
         <div className="justify-between">
           <Button type="primary" ghost onClick={handlePreviousClick}>
             Previous
           </Button>
-
           <DatePicker
             className="mx-1"
             allowClear={false}
@@ -153,16 +179,18 @@ const RoomBookingFinancials = () => {
               setFormattedDate(dayjs(newDate).format("YYYY-MM-DD"));
             }}
           />
-
           <Button type="primary" ghost onClick={handleNextClick}>
             Next
           </Button>
         </div>
       </div>
-
-      <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <div ref={componentPDF} style={{ width: '100%' }}>
+        <Table dataSource={dataSource} columns={columns} pagination={false} />
+        
+      </div>
+    </>
     </>
   );
 };
 
-export default RoomBookingFinancials;
+export default BookingOverview;
