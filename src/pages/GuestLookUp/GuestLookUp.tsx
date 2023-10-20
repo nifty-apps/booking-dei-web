@@ -7,7 +7,9 @@ import {
   Modal,
   Select,
   Space,
+  Switch,
   Table,
+  Tooltip,
   message,
 } from "antd";
 import dayjs from "dayjs";
@@ -15,7 +17,10 @@ import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
-import { Contact, ContactTypes } from "../../graphql/__generated__/graphql";
+import {
+  Contact,
+  ContactFilterInput,
+} from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
@@ -24,6 +29,7 @@ const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
+  const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [form] = Form.useForm();
 
@@ -36,20 +42,28 @@ const GuestLookUp = () => {
     variables: {
       filter: {
         hotel: user?.hotels[0] || "",
-      },
+        type: "CUSTOMER",
+      } as ContactFilterInput,
     },
   });
 
+  const allGuestData = filterDeactivated
+    ? guestData?.contacts?.filter((guestInfo) => {
+        return guestInfo;
+      })
+    : guestData?.contacts?.filter((guestInfo) => {
+        return guestInfo?.detactivatedAt == null;
+      });
+
   // filter Guest by name phone ID number
-  const filteredGuestList = guestData?.contacts?.filter((guestInformation) => {
+  const filteredGuestList = allGuestData?.filter((guestInformation) => {
     const lowercaseSearchText = searchText.toLowerCase();
     return (
       guestInformation?.name?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.phone?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.type?.toLowerCase().includes(lowercaseSearchText)
+      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText)
     );
   });
 
@@ -70,7 +84,6 @@ const GuestLookUp = () => {
             phone: values.phone,
             idNo: values.idNo,
             idType: values.idType,
-            type: values.type,
             address: values.address,
           },
         },
@@ -105,9 +118,15 @@ const GuestLookUp = () => {
               },
             },
           });
-          message.success("This Guest Account is Deactivated.");
+          message.success(
+            `This Guest Account is ${setActive ? "Deactivated" : "Activated"}.`
+          );
         } catch (error) {
-          message.error("Failed to deactive user. Please try again");
+          message.error(
+            `${
+              setActive ? "Deactivation" : "Activation"
+            } failed, Please try again`
+          );
         }
       },
     });
@@ -123,7 +142,6 @@ const GuestLookUp = () => {
     phone: guestInformation?.phone,
     idType: guestInformation?.idType || null,
     idNo: guestInformation?.idNo || null,
-    type: guestInformation?.type,
     address: guestInformation?.address || null,
     action: guestInformation?._id,
     status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
@@ -156,16 +174,6 @@ const GuestLookUp = () => {
       key: "idNo",
     },
     {
-      title: "TYPE",
-      dataIndex: "type",
-      key: "type",
-    },
-    {
-      title: "STATUS",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
       title: "ACTION",
       dataIndex: "action",
       key: "action",
@@ -177,6 +185,7 @@ const GuestLookUp = () => {
         return (
           <div className="flex gap-3 items-center cursor-pointer">
             <FaRegEdit
+              title={"Edit Guest Information"}
               onClick={() => {
                 setHandleModalOpen(true);
                 setGuestID(record);
@@ -186,7 +195,6 @@ const GuestLookUp = () => {
                   phone: selectedGuestInformation?.phone,
                   idNo: selectedGuestInformation?.idNo,
                   idType: selectedGuestInformation?.idType,
-                  type: selectedGuestInformation?.type,
                   address: selectedGuestInformation?.address,
                 });
               }}
@@ -194,6 +202,10 @@ const GuestLookUp = () => {
 
             {selectedGuestInformation?.status == "Deactive" ? (
               <Button
+                style={{
+                  backgroundColor: "transparent",
+                }}
+                size="small"
                 onClick={() => {
                   handleDeactiveAccount(record, false);
                 }}
@@ -203,11 +215,13 @@ const GuestLookUp = () => {
             ) : (
               <Button
                 danger
+                style={{ backgroundColor: "transparent" }}
+                size="small"
                 onClick={() => {
                   handleDeactiveAccount(record, true);
                 }}
               >
-                Deactivate
+                Deactive
               </Button>
             )}
           </div>
@@ -220,7 +234,7 @@ const GuestLookUp = () => {
       <div className="mb-5">
         <TitleText text="Guest Look up" />
       </div>
-      <div className="flex align-middle justify-between mb-3">
+      <div className="flex items-center justify-between mb-3">
         <div className="w-3/12">
           <Input
             placeholder="Search here.."
@@ -230,6 +244,18 @@ const GuestLookUp = () => {
             value={searchText}
           />
         </div>
+        <Tooltip
+          title={`See ${filterDeactivated ? "Active" : "All"} Guests`}
+          placement="bottomRight"
+          className="cursor-pointer"
+        >
+          <span className="mr-1">See All Guests</span>
+          <Switch
+            className={`${filterDeactivated ? "" : "bg-gray-400"}`}
+            defaultChecked={false}
+            onChange={() => setFilterDeactivated(!filterDeactivated)}
+          />
+        </Tooltip>
       </div>
 
       <Table dataSource={dataSource} columns={columns} pagination={false} />
@@ -263,11 +289,6 @@ const GuestLookUp = () => {
               <Input placeholder="Address" autoComplete="off" />
             </Form.Item>
 
-            <h3>ID No</h3>
-            <Form.Item name="idNo" className="mb-0">
-              <Input placeholder="ID No" autoComplete="off" />
-            </Form.Item>
-
             <h3>ID Type</h3>
             <Form.Item name="idType" className="mb-0">
               <Select
@@ -279,16 +300,10 @@ const GuestLookUp = () => {
                 ]}
               />
             </Form.Item>
-            <h3>Type</h3>
-            <Form.Item name="type" className="mb-0">
-              <Select
-                placeholder="Select Type"
-                options={[
-                  { value: ContactTypes.Customer, label: "Customer" },
-                  { value: ContactTypes.Employee, label: "Employee" },
-                  { value: ContactTypes.Vendor, label: "Vendor" },
-                ]}
-              />
+
+            <h3>ID No</h3>
+            <Form.Item name="idNo" className="mb-0">
+              <Input placeholder="ID No" autoComplete="off" />
             </Form.Item>
           </Space>
 
