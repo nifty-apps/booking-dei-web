@@ -238,7 +238,7 @@ const GuestLookUp = () => {
           onClick={() =>setShowActive(!showActive)}
           className={`rounded-full bg-red-400`}
           checkedChildren="Active"
-          unCheckedChildren="All Status"
+          unCheckedChildren="All Guests"
           defaultChecked
         />
       </div>
