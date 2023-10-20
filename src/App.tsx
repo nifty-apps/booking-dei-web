@@ -20,6 +20,7 @@ import NewBooking from "./pages/NewBooking/NewBooking";
 import RoomBookingFinancials from "./pages/RoomBookingFinancials/RoomBookingFinancials";
 import Transactions from "./pages/Transactions/Transactions";
 
+
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -45,7 +46,7 @@ const App = () => {
             <Route path="/guest-lookup" element={<GuestLookUp />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/rooms-overview" element={<RoomBookingFinancials />} />
-
+         
             <Route path="*" element={<Error />} />
           </Routes>
         </Content>

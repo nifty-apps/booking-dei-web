@@ -43,6 +43,8 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
       selectedKey = "6";
       break;
 
+     
+
     default:
       selectedKey = "1";
   }
@@ -95,6 +97,8 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               Rooms Overview
             </Link>
           </Menu.Item>
+         
+       
         </Menu>
 
         {/* footer part for sidebar */}

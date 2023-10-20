@@ -26,7 +26,7 @@ const GuestLookUp = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
-  const [showDeacticvate, setShowDeacticvate] = useState<boolean>(false);
+  const [showActive, setShowActive] = useState<boolean>(true);
   const [form] = Form.useForm();
  
   
@@ -124,21 +124,23 @@ const GuestLookUp = () => {
   if (error) return <p>Error: {error.message}</p>;
 
 
-  const dataSource = filteredGuestList?.map((guestData) => {
-    const isDeactivate = guestData.detactivatedAt;
-    const status = showDeacticvate ? (isDeactivate ? "Deactive" : "Active") : "Active";
-  
-    return {
-      key: guestData._id,
-      name: guestData.name,
-      phone: guestData.phone,
-      idType: guestData.idType,
-      idNo: guestData.idNo,
-      address: guestData.address,
-      action: guestData._id,
-      status,
-    };
-  }).filter(Boolean);
+  const dataSource = (filteredGuestList || []).map((guestData) => {
+    const isDeactivated =guestData.detactivatedAt;
+    const isActive = !isDeactivated;
+    
+    if (!showActive || (showActive && isActive)) {
+      return {
+        key: guestData?._id,
+        name: guestData?.name,
+        phone: guestData?.phone,
+        idType: guestData?.idType || null,
+        idNo: guestData?.idNo || null,
+        address: guestData?.address || null,
+        action: guestData?._id,
+        status: isActive ? "Active" : "Deactive",
+      };
+    }
+  }).filter(item => item !== undefined);
   
 
   const columns = [
@@ -233,8 +235,8 @@ const GuestLookUp = () => {
           />
         </div>
         <Switch
-          onClick={() =>setShowDeacticvate(!showDeacticvate)}
-          className={`rounded-full bg-green-600 `}
+          onClick={() =>setShowActive(!showActive)}
+          className={`rounded-full bg-red-400`}
           checkedChildren="Active"
           unCheckedChildren="All Status"
           defaultChecked
