@@ -124,6 +124,7 @@ const GuestLookUp = () => {
 
   // Now datasource will be render according to the showDeacticvate state
   const dataSource = (filteredGuestList || [])
+    .sort((a, b) => a.name.localeCompare(b.name))
     .map((guestInformation) => {
       const isDeactivated = guestInformation.detactivatedAt;
       const isActive = !isDeactivated;
