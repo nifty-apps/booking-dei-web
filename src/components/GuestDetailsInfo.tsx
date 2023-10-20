@@ -177,11 +177,15 @@ const GuestDetailsInfo = ({
                 <span>{option}</span>
               </>
             )}
-            options={contacts.map((contact) => ({
-              label: contact.name,
-              value: contact._id,
-            }))}
-          />
+            options = {contacts
+              .filter((contact) => !contact.detactivatedAt)
+              .map((contact) => ({
+                label: contact.name,
+                value: contact._id,
+              }))
+              .sort((a, b) => a.label.localeCompare(b.label))
+            }
+          />       
         </Form.Item>
 
         <Form.Item name="phone" label="Phone" className="w-48">
