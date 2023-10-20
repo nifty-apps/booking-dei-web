@@ -1,6 +1,11 @@
-import { ExclamationCircleFilled } from "@ant-design/icons";
+import {
+  ExclamationCircleFilled,
+  PrinterOutlined,
+  FilterOutlined,
+} from "@ant-design/icons";
 import { useMutation, useQuery } from "@apollo/client";
 import {
+  Checkbox,
   DatePicker,
   Form,
   Input,
@@ -42,6 +47,7 @@ const Transactions = () => {
   ]);
   const [searchText, setSearchText] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState<boolean>(false);
   const [editingTransactionId, setEditingTransactionId] = useState<
     string | null
   >(null);
@@ -244,8 +250,21 @@ const Transactions = () => {
 
   return (
     <>
-      <div className="mb-5">
+      <div className="mb-5 flex justify-between items-center">
         <TitleText text="Transactions" />
+
+        {/*  top button  filter transaction & Download PDF */}
+        <div className="flex items-center gap-4">
+          <button className="text-blue-700 px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 border border-blue-900 hover:bg-blue-900 hover:text-white">
+            Download/Print <PrinterOutlined />
+          </button>
+          <button
+            type="submit"
+            className="text-white px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2  bg-blue-900 w-full"
+          >
+            + Add Expense
+          </button>
+        </div>
       </div>
       <div className="flex align-middle justify-between mb-3">
         <div className="w-3/12">
@@ -257,29 +276,80 @@ const Transactions = () => {
             value={searchText}
           />
         </div>
-        <RangePicker
-          allowClear={true}
-          format="YYYY-MM-DD"
-          value={
-            selectedDateRange[0] && selectedDateRange[1]
-              ? [dayjs(selectedDateRange[0]), dayjs(selectedDateRange[1])]
-              : undefined
-          }
-          onChange={(dates) =>
-            setSelectedDateRange([
-              dates?.[0]?.format("YYYY-MM-DD") || "",
-              dates?.[1]?.format("YYYY-MM-DD") || "",
-            ])
-          }
-        />
+        <div className="flex items-center gap-2">
+          <RangePicker
+            allowClear={true}
+            format="YYYY-MM-DD"
+            value={
+              selectedDateRange[0] && selectedDateRange[1]
+                ? [dayjs(selectedDateRange[0]), dayjs(selectedDateRange[1])]
+                : undefined
+            }
+            onChange={(dates) =>
+              setSelectedDateRange([
+                dates?.[0]?.format("YYYY-MM-DD") || "",
+                dates?.[1]?.format("YYYY-MM-DD") || "",
+              ])
+            }
+          />
+
+          <button
+            onClick={() => setFilterModalOpen(true)}
+            type="submit"
+            className="flex items-center gap-1 text-white  px-10 w-fit py-1 rounded-md font-semibold capitalize bg-blue-900 "
+          >
+            Filters <FilterOutlined />
+          </button>
+        </div>
       </div>
 
       <Table dataSource={dataSource} columns={columns} pagination={false} />
 
+      {/* modal to filter transactions  */}
+      <Modal
+        title="Filters"
+        open={filterModalOpen}
+        onOk={() => setFilterModalOpen(false)}
+        onCancel={() => setFilterModalOpen(false)}
+        footer={null}
+        centered
+      >
+        <Form
+          className="mt-5"
+          form={form}
+          // onFinish={(values) => handleUpdate(values, guestID || "")}
+        >
+          <Space direction="vertical" className="w-full">
+            <h3 className="font-semibold">Transaction Type</h3>
+            <Form.Item name="income" className="mb-0">
+              <Checkbox>Income</Checkbox>
+            </Form.Item>
+            <Form.Item name="expense" className="mb-0">
+              <Checkbox>Expenses</Checkbox>
+            </Form.Item>
+          </Space>
+
+          <div className="flex justify-center gap-4 mt-6 mb-2">
+            <button
+              type="reset"
+              className="text-blue-700 px-20 py-1 rounded-md  font-semibold capitalize flex items-center gap-2 border border-blue-900 hover:bg-blue-500 hover:text-white"
+            >
+              Reset
+            </button>
+            <button
+              type="submit"
+              className="  bg-blue-600  hover:bg-blue-500 text-white font-semibold py-2 px-20 rounded"
+            >
+              Apply
+            </button>
+          </div>
+        </Form>
+      </Modal>
+
       {/* Modal for edit transaction */}
       <Modal
         title="Edit Transaction"
-        visible={isModalOpen}
+        open={isModalOpen}
         onOk={() => setIsModalOpen(false)}
         onCancel={() => setIsModalOpen(false)}
         footer={null}

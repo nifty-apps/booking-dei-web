@@ -192,7 +192,7 @@ const GuestLookUp = () => {
               }}
             />
 
-            {selectedGuestInformation?.status == "Deactive" ? (
+            {selectedGuestInformation?.status == "Deactivate" ? (
               <Button
                 onClick={() => {
                   handleDeactiveAccount(record, false);
