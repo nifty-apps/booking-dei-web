@@ -47,7 +47,7 @@ const GuestLookUp = () => {
   let filteredGuestList;
 
   // filter by activated or dectivated 
-  isActivated ? filteredGuestList = guestData?.contacts?.filter((guestInformation) => !!guestInformation?.detactivatedAt) : filteredGuestList = guestData?.contacts?.filter((guestInformation) => !guestInformation?.detactivatedAt || !!guestInformation?.detactivatedAt)
+  isActivated ? filteredGuestList = guestData?.contacts?.filter((guestInformation) => !guestInformation?.detactivatedAt) : filteredGuestList = guestData?.contacts?.filter((guestInformation) => !guestInformation?.detactivatedAt || !!guestInformation?.detactivatedAt)
 
 
 
@@ -255,19 +255,20 @@ const GuestLookUp = () => {
         <Switch
   checked={isActivated}
   checkedChildren={
-    <div style={{ display: 'flex', alignItems: 'center', color: 'green' }}>
+    <div style={{ display: 'flex', alignItems: 'center', color: 'green', background: 'white' }}>
       <EyeOutlined style={{ marginRight: 4 }} />
-      Show All
+      Activated
     </div>
   }
   unCheckedChildren={
-    <div style={{ display: 'flex', alignItems: 'center', color: 'red' }}>
+    <div style={{ display: 'flex', alignItems: 'center', color: 'red', background: 'white' }}>
       <EyeInvisibleOutlined style={{ marginRight: 4 }} />
-      Activated
+      Show All
     </div>
   }
   onChange={handleToggle}
 />
+
 
       </div>
 
