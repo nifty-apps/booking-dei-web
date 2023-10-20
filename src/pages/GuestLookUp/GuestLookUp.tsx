@@ -249,7 +249,7 @@ const GuestLookUp = () => {
           placement="bottomRight"
           className="cursor-pointer"
         >
-          <span className="mr-1">See All Guest's</span>
+          <span className="mr-1">See All Guests</span>
           <Switch
             className={`${filterDeactivated ? "" : "bg-gray-400"}`}
             defaultChecked={false}

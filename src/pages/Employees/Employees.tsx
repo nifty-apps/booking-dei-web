@@ -68,7 +68,7 @@ const Employees = () => {
 
   const allEmployeeData = filterDeactivated
     ? EmployeesData?.contacts?.filter((employeesInfo) => {
-        return employeesInfo?.detactivatedAt;
+        return employeesInfo;
       })
     : EmployeesData?.contacts?.filter((employeesInfo) => {
         return employeesInfo?.detactivatedAt == null;
@@ -317,13 +317,11 @@ const Employees = () => {
         </div>
 
         <Tooltip
-          title={`See all ${
-            filterDeactivated ? "Acive" : "Deactivated"
-          } Employees`}
+          title={`See ${filterDeactivated ? "Acive" : "All"} Employees`}
           placement="bottomRight"
           className="cursor-pointer"
         >
-          <span className="mr-1">Deactivated Employee's</span>
+          <span className="mr-1">All Employees</span>
           <Switch
             className={`${filterDeactivated ? "" : "bg-gray-400"}`}
             defaultChecked={false}
