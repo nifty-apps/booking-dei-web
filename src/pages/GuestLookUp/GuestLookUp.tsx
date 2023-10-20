@@ -52,7 +52,7 @@ const GuestLookUp = () => {
   const findActiveGuest = guestData?.contacts.filter(guest=>guest.detactivatedAt !== null)
   
 
-  const guestList = activeGuest ? findActiveGuest : guestData?.contacts
+  const guestList = activeGuest ? guestData?.contacts : findActiveGuest 
 
   // filter Guest by name phone ID number
   const filteredGuestList = guestList?.filter((guestInformation) => {
