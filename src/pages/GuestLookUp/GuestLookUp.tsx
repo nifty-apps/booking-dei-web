@@ -248,6 +248,11 @@ const GuestLookUp = () => {
           />
         </div>
         <Switch
+          title={`${
+            showActive
+              ? "tap to see all contacts"
+              : "tap to see active contacts"
+          }`}
           onClick={() => setShowActive(!showActive)}
           className={`bg-green-500 `}
           checkedChildren="Active"

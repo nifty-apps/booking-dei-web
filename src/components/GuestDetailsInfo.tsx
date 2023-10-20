@@ -10,6 +10,7 @@ import {
   Space,
   message,
 } from "antd";
+import dayjs from "dayjs";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -179,6 +180,7 @@ const GuestDetailsInfo = ({
             )}
             options={contacts
               .filter((contact) => !contact.detactivatedAt)
+              .sort((a, b) => a.name.localeCompare(b.name))
               .map((contact) => ({
                 label: contact.name,
                 value: contact._id,
@@ -241,8 +243,8 @@ const GuestDetailsInfo = ({
           <Input
             className="custom__input w-48"
             disabled={!isEditing && isDetails}
-            defaultValue={contactInfo?.idNo?.toString()}
-            placeholder={contactInfo?.idNo?.toString() || "Enter ID Type"}
+            defaultValue={contactInfo?.idNo!}
+            placeholder={contactInfo?.idNo || "Enter ID Type"}
           />
         </Form.Item>
       </Form>
