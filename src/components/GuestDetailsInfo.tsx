@@ -266,7 +266,7 @@ const GuestDetailsInfo = ({
           <Form.Item
             name="idType"
             label="ID Type"
-            className="w-48"
+            className="w-full"
             initialValue={contact?.idType}
           >
             <Select
@@ -281,25 +281,25 @@ const GuestDetailsInfo = ({
           </Form.Item>
 
           <Form.Item
-            className="w-48"
+            className="w-full"
             name="idNo"
             label="ID No"
             initialValue={contactInfo?.idNo?.toString()}
           >
             <Input
-              className="custom__input w-48"
+              className="custom__input w-full"
               disabled={!isEditing && isDetails}
               placeholder="Enter ID No"
             />
           </Form.Item>
           <Form.Item
-            className="w-48"
+            className="w-full"
             name="address"
             label="Address"
             initialValue={contactInfo?.address?.toString()}
           >
             <Input
-              className="custom__input w-48"
+              className="custom__input w-full"
               disabled={!isEditing && isDetails}
               placeholder="Enter Address"
             />
