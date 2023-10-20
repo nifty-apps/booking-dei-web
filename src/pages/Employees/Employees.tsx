@@ -183,9 +183,8 @@ const Employees = () => {
   if (loading) return <p>Loading</p>;
   if (error) return <p>{error?.message}</p>;
 
-  const dataSource = filteredEmployeeData?.map((employeeData, index) => ({
+  const dataSource = filteredEmployeeData?.map((employeeData) => ({
     key: employeeData?._id,
-    employeeId: employeeData.hotel.slice(0, 2) + 0 + index,
     name: employeeData?.name,
     phone: employeeData?.phone,
     idType: employeeData?.idType || null,
@@ -196,11 +195,6 @@ const Employees = () => {
   }));
 
   const columns = [
-    {
-      title: "EMPLOYEE ID",
-      dataIndex: "employeeId",
-      key: "employeeId",
-    },
     {
       title: "NAME",
       dataIndex: "name",
