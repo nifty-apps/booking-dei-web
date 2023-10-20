@@ -131,6 +131,7 @@ const BookingOverview = () => {
     setFormattedDate(dayjs(newDate).format("YYYY-MM-DD"));
     refetch({ startDate: newDate, endDate: newDate });
   };
+  //print handle function 
   const handleDownloadPrint = ()=>{
     window.print();
   };
