@@ -1,21 +1,39 @@
-import { AutoComplete, Form } from "antd";
-import { useState } from "react";
+import { Form, Input } from "antd";
 import { FaPlus, FaTimes } from "react-icons/fa";
-import { Guest } from "../graphql/__generated__/graphql";
 
-const AdditionalGuests = () => {
-  const [form] = Form.useForm();
+interface AdditionalGuestsProps {
+  guests: {
+    name: string;
+    phone: string;
+  }[];
+  setGuests: React.Dispatch<
+    React.SetStateAction<
+      {
+        name: string;
+        phone: string;
+      }[]
+    >
+  >;
+  removeGuest: (index: number) => void;
+}
 
-  const [guests, setGuests] = useState([{ name: "", phone: "" }]);
-
-  // add guest multiple times
-  const addGuests = () => {
-    setGuests([...guests, { name: "", phone: "" }]);
+const AdditionalGuests = ({
+  guests,
+  setGuests,
+  removeGuest,
+}: AdditionalGuestsProps) => {
+  // handleChange
+  const handleInputChange = (index: number, field: string, value: string) => {
+    setGuests((prevGuests) =>
+      prevGuests.map((guest, i) =>
+        i === index ? { ...guest, [field]: value } : guest
+      )
+    );
   };
 
-  // form submit handler
-  const onFinish = (values: Guest) => {
-    console.log("Received values of form:", values);
+  // add a guest
+  const addGuest = () => {
+    setGuests((prevGuests) => [...prevGuests, { name: "", phone: "" }]);
   };
 
   return (
@@ -24,23 +42,29 @@ const AdditionalGuests = () => {
         Additional Guest
       </h1>
 
-      {guests?.map((guest) => (
-        <Form
-          layout="vertical"
-          className="flex items-center"
-          key={guest.phone}
-          form={form}
-          onFinish={onFinish}
-        >
+      {guests?.map((guest, index) => (
+        <Form layout="vertical" className="flex items-center" key={index}>
           <Form.Item label="Full Name" className="w-1/2">
-            <AutoComplete placeholder="Enter your name" allowClear />
+            <Input
+              placeholder="Enter your name"
+              allowClear
+              value={guest.name}
+              onChange={(e) => handleInputChange(index, "name", e.target.value)}
+            />
           </Form.Item>
 
           <Form.Item label="Phone" className="mx-5 w-1/2">
-            <AutoComplete placeholder="Enter your phone" allowClear />
+            <Input
+              placeholder="Enter your phone"
+              allowClear
+              value={guest.phone}
+              onChange={(e) =>
+                handleInputChange(index, "phone", e.target.value)
+              }
+            />
           </Form.Item>
           {/* delete icon */}
-          <button className="text-lg">
+          <button className="text-lg" onClick={() => removeGuest(index)}>
             <FaTimes />
           </button>
         </Form>
@@ -48,11 +72,13 @@ const AdditionalGuests = () => {
 
       {/* Add Guest button */}
       <div className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1">
-        <button className="flex items-center gap-2" type="submit">
+        <button
+          className="flex items-center gap-2"
+          type="submit"
+          onClick={addGuest}
+        >
           <FaPlus />
-          <span className="font-semibold" onClick={addGuests}>
-            Add Guest
-          </span>
+          <span className="font-semibold">Add Guest</span>
         </button>
       </div>
     </>

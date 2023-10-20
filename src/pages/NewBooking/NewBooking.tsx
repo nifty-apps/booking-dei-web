@@ -40,7 +40,18 @@ const NewBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [bookingId, setCreateBookingId] = useState<string | null>(null);
   const [contactId, setContactId] = useState<string | null>(null);
+  const [guests, setGuests] = useState([{ name: "", phone: "" }]);
 
+  //  Remove guest
+  const removeGuest = (index: number) => {
+    setGuests((prevGuests) => {
+      const updatedGuests = [...prevGuests];
+      updatedGuests.splice(index, 1);
+      return updatedGuests;
+    });
+  };
+
+  // create booking API call
   const [createBooking] = useMutation(CREATE_BOOKING, {
     refetchQueries: [GET_ROOMS_BY_FLOOR],
   });
@@ -312,7 +323,11 @@ const NewBooking = () => {
           />
 
           {/* Additional Guest details info */}
-          <AdditionalGuests />
+          <AdditionalGuests
+            guests={guests}
+            setGuests={setGuests}
+            removeGuest={removeGuest}
+          />
         </div>
         {/* booking summary || Payment flow */}
         <BookingSummary
