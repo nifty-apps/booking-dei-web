@@ -232,14 +232,14 @@ const GuestLookUp = () => {
         </div>
         <div className="flex items-center">
           <p className="mr-2 w-24">
-            {showDeactivateGuest ? "All" : "Active"} Guest's
+            {showDeactivateGuest ? "All" : "Active"} Guests
           </p>
           <Switch
             className={`${showDeactivateGuest ? "" : "bg-gray-500"}`}
             onChange={() => setShowDeactivateGuest(!showDeactivateGuest)}
             defaultChecked={false}
             title={
-              showDeactivateGuest ? "Show Active Guest's" : "Show All Guest's"
+              showDeactivateGuest ? "Show Active Guests" : "Show All Guests"
             }
           />
         </div>
