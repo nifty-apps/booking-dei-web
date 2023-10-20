@@ -8,7 +8,7 @@ import TitleText from "../../components/Title";
 import { GET_ROOM_BOOKING_FINANCIALS } from "../../graphql/queries/roomBookingFinancialQueries";
 import { RootState } from "../../store";
 import { PrinterOutlined } from "@ant-design/icons";
-import { useReactToPrint } from "react-to-print";
+
 const loadingStyles = {
   display: "flex",
   justifyContent: "center",
