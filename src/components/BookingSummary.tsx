@@ -355,15 +355,26 @@ const BookingSummary = ({
           <div className="mt-4 flex flex-col gap-1">
             <div className="text-right text-gray-800 italic">
               Created By: {user?.name} at{" "}
-              {bookingLogsInfo?.bookingLogs[0]?.createdAt}
+              {bookingLogsInfo?.bookingLogs[0]?.createdAt
+                ? format(
+                    new Date(bookingLogsInfo?.bookingLogs[0]?.createdAt),
+                    "MMMM d, yyyy h:mm a"
+                  )
+                : "N/A"}
             </div>
             <div className="text-right text-gray-800 italic">
               Updated By: {user?.name} at{" "}
-              {
-                bookingLogsInfo?.bookingLogs[
-                  bookingLogsInfo?.bookingLogs?.length - 1
-                ]?.updatedAt
-              }
+              {bookingLogsInfo?.bookingLogs &&
+              bookingLogsInfo.bookingLogs.length > 0
+                ? format(
+                    new Date(
+                      bookingLogsInfo.bookingLogs[
+                        bookingLogsInfo.bookingLogs.length - 1
+                      ]?.updatedAt
+                    ),
+                    "MMMM d, yyyy h:mm a"
+                  )
+                : "N/A"}
             </div>
           </div>
         </div>
