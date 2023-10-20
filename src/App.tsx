@@ -20,9 +20,12 @@ import NewBooking from "./pages/NewBooking/NewBooking";
 import RoomBookingFinancials from "./pages/RoomBookingFinancials/RoomBookingFinancials";
 import Transactions from "./pages/Transactions/Transactions";
 import Employees from "./pages/Employees/Employees";
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const { user } = useSelector((state: RootState) => state.auth);
 
   return (
     <Layout>
@@ -44,9 +47,15 @@ const App = () => {
             />
             <Route path="/calender" element={<Calender />} />
             <Route path="/guest-lookup" element={<GuestLookUp />} />
-            <Route path="/transactions" element={<Transactions />} />
-            <Route path="/employees" element={<Employees />} />
-            <Route path="/rooms-overview" element={<RoomBookingFinancials />} />
+            {
+              user?.type === "ADMIN" && (
+                <>
+                  <Route path="/transactions" element={<Transactions />} />
+                  <Route path="/employees" element={<Employees />} />
+                  <Route path="/rooms-overview" element={<RoomBookingFinancials />} />
+                </>
+              )
+            }
 
             <Route path="*" element={<Error />} />
           </Routes>
