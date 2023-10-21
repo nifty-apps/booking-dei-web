@@ -65,4 +65,3 @@ mutation RemoveRoomBooking($id:ID!) {
 }
 
 `);
-

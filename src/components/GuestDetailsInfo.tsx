@@ -130,7 +130,10 @@ const GuestDetailsInfo = ({
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  const contacts = data?.contacts ?? [];
+  const contacts =
+    data?.contacts?.filter((guestInfo) => {
+      return guestInfo?.detactivatedAt == null;
+    }) ?? [];
 
   return (
     <>
