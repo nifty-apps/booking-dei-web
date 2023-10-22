@@ -180,7 +180,7 @@ const Employees = () => {
   };
 
   // handle loading and error
-  if (loading) return <p>Loading</p>;
+  if (loading) return <p>Loading...</p>;
   if (error) return <p>{error?.message}</p>;
 
   const dataSource = filteredEmployeeData?.map((employeeData) => ({
