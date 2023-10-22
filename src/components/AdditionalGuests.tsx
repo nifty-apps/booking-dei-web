@@ -1,45 +1,57 @@
-import { AutoComplete, Form, Input, Select } from "antd";
-import { FaPlus } from "react-icons/fa";
-import { FaXmark } from "react-icons/fa6";
+import { AutoComplete, Form } from "antd";
+import { useState } from "react";
+import { FaPlus, FaTimes } from "react-icons/fa";
 
 const AdditionalGuests = () => {
+  const [guests, setGuests] = useState([{ id: Date.now() }]);
+
+  const handleAddGuest = () => {
+    setGuests([...guests, { id: Date.now() }]);
+  };
+
+  const handleRemoveGuest = (idToRemove: number) => {
+    const newGuests = guests.filter((guest) => guest.id !== idToRemove);
+    setGuests(newGuests);
+  };
+
   return (
     <>
-      <h1 className="font-semibold text-xl text-gray-500 capitalize">
+      <h1 className="font-semibold text-xl text-gray-500 capitalize my-4">
         Additional Guest
       </h1>
 
-      <Form layout="vertical" className="flex items-center">
-        <Form.Item name="name" label="Full Name" className="w-48">
-          <AutoComplete placeholder="Enter your name" allowClear />
-        </Form.Item>
+      {guests?.map((guest) => (
+        <div key={guest.id}>
+          <Form layout="vertical" className="flex items-center">
+            <Form.Item
+              name={`name${guest.id}`}
+              label="Full Name"
+              className="w-1/2"
+            >
+              <AutoComplete placeholder="Enter your name" allowClear />
+            </Form.Item>
 
-        <Form.Item name="phone" label="Phone" className="mx-5 w-48">
-          <AutoComplete placeholder="Enter your phone" allowClear />
-        </Form.Item>
+            <Form.Item
+              name={`phone${guest.id}`}
+              label="Phone"
+              className="mx-5 w-1/2"
+            >
+              <AutoComplete placeholder="Enter your phone" allowClear />
+            </Form.Item>
+            {/* delete icon */}
+            <button
+              className="text-lg"
+              onClick={() => handleRemoveGuest(guest.id)}
+            >
+              <FaTimes />
+            </button>
+          </Form>
+        </div>
+      ))}
 
-        <Form.Item name="idType" label="ID Type" className="mx-5 w-48">
-          <Select
-            options={[
-              { value: "NID", label: "NID" },
-              { value: "PASSPORT", label: "PASSPORT" },
-            ]}
-          />
-        </Form.Item>
-
-        <Form.Item name="idNo" label="ID No" className="mx-5 w-48">
-          <Input placeholder="Enter your ID number" />
-        </Form.Item>
-
-        {/* delete icon */}
-        <button className="text-lg">
-          <FaXmark />
-        </button>
-      </Form>
-
-      {/* button */}
+      {/* Add Guest button */}
       <div className="w-28 capitalize border border-blue-700 rounded-sm text-blue-700 px-2 py-1">
-        <button className="flex items-center gap-2">
+        <button className="flex items-center gap-2" onClick={handleAddGuest}>
           <FaPlus />
           <span className="font-semibold"> Add Guest</span>
         </button>
