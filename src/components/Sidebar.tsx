@@ -9,6 +9,8 @@ import { BsPersonVcard } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
 import version from "../../package.json";
 import logo from "../assets/logo.png";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const { Sider } = Layout;
 interface SidebarProps {
@@ -18,6 +20,7 @@ interface SidebarProps {
 const appVersion = version.version;
 
 const Sidebar = ({ collapsed }: SidebarProps) => {
+  const { user } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
   const dateTime = new Date();
   const currentYear = dateTime.getFullYear().toString();
@@ -89,21 +92,25 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               Guest Look-up
             </Link>
           </Menu.Item>
-          <Menu.Item key="5" icon={<BsPersonVcard />}>
-            <Link to="/employees" className="menuLink">
-              Employees
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="6" icon={<TbBrandGoogleAnalytics />}>
-            <Link to="/transactions" className="menuLink">
-              Transactions
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="7" icon={<AiOutlineBarChart />}>
-            <Link to="/rooms-overview" className="menuLink">
-              Rooms Overview
-            </Link>
-          </Menu.Item>
+          {user?.type === "ADMIN" && (
+            <>
+              <Menu.Item key="5" icon={<BsPersonVcard />}>
+                <Link to="/employees" className="menuLink">
+                  Employees
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="6" icon={<TbBrandGoogleAnalytics />}>
+                <Link to="/transactions" className="menuLink">
+                  Transactions
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="7" icon={<AiOutlineBarChart />}>
+                <Link to="/rooms-overview" className="menuLink">
+                  Rooms Overview
+                </Link>
+              </Menu.Item>
+            </>
+          )}
         </Menu>
 
         {/* footer part for sidebar */}

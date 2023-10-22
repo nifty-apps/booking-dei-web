@@ -180,10 +180,13 @@ const GuestDetailsInfo = ({
                 <span>{option}</span>
               </>
             )}
-            options={contacts.map((contact) => ({
-              label: contact.name,
-              value: contact._id,
-            }))}
+            options={contacts
+              .filter((contact) => !contact.detactivatedAt)
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((contact) => ({
+                label: contact.name,
+                value: contact._id,
+              }))}
           />
         </Form.Item>
 
@@ -216,10 +219,12 @@ const GuestDetailsInfo = ({
                 <span>{option}</span>
               </>
             )}
-            options={contacts.map((contact) => ({
-              label: contact.phone,
-              value: contact._id,
-            }))}
+            options={contacts
+              .filter((contact) => !contact.detactivatedAt)
+              .map((contact) => ({
+                label: contact.phone,
+                value: contact._id,
+              }))}
           />
         </Form.Item>
 
@@ -240,8 +245,8 @@ const GuestDetailsInfo = ({
           <Input
             className="custom__input w-48"
             disabled={!isEditing && isDetails}
-            defaultValue={contactInfo?.idNo?.toString()}
-            placeholder={contactInfo?.idNo?.toString() || "Enter ID Type"}
+            defaultValue={contactInfo?.idNo!}
+            placeholder={contactInfo?.idNo || "Enter ID Type"}
           />
         </Form.Item>
       </Form>

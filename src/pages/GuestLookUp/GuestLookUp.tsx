@@ -31,6 +31,7 @@ const GuestLookUp = () => {
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
+
   const [form] = Form.useForm();
 
   // fetching data using Hotel ID
@@ -98,7 +99,7 @@ const GuestLookUp = () => {
   // deactivate function to add deactivateAt field in the database
   const handleDeactiveAccount = async (guestID: string, setActive: boolean) => {
     const selectedGuestInformation = dataSource?.find(
-      (data) => data.key === guestID
+      (data) => data?.key === guestID
     );
     confirm({
       title: `Do you want to ${setActive ? "Deactivate" : "Activate"} ${
@@ -136,16 +137,18 @@ const GuestLookUp = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const dataSource = filteredGuestList?.map((guestInformation) => ({
-    key: guestInformation?._id,
-    name: guestInformation?.name,
-    phone: guestInformation?.phone,
-    idType: guestInformation?.idType || null,
-    idNo: guestInformation?.idNo || null,
-    address: guestInformation?.address || null,
-    action: guestInformation?._id,
-    status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
-  }));
+  const dataSource = filteredGuestList
+    ?.sort((a, b) => a.name.localeCompare(b.name))
+    .map((guestInformation) => ({
+      key: guestInformation?._id,
+      name: guestInformation?.name,
+      phone: guestInformation?.phone,
+      idType: guestInformation?.idType || null,
+      idNo: guestInformation?.idNo || null,
+      address: guestInformation?.address || null,
+      action: guestInformation?._id,
+      status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
+    }));
 
   const columns = [
     {
@@ -180,7 +183,7 @@ const GuestLookUp = () => {
       render: (record: string) => {
         // find clicked guest information
         const selectedGuestInformation = dataSource?.find(
-          (data) => data.key === record
+          (data) => data?.key === record
         );
         return (
           <div className="flex gap-3 items-center cursor-pointer">
@@ -258,7 +261,22 @@ const GuestLookUp = () => {
         </Tooltip>
       </div>
 
-      <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <Table
+        dataSource={
+          dataSource as {
+            key: string;
+            name: string;
+            phone: string;
+            idType: string | null;
+            idNo: string | null;
+            address: string | null;
+            action: string;
+            status: string;
+          }[]
+        }
+        columns={columns}
+        pagination={false}
+      />
 
       {/* modal to edit guest information  */}
       <Modal
