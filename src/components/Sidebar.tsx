@@ -92,7 +92,6 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               Guest Look-up
             </Link>
           </Menu.Item>
-          {/* if user type is not admin, he can not see bellow routes on the sidebar  */}
           {user?.type === "ADMIN" && (
             <>
               <Menu.Item key="5" icon={<BsPersonVcard />}>
