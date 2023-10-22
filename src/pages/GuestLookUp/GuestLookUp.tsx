@@ -31,7 +31,7 @@ const GuestLookUp = () => {
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
-  const [showActive, setShowActive] = useState<boolean>(true);
+
   const [form] = Form.useForm();
 
   // fetching data using Hotel ID
@@ -57,22 +57,6 @@ const GuestLookUp = () => {
       });
 
   // filter Guest by name phone ID number
-<<<<<<< HEAD
-  const filteredGuestList = guestData?.contacts?.filter(
-    (guestInformation: Contact) => {
-      const lowercaseSearchText = searchText.toLowerCase();
-      return (
-        guestInformation?.name?.toLowerCase().includes(lowercaseSearchText) ||
-        guestInformation?.phone?.toLowerCase().includes(lowercaseSearchText) ||
-        guestInformation?.address
-          ?.toLowerCase()
-          .includes(lowercaseSearchText) ||
-        guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
-        guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText)
-      );
-    }
-  );
-=======
   const filteredGuestList = allGuestData?.filter((guestInformation) => {
     const lowercaseSearchText = searchText.toLowerCase();
     return (
@@ -83,7 +67,6 @@ const GuestLookUp = () => {
       guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText)
     );
   });
->>>>>>> origin/main
 
   // update contact mutation query
   const [updateContact] = useMutation(UPDATE_CONTACT, {
@@ -154,53 +137,18 @@ const GuestLookUp = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-<<<<<<< HEAD
-  // Now datasource will be render according to the showDeacticvate state
-  const dataSource = (filteredGuestList || [])
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map((guestInformation) => {
-      const isDeactivated = guestInformation.detactivatedAt;
-      const isActive = !isDeactivated;
-
-      if (showActive) {
-        if (isActive) {
-          return {
-            key: guestInformation?._id,
-            name: guestInformation?.name,
-            phone: guestInformation?.phone,
-            idType: guestInformation?.idType || null,
-            idNo: guestInformation?.idNo || null,
-            address: guestInformation?.address || null,
-            action: guestInformation?._id,
-            status: "Active",
-          };
-        }
-      } else {
-        return {
-          key: guestInformation?._id,
-          name: guestInformation?.name,
-          phone: guestInformation?.phone,
-          idType: guestInformation?.idType || null,
-          idNo: guestInformation?.idNo || null,
-          address: guestInformation?.address || null,
-          action: guestInformation?._id,
-          status: isActive ? "Active" : "Deactive",
-        };
-      }
-    })
-    .filter((item) => item !== undefined);
-=======
-  const dataSource = filteredGuestList?.map((guestInformation) => ({
-    key: guestInformation?._id,
-    name: guestInformation?.name,
-    phone: guestInformation?.phone,
-    idType: guestInformation?.idType || null,
-    idNo: guestInformation?.idNo || null,
-    address: guestInformation?.address || null,
-    action: guestInformation?._id,
-    status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
-  }));
->>>>>>> origin/main
+  const dataSource = filteredGuestList
+    ?.sort((a, b) => a.name.localeCompare(b.name))
+    .map((guestInformation) => ({
+      key: guestInformation?._id,
+      name: guestInformation?.name,
+      phone: guestInformation?.phone,
+      idType: guestInformation?.idType || null,
+      idNo: guestInformation?.idNo || null,
+      address: guestInformation?.address || null,
+      action: guestInformation?._id,
+      status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
+    }));
 
   const columns = [
     {
@@ -228,10 +176,6 @@ const GuestLookUp = () => {
       dataIndex: "idNo",
       key: "idNo",
     },
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
     {
       title: "ACTION",
       dataIndex: "action",
@@ -293,11 +237,7 @@ const GuestLookUp = () => {
       <div className="mb-5">
         <TitleText text="Guest Look up" />
       </div>
-<<<<<<< HEAD
-      <div className="flex align-center  gap-5 mb-3">
-=======
       <div className="flex items-center justify-between mb-3">
->>>>>>> origin/main
         <div className="w-3/12">
           <Input
             placeholder="Search here.."
@@ -307,20 +247,6 @@ const GuestLookUp = () => {
             value={searchText}
           />
         </div>
-<<<<<<< HEAD
-        <Switch
-          title={`${
-            showActive
-              ? "tap to see all contacts"
-              : "tap to see active contacts"
-          }`}
-          onClick={() => setShowActive(!showActive)}
-          className={`bg-green-500 `}
-          checkedChildren="Active"
-          unCheckedChildren="All"
-          defaultChecked
-        />
-=======
         <Tooltip
           title={`See ${filterDeactivated ? "Active" : "All"} Guests`}
           placement="bottomRight"
@@ -333,7 +259,6 @@ const GuestLookUp = () => {
             onChange={() => setFilterDeactivated(!filterDeactivated)}
           />
         </Tooltip>
->>>>>>> origin/main
       </div>
 
       <Table
@@ -342,7 +267,7 @@ const GuestLookUp = () => {
             key: string;
             name: string;
             phone: string;
-            idType: ContactTypes | null;
+            idType: string | null;
             idNo: string | null;
             address: string | null;
             action: string;
