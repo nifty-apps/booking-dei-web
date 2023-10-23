@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   RoomBookingDetails,
   RoomBookingStatus,
@@ -65,6 +65,8 @@ const FloorPlan = ({
   endDate,
 }: FloorPlanProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
+  const location = useLocation();
+  const isNewBookingRoute = location.pathname.endsWith("/new-booking");
 
   const [detailsModalInfo, setDetailsModalInfo] = useState<{
     room: Room | null;
@@ -142,7 +144,12 @@ const FloorPlan = ({
                     }
                   }
 
-                  if (status === RoomBookingStatus.Booked) {
+                  if (
+                    isNewBookingRoute &&
+                    (status === RoomBookingStatus.Booked ||
+                      status === RoomBookingStatus.Checkedin ||
+                      status === RoomBookingStatus.Checkedout)
+                  ) {
                     bgClass = classNames({
                       "bg-yellow-100": true,
                       "bg-yellow-600 text-white": selectedRooms.includes(room),
@@ -151,33 +158,45 @@ const FloorPlan = ({
                       "cursor-not-allowed bg-gray-100":
                         room.number === "Lift" || room.number === "Staff",
                     });
-                  } else if (status === RoomBookingStatus.Checkedin) {
-                    bgClass = classNames({
-                      "bg-blue-100": true,
-                      "bg-blue-600 text-white": selectedRooms.includes(room),
-                      "cursor-pointer":
-                        room.number !== "Lift" && room.number !== "Staff",
-                      "cursor-not-allowed bg-gray-100":
-                        room.number === "Lift" || room.number === "Staff",
-                    });
-                  } else if (status === RoomBookingStatus.Checkedout) {
-                    bgClass = classNames({
-                      "bg-red-100": true,
-                      "bg-red-600 text-white": selectedRooms.includes(room),
-                      "cursor-pointer":
-                        room.number !== "Lift" && room.number !== "Staff",
-                      "cursor-not-allowed bg-gray-100":
-                        room.number === "Lift" || room.number === "Staff",
-                    });
                   } else {
-                    bgClass = classNames({
-                      "bg-white": false,
-                      "bg-blue-700 text-white": selectedRooms.includes(room),
-                      "cursor-pointer":
-                        room.number !== "Lift" && room.number !== "Staff",
-                      "cursor-not-allowed bg-gray-100":
-                        room.number === "Lift" || room.number === "Staff",
-                    });
+                    if (status === RoomBookingStatus.Booked) {
+                      bgClass = classNames({
+                        "bg-yellow-100": true,
+                        "bg-yellow-600 text-white":
+                          selectedRooms.includes(room),
+                        "cursor-pointer":
+                          room.number !== "Lift" && room.number !== "Staff",
+                        "cursor-not-allowed bg-gray-100":
+                          room.number === "Lift" || room.number === "Staff",
+                      });
+                    } else if (status === RoomBookingStatus.Checkedin) {
+                      bgClass = classNames({
+                        "bg-blue-100": true,
+                        "bg-blue-600 text-white": selectedRooms.includes(room),
+                        "cursor-pointer":
+                          room.number !== "Lift" && room.number !== "Staff",
+                        "cursor-not-allowed bg-gray-100":
+                          room.number === "Lift" || room.number === "Staff",
+                      });
+                    } else if (status === RoomBookingStatus.Checkedout) {
+                      bgClass = classNames({
+                        "bg-red-100": true,
+                        "bg-red-600 text-white": selectedRooms.includes(room),
+                        "cursor-pointer":
+                          room.number !== "Lift" && room.number !== "Staff",
+                        "cursor-not-allowed bg-gray-100":
+                          room.number === "Lift" || room.number === "Staff",
+                      });
+                    } else {
+                      bgClass = classNames({
+                        "bg-white": false,
+                        "bg-blue-700 text-white": selectedRooms.includes(room),
+                        "cursor-pointer":
+                          room.number !== "Lift" && room.number !== "Staff",
+                        "cursor-not-allowed bg-gray-100":
+                          room.number === "Lift" || room.number === "Staff",
+                      });
+                    }
                   }
 
                   return (

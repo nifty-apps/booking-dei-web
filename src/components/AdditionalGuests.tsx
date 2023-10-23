@@ -31,7 +31,7 @@ const AdditionalGuests = ({
     );
   };
 
-  // add a guest
+  // Function to add a guest
   const addGuest = () => {
     setGuests((prevGuests) => [...prevGuests, { name: "", phone: "" }]);
   };
