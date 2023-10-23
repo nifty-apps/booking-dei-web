@@ -9,6 +9,8 @@ import { BsPersonVcard } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
 import version from "../../package.json";
 import logo from "../assets/logo.png";
+import { RootState } from "../store";
+import { useSelector } from "react-redux";
 
 const { Sider } = Layout;
 interface SidebarProps {
@@ -21,7 +23,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
   const location = useLocation();
   const dateTime = new Date();
   const currentYear = dateTime.getFullYear().toString();
-
+  const { user } = useSelector((state: RootState) => state.auth);
   // Determine the selected key based on the current path
   let selectedKey;
   switch (location.pathname) {
@@ -92,26 +94,28 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               Guest Look-up
             </Link>
           </Menu.Item>
-          <Menu.Item key="5" icon={<BsPersonVcard />}>
-            <Link to="/employees" className="menuLink">
-              Employees
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="6" icon={<TbBrandGoogleAnalytics />}>
-            <Link to="/transactions" className="menuLink">
-              Transactions
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="7" icon={<AiOutlineBarChart />}>
-            <Link to="/rooms-overview" className="menuLink">
-              Rooms Overview
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="8" icon={<AiOutlineBarChart />}>
-            <Link to="/booking-overview" className="menuLink">
-             Booking Overview
-            </Link>
-          </Menu.Item>
+          {
+              user?.type === 'ADMIN' && <>    <Menu.Item key="5" icon={<BsPersonVcard />}>
+              <Link to="/employees" className="menuLink">
+                Employees
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="6" icon={<TbBrandGoogleAnalytics />}>
+              <Link to="/transactions" className="menuLink">
+                Transactions
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="7" icon={<AiOutlineBarChart />}>
+              <Link to="/rooms-overview" className="menuLink">
+                Rooms Overview
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="8" icon={<AiOutlineBarChart />}>
+              <Link to="/booking-overview" className="menuLink">
+               Booking Overview
+              </Link>
+            </Menu.Item> </>}
+      
          
         </Menu>
 
