@@ -147,11 +147,11 @@ const BookingOverview = () => {
         <div className="mb-5 flex justify-between">
           <TitleText text="Booking Overview" />
           <Button
-  icon={<PrinterOutlined />}
+            icon={<PrinterOutlined />}
           >
             <ReactToPrint
               trigger={() => {
-                return <a href="#">Download/Print</a>;
+                return <Link to={'#'} >Download/Print</Link>;
               }}
               content={() => componentRef.current}
               documentTitle="table"
@@ -159,7 +159,7 @@ const BookingOverview = () => {
             />
           </Button>
         </div>
-     
+
       </div>
       <div className="flex align-middle mb-3 justify-between">
         <div className="w-3/12">
