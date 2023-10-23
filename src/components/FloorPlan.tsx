@@ -45,6 +45,7 @@ const columns: ColumnsType<RoomBookingDetails> = [
     render: (bookingCustomer) => <p>{bookingCustomer}</p>,
   },
   { title: "Rent", dataIndex: "rent" },
+
   {
     title: "Check In",
     dataIndex: "checkIn",
@@ -107,6 +108,8 @@ const FloorPlan = ({
       }
     }
   };
+
+  console.log();
 
   return (
     <>
@@ -274,18 +277,18 @@ const FloorPlan = ({
         <div className="my-4">
           <p>
             <span className="font-semibold">Room Type : </span>
-            {detailsModalInfo.room?.type?.title}
+            {detailsModalInfo?.room?.type?.title}
           </p>
           <p>
-            <span className="font-semibold">Room Number :</span>
-            {detailsModalInfo.room?.number}
+            <span className="font-semibold">Room Number : </span>
+            {detailsModalInfo?.room?.number}
           </p>
         </div>
 
         {/* table */}
         <Table
           columns={columns}
-          dataSource={detailsModalInfo.room?.roombookings}
+          dataSource={detailsModalInfo?.room?.roombookings}
         />
       </Modal>
     </>
