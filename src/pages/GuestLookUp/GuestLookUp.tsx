@@ -12,7 +12,7 @@ import {
   Tooltip,
   message,
 } from "antd";
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
+
 import dayjs from "dayjs";
 import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
@@ -33,7 +33,7 @@ const GuestLookUp = () => {
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [form] = Form.useForm();
-  const [isActivated, setIsActivated] = useState<boolean>(true);
+ 
 
   // fetching data using Hotel ID
   const {
@@ -49,25 +49,6 @@ const GuestLookUp = () => {
     },
   });
 
-<<<<<<< HEAD
-
-  let filteredGuestList;
-
-  // filter by activated or dectivated 
-  isActivated ? filteredGuestList = guestData?.contacts?.filter((guestInformation) => !guestInformation?.detactivatedAt) : filteredGuestList = guestData?.contacts?.filter((guestInformation) => !guestInformation?.detactivatedAt || !!guestInformation?.detactivatedAt)
-
-
-
-
-
-
-
-
-
-
-
-  filteredGuestList = filteredGuestList?.filter((guestInformation) => {
-=======
   const allGuestData = filterDeactivated
     ? guestData?.contacts?.filter((guestInfo) => {
         return guestInfo;
@@ -78,21 +59,13 @@ const GuestLookUp = () => {
 
   // filter Guest by name phone ID number
   const filteredGuestList = allGuestData?.filter((guestInformation) => {
->>>>>>> bdc82824c4ee53725b6a66445d88b28d178628fc
     const lowercaseSearchText = searchText.toLowerCase();
     return (
       guestInformation?.name?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.phone?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.address?.toLowerCase().includes(lowercaseSearchText) ||
       guestInformation?.idType?.toLowerCase().includes(lowercaseSearchText) ||
-<<<<<<< HEAD
-      guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.type?.toLowerCase().includes(lowercaseSearchText) ||
-      guestInformation?.detactivatedAt?.toLocaleLowerCase().includes('null')
-
-=======
       guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText)
->>>>>>> bdc82824c4ee53725b6a66445d88b28d178628fc
     );
   });
 
@@ -202,15 +175,6 @@ const GuestLookUp = () => {
       key: "idNo",
     },
     {
-<<<<<<< HEAD
-      title: "TYPE",
-      dataIndex: "type",
-      key: "type",
-    },
-
-    {
-=======
->>>>>>> bdc82824c4ee53725b6a66445d88b28d178628fc
       title: "ACTION",
       dataIndex: "action",
       key: "action",
@@ -269,20 +233,12 @@ const GuestLookUp = () => {
 
 
 
-  //handle Togggole button 
-  const handleToggle = () => {
-    setIsActivated(!isActivated);
-  }
   return (
     <>
       <div className="mb-5">
         <TitleText text="Guest Look up" />
       </div>
-<<<<<<< HEAD
-      <div className="flex justify-start align-middle  gap-6 mb-3">
-=======
       <div className="flex items-center justify-between mb-3">
->>>>>>> bdc82824c4ee53725b6a66445d88b28d178628fc
         <div className="w-3/12">
           <Input
             placeholder="Search here.."
@@ -292,26 +248,6 @@ const GuestLookUp = () => {
             value={searchText}
           />
         </div>
-<<<<<<< HEAD
-        <Switch
-  checked={isActivated}
-  checkedChildren={
-    <div style={{ display: 'flex', alignItems: 'center', color: 'green', background: 'white'}}>
-      <EyeOutlined style={{ marginRight: 4 }} />
-      Activated
-    </div>
-  }
-  unCheckedChildren={
-    <div style={{ display: 'flex', alignItems: 'center', color: 'red', background: 'white' }}>
-      <EyeInvisibleOutlined style={{ marginRight: 4 }} />
-      Show All
-    </div>
-  }
-  onChange={handleToggle}
-/>
-
-
-=======
         <Tooltip
           title={`See ${filterDeactivated ? "Active" : "All"} Guests`}
           placement="bottomRight"
@@ -324,7 +260,6 @@ const GuestLookUp = () => {
             onChange={() => setFilterDeactivated(!filterDeactivated)}
           />
         </Tooltip>
->>>>>>> bdc82824c4ee53725b6a66445d88b28d178628fc
       </div>
 
 

@@ -8,7 +8,7 @@ import TitleText from "../../components/Title";
 import { GET_ROOM_BOOKING_FINANCIALS } from "../../graphql/queries/roomBookingFinancialQueries";
 import { RootState } from "../../store";
 import { PrinterOutlined } from "@ant-design/icons";
-
+import ReactToPrint from 'react-to-print';
 const loadingStyles = {
   display: "flex",
   justifyContent: "center",
@@ -18,7 +18,7 @@ const loadingStyles = {
 const BookingOverview = () => {
 
   const { user } = useSelector((state: RootState) => state.auth);
-  const componentPDF = useRef(null);
+  const componentRef = useRef(null);
 
   const [searchText, setSearchText] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -131,30 +131,35 @@ const BookingOverview = () => {
     setFormattedDate(dayjs(newDate).format("YYYY-MM-DD"));
     refetch({ startDate: newDate, endDate: newDate });
   };
-  //print handle function 
-  const handleDownloadPrint = ()=>{
-    window.print();
-  };
-    
-  
-  
+
+
+
+
 
   return (
 
+
     <>
-     <>
       <div>
+
+
+
         <div className="mb-5 flex justify-between">
           <TitleText text="Booking Overview" />
           <Button
-            icon={<PrinterOutlined />}
-            style={{ color: 'blue' }}
-            onClick={handleDownloadPrint}
+  icon={<PrinterOutlined />}
           >
-            Download/Print
+            <ReactToPrint
+              trigger={() => {
+                return <a href="#">Download/Print</a>;
+              }}
+              content={() => componentRef.current}
+              documentTitle="table"
+              pageStyle="print"
+            />
           </Button>
         </div>
-        {/* ... (your other content) ... */}
+     
       </div>
       <div className="flex align-middle mb-3 justify-between">
         <div className="w-3/12">
@@ -185,12 +190,12 @@ const BookingOverview = () => {
           </Button>
         </div>
       </div>
-      <div ref={componentPDF} style={{ width: '100%' }}>
+      <div ref={componentRef}>
         <Table dataSource={dataSource} columns={columns} pagination={false} />
-        
       </div>
+
     </>
-    </>
+
   );
 };
 
