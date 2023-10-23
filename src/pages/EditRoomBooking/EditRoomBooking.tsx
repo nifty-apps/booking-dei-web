@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FaEllipsisVertical, FaXmark } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import AdditionalGuests from "../../components/AdditionalGuests";
 import BookingSummary from "../../components/BookingSummary";
 import GuestDetailsInfo from "../../components/GuestDetailsInfo";
 import RoomOptionsModal from "../../components/RoomOptionsModal";
@@ -318,7 +319,10 @@ const EditRoomBooking = () => {
             isDetails={true}
             isEditing={true}
           />
+          {/* Additional guests */}
+          <AdditionalGuests />
         </div>
+
         {/* booking summary || Payment flow */}
         <BookingSummary
           roomBookings={bookingDetails.roomBookings}

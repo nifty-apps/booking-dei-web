@@ -19,6 +19,7 @@ import Login from "./pages/Login/Login";
 import NewBooking from "./pages/NewBooking/NewBooking";
 import RoomBookingFinancials from "./pages/RoomBookingFinancials/RoomBookingFinancials";
 import Transactions from "./pages/Transactions/Transactions";
+import Employees from "./pages/Employees/Employees";
 import BookingOverview from "./pages/BookingOverview/BookingOverview";
 
 const App = () => {
@@ -45,6 +46,7 @@ const App = () => {
             <Route path="/calender" element={<Calender />} />
             <Route path="/guest-lookup" element={<GuestLookUp />} />
             <Route path="/transactions" element={<Transactions />} />
+            <Route path="/employees" element={<Employees />} />
             <Route path="/rooms-overview" element={<RoomBookingFinancials />} />
             <Route path="/booking-overview" element={<BookingOverview />} />
 
