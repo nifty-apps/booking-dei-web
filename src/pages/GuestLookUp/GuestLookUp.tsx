@@ -255,7 +255,7 @@ const GuestLookUp = () => {
         <Switch
   checked={isActivated}
   checkedChildren={
-    <div style={{ display: 'flex', alignItems: 'center', color: 'green', background: 'white' }}>
+    <div style={{ display: 'flex', alignItems: 'center', color: 'green', background: 'white'}}>
       <EyeOutlined style={{ marginRight: 4 }} />
       Activated
     </div>
