@@ -42,7 +42,6 @@ const NewBooking = () => {
   const [contactId, setContactId] = useState<string | null>(null);
   const [guests, setGuests] = useState([{ name: "", phone: "" }]);
 
-  // --------------------------------------
   //  Remove guest
   const removeGuest = (index: number) => {
     setGuests((prevGuests) => {

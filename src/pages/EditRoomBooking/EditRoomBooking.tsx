@@ -65,7 +65,13 @@ export interface RoomBookingInfo extends CreateBookingInput {
 const EditRoomBooking = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [updateBooking] = useMutation(UPDATE_BOOKING, {
-    refetchQueries: [GET_ROOMS_BY_FLOOR, GET_ROOM_BOOKING],
+    refetchQueries: [
+      GET_ROOMS_BY_FLOOR,
+      GET_ROOM_BOOKING,
+      GET_BOOKING,
+      GET_CONTACT,
+      GET_TRANSACTIONS,
+    ],
   });
 
   const [updateRoomBooking] = useMutation(UPDATE_ROOM_BOOKING, {
@@ -284,6 +290,16 @@ const EditRoomBooking = () => {
       roomBookings: roomBookings as [],
     }));
   }, [roomBookings]);
+
+  useEffect(() => {
+    if (bookingInfo?.booking) {
+      setBookingDetails((booking) => ({
+        ...booking,
+        customer: bookingInfo.booking.customer,
+        paymentStatus: bookingInfo.booking.paymentStatus,
+      }));
+    }
+  }, [bookingInfo]);
 
   return (
     <>

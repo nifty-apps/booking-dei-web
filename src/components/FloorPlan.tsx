@@ -65,6 +65,7 @@ const FloorPlan = ({
   endDate,
 }: FloorPlanProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
+
   const location = useLocation();
   const isNewBookingRoute = location.pathname.endsWith("/new-booking");
 
