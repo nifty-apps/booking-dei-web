@@ -119,6 +119,7 @@ const Employees = () => {
 
   // create employe
   const onFinish = async (values: CreateContactInput) => {
+   
     try {
       const response = await createContact({
         variables: {
@@ -131,11 +132,13 @@ const Employees = () => {
           },
         },
       });
+     
 
       if (response?.data?.createContact) {
         message.success("Employee Added successfully!");
         form.setFieldsValue(response.data.createContact);
         setIsModalOpen(false);
+        form.resetFields()
       }
     } catch (err) {
       message.error(`Something went wrong!`);
@@ -339,7 +342,7 @@ const Employees = () => {
         }}
         footer={null}
       >
-        <Form onFinish={onFinish}>
+        <Form form={form} onFinish={onFinish}>
           <Space direction="vertical" className="w-full">
             <h3>Full Name</h3>
             <Form.Item name="name" className="mb-0">

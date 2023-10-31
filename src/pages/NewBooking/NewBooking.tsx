@@ -197,7 +197,7 @@ const NewBooking = () => {
           },
         },
       });
-
+      console.log(res.data,'create data')
       if (res.data?.createBooking?._id) {
         message.success("Yay! Your new booking was added successfully.");
         navigate({
