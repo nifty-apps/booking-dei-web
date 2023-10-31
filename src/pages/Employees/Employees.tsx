@@ -144,7 +144,8 @@ const Employees = () => {
 
       if (response?.data?.createContact) {
         message.success("Employee Added successfully!");
-        form.setFieldsValue(response.data.createContact);
+        // form.setFieldsValue(response.data.createContact);
+        form.resetFields();
         setIsModalOpen(false);
       }
     } catch (err) {
@@ -349,7 +350,7 @@ const Employees = () => {
         }}
         footer={null}
       >
-        <Form onFinish={onFinish}>
+        <Form form={form} onFinish={onFinish}>
           <Space direction="vertical" className="w-full">
             <h3>Full Name</h3>
             <Form.Item name="name" className="mb-0">
