@@ -129,6 +129,8 @@ const BookingDetails = () => {
     }));
   }, [roomBookings]);
 
+  console.log("booking details : ", bookingDetails);
+
   return (
     <>
       <div

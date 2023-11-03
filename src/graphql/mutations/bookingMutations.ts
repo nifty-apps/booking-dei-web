@@ -8,6 +8,10 @@ mutation CreateBooking($createBookingInput: CreateBookingInput!) {
         customer
         hotel
         paymentStatus
+        guests{
+          name
+          phone
+        }
   }
 }
 `);
@@ -67,4 +71,4 @@ mutation RemoveRoomBooking($id:ID!) {
 
 `);
 
-// bookingId : 6530b2ae3ae3b52d873b00b1
+// bookingId: 6544b236a6251434b00f0440

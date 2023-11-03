@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n  }\n}\n": types.CreateBookingDocument,
+    "\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n        guests{\n          name\n          phone\n        }\n  }\n}\n": types.CreateBookingDocument,
     "\n mutation UpdateRoomBooking(\n    $updateRoomBookingInput: UpdateRoomBookingInput!\n  ) {\n    updateRoomBooking(updateRoomBookingInput: $updateRoomBookingInput) {\n      _id\n      room\n      checkIn\n      checkOut\n      rent\n      discount\n      extraBed\n      extraBreakfast\n      booking\n      hotel\n      status\n    }\n  }\n\n": types.UpdateRoomBookingDocument,
     "\nmutation UpdateBooking($updateBookingInput: UpdateBookingInput!) {\n    updateBooking(updateBookingInput: $updateBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n        number\n  }\n}\n": types.UpdateBookingDocument,
     "\nmutation RemoveRoomBooking($id:ID!) {\n    removeRoomBooking(id: $id) {\n        _id\n        checkIn\n        checkOut\n        rent\n        discount\n        extraBed\n        extraBreakfast\n        booking\n        hotel\n        status\n        room\n    }\n}\n\n": types.RemoveRoomBookingDocument,
@@ -23,7 +23,7 @@ const documents = {
     " \nmutation CreateTransaction (\n  $createTransactionInput: CreateTransactionInput!\n) {\n   createTransaction (\n    createTransactionInput:$createTransactionInput\n  ) {\n          _id\n          booking\n          hotel\n          date\n          deletedAt\n          category\n          subCategory\n          method\n          description\n          amount\n      contact {\n             _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n       }\n  }\n}\n": types.CreateTransactionDocument,
     "\n    mutation UpdateTransaction($updateTransactionInput: UpdateTransactionInput!) {\n    updateTransaction (\n      updateTransactionInput: $updateTransactionInput\n      ) {\n      _id\n      category\n      date\n      subCategory\n      method\n      description\n      amount\n       contact {\n        _id\n        name\n    }\n    }\n}\n": types.UpdateTransactionDocument,
     "\n  mutation RemoveTransaction($id: ID!) {\n    removeTransaction(id:$id) {\n        _id\n    }\n}\n\n": types.RemoveTransactionDocument,
-    "\n query Booking($id:ID!) {\n      booking(id: $id) {\n        _id\n        customer\n        hotel\n        paymentStatus\n     }\n }\n\n": types.BookingDocument,
+    "\n query Booking($id:ID!) {\n      booking(id: $id) {\n        _id\n        customer\n        hotel\n        paymentStatus\n        number\n        guests{\n          name\n          phone\n        }\n     }\n }\n\n": types.BookingDocument,
     "\n  query Bookings {\n    bookings {\n        _id\n        number\n        customer\n        hotel\n        paymentStatus\n    }\n }\n\n": types.BookingsDocument,
     "\n query Contact($id:ID!) {\n    contact(id: $id) {\n        _id\n        name\n        phone\n        idType\n        idNo\n        address\n        hotel\n        type\n    }\n}\n": types.ContactDocument,
     "\nquery Room($id:ID!) {\n    room(id:$id) {\n        _id\n        number\n        floor\n        position\n        type\n        hotel\n    }\n}\n\n": types.RoomDocument,
@@ -55,7 +55,7 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n  }\n}\n"): (typeof documents)["\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n  }\n}\n"];
+export function gql(source: "\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n        guests{\n          name\n          phone\n        }\n  }\n}\n"): (typeof documents)["\nmutation CreateBooking($createBookingInput: CreateBookingInput!) {\n    createBooking(createBookingInput: $createBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n        guests{\n          name\n          phone\n        }\n  }\n}\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -95,7 +95,7 @@ export function gql(source: "\n  mutation RemoveTransaction($id: ID!) {\n    rem
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n query Booking($id:ID!) {\n      booking(id: $id) {\n        _id\n        customer\n        hotel\n        paymentStatus\n     }\n }\n\n"): (typeof documents)["\n query Booking($id:ID!) {\n      booking(id: $id) {\n        _id\n        customer\n        hotel\n        paymentStatus\n     }\n }\n\n"];
+export function gql(source: "\n query Booking($id:ID!) {\n      booking(id: $id) {\n        _id\n        customer\n        hotel\n        paymentStatus\n        number\n        guests{\n          name\n          phone\n        }\n     }\n }\n\n"): (typeof documents)["\n query Booking($id:ID!) {\n      booking(id: $id) {\n        _id\n        customer\n        hotel\n        paymentStatus\n        number\n        guests{\n          name\n          phone\n        }\n     }\n }\n\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

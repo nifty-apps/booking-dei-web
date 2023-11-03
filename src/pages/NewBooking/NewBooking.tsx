@@ -206,6 +206,10 @@ const NewBooking = () => {
               ...roomBooking,
               type: undefined,
             })),
+            guests: guests.map((guest) => ({
+              ...guest,
+              _id: undefined,
+            })),
           },
         },
       });

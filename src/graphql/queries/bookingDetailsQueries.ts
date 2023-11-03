@@ -7,6 +7,11 @@ export const GET_BOOKING = gql(`
         customer
         hotel
         paymentStatus
+        number
+        guests{
+          name
+          phone
+        }
      }
  }
 
@@ -54,8 +59,7 @@ query Room($id:ID!) {
 
 `);
 
-
-// booking logs 
+// booking logs
 export const GET_BOOKING_LOGS = gql(`
 query BookingLogs($filter: BookingLogFilter!) {
   bookingLogs (filter:$filter){
