@@ -24,13 +24,28 @@ import {
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
+import GuestBookingsModal from "../../components/GuestBookingsModal";
 const { confirm } = Modal;
+
+export interface guestInfoType {
+  id: string;
+  name: string | undefined;
+  phone: string | undefined;
+}
+
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
+  const [bookingHistoryModal, setBookingHistoryModal] =
+    useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
+  const [guestInfoState, setGuestInfoState] = useState<guestInfoType>({
+    id: "",
+    name: "",
+    phone: "",
+  });
   const [form] = Form.useForm();
 
   // fetching data using Hotel ID
@@ -131,7 +146,6 @@ const GuestLookUp = () => {
       },
     });
   };
-
   // setting loading and error message on page load
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -184,6 +198,20 @@ const GuestLookUp = () => {
         );
         return (
           <div className="flex gap-3 items-center cursor-pointer">
+            <Button
+              type="link"
+              onClick={() => {
+                setGuestID(record);
+                setGuestInfoState({
+                  id: record,
+                  name: selectedGuestInformation?.name,
+                  phone: selectedGuestInformation?.phone,
+                });
+                setBookingHistoryModal(true);
+              }}
+            >
+              <span className="underline">more</span>
+            </Button>
             <FaRegEdit
               title={"Edit Guest Information"}
               onClick={() => {
@@ -316,6 +344,18 @@ const GuestLookUp = () => {
             </button>
           </div>
         </Form>
+      </Modal>
+
+      {/* modal to show guests booking information */}
+      <Modal
+        title="Guest Booking Overview"
+        open={bookingHistoryModal}
+        onOk={() => setBookingHistoryModal(false)}
+        onCancel={() => setBookingHistoryModal(false)}
+        footer={null}
+        centered
+      >
+        <GuestBookingsModal guestInfoState={guestInfoState} />
       </Modal>
     </>
   );

@@ -137,19 +137,18 @@ const Employees = () => {
             idNo: values.idNo,
             hotel: user?.hotels[0] || "",
             type: ContactTypes.Employee,
-            detactivatedAt: dayjs().format("YYYY-MM-DDTHH:mm:ss[Z]"),
           },
         },
       });
 
       if (response?.data?.createContact) {
         message.success("Employee Added successfully!");
-        // form.setFieldsValue(response.data.createContact);
         form.resetFields();
         setIsModalOpen(false);
       }
-    } catch (err) {
-      message.error(`Something went wrong!`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      message.error(err.message);
     }
   };
 
