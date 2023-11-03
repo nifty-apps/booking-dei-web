@@ -42,6 +42,16 @@ const GuestLookUp = () => {
 
   // ID for finding guest data
   const [id, setId] = useState<string | undefined>("");
+  const {
+    data: singleUserBookingData
+  } = useQuery(GET_SINGLE_USER_BOOKINGS, {
+    variables: {
+      bookingFilter: {
+        hotel: user?.hotels[0] || "",
+        customer: id || "",
+      } as ContactFilterInput,
+    },
+  });
 
   // Fetching data using Hotel ID
   const {
@@ -233,16 +243,7 @@ const GuestLookUp = () => {
     phone?: string;
   };
 
-  const {
-    data: singleUserBookingData
-  } = useQuery(GET_SINGLE_USER_BOOKINGS, {
-    variables: {
-      bookingFilter: {
-        hotel: user?.hotels[0] || "",
-        customer: id || "",
-      } as ContactFilterInput,
-    },
-  });
+ 
 
   const GetBookingOverviewData = (name: string | undefined, phone: string | undefined, id: string | undefined) => {
     setGuestDetails({
