@@ -4,6 +4,7 @@ import { format } from "date-fns"; // Import date-fns for date formatting
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import AdditionalGuestDetails from "../../components/AdditionalGuestDetails";
 import BookingSummary from "../../components/BookingSummary";
 import GuestDetailsInfo from "../../components/GuestDetailsInfo";
 import TitleText from "../../components/Title";
@@ -129,8 +130,6 @@ const BookingDetails = () => {
     }));
   }, [roomBookings]);
 
-  console.log("booking details: ", bookingInfo?.booking.guests);
-
   return (
     <>
       <div
@@ -175,15 +174,10 @@ const BookingDetails = () => {
             isEditing={false}
           />
           {/* Additional guest */}
-          <h1>Additional guest for booking detials</h1>
-          {bookingInfo?.booking.guests?.map((guest) => (
-            <div>
-              <p>{guest.name}</p>
-              <p>{guest.phone}</p>
-            </div>
-          ))}
+          <AdditionalGuestDetails
+            guestInfo={bookingInfo?.booking?.guests as []}
+          />
         </div>
-
         {/* booking summary || Payment flow */}
         <BookingSummary
           roomBookings={bookingDetails.roomBookings}
