@@ -129,7 +129,7 @@ const BookingDetails = () => {
     }));
   }, [roomBookings]);
 
-  console.log("booking details : ", bookingDetails);
+  console.log("booking details: ", bookingInfo?.booking.guests);
 
   return (
     <>
@@ -175,7 +175,13 @@ const BookingDetails = () => {
             isEditing={false}
           />
           {/* Additional guest */}
-          {/* <AdditionalGuests /> */}
+          <h1>Additional guest for booking detials</h1>
+          {bookingInfo?.booking.guests?.map((guest) => (
+            <div>
+              <p>{guest.name}</p>
+              <p>{guest.phone}</p>
+            </div>
+          ))}
         </div>
 
         {/* booking summary || Payment flow */}
