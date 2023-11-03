@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { PlusOutlined, ExclamationCircleFilled } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
