@@ -2,9 +2,11 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   Button,
+  Col,
   Form,
   Input,
   Modal,
+  Row,
   Select,
   Space,
   Switch,
@@ -14,7 +16,7 @@ import {
 } from "antd";
 
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
@@ -25,15 +27,17 @@ import {
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
+import { GET_BOOKINGS } from "../../graphql/queries/bookingDetailsQueries";
 const { confirm } = Modal;
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
+  const [handleModalOpenbook, setHandleModalOpenbook] = useState<boolean>(false);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [form] = Form.useForm();
- 
+  const [customerID, setcustomerId] = useState<string | null>(user?.hotels[0]!);
 
   // fetching data using Hotel ID
   const {
@@ -49,13 +53,33 @@ const GuestLookUp = () => {
     },
   });
 
+
+  // fetching and filtering booking data for each customer  by cutomer id and hotel id  GET_BOOKINGS 
+  const { loading: bookingLoading, data: bookingData } = useQuery(GET_BOOKINGS, {
+    variables: {
+      bookingFilter: {
+
+        hotel: user?.hotels[0] || "",
+        customer: customerID || ""
+      },
+    },
+  });
+
+  //for stoping multiple rendering 
+  useEffect(() => {
+    if (bookingLoading) return; // Handle loading state
+    if (error) return; // Handle error state
+
+
+  }, [bookingLoading, bookingData, error, loading, customerID, guestID]);
+
   const allGuestData = filterDeactivated
     ? guestData?.contacts?.filter((guestInfo) => {
-        return guestInfo;
-      })
+      return guestInfo;
+    })
     : guestData?.contacts?.filter((guestInfo) => {
-        return guestInfo?.detactivatedAt == null;
-      });
+      return guestInfo?.detactivatedAt == null;
+    });
 
   // filter Guest by name phone ID number
   const filteredGuestList = allGuestData?.filter((guestInformation) => {
@@ -68,6 +92,11 @@ const GuestLookUp = () => {
       guestInformation?.idNo?.toLowerCase().includes(lowercaseSearchText)
     );
   });
+
+  //find single guest by using guestID
+  const findGuest = allGuestData?.find((guestInformation) => {
+    return guestInformation._id == guestID
+  })
 
   // update contact mutation query
   const [updateContact] = useMutation(UPDATE_CONTACT, {
@@ -124,8 +153,7 @@ const GuestLookUp = () => {
           );
         } catch (error) {
           message.error(
-            `${
-              setActive ? "Deactivation" : "Activation"
+            `${setActive ? "Deactivation" : "Activation"
             } failed, Please try again`
           );
         }
@@ -134,8 +162,8 @@ const GuestLookUp = () => {
   };
 
   // setting loading and error message on page load
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p>Error: {error.message}</p>;
 
   const dataSource = filteredGuestList?.map((guestInformation) => ({
     key: guestInformation?._id,
@@ -147,6 +175,23 @@ const GuestLookUp = () => {
     action: guestInformation?._id,
     status: guestInformation?.detactivatedAt ? "Deactive" : "Active",
   }));
+
+
+  // this columns for second table wich use for showing the 
+  const columns1 = [
+    {
+      title: 'Booking ID',
+      dataIndex: 'number', // Assuming '_id' is the property containing Booking ID
+      key: 'number',
+      render: (number: string) =><a href="#" className="text-blue-400  underline">SB{number}</a> 
+    },
+    {
+      title: 'Payment Status',
+      dataIndex: 'paymentStatus', // Assuming 'paymentStatus' is the property for Payment Status
+      key: 'paymentStatus',
+    },
+    // Add more columns for other booking information as needed
+  ];
 
   const columns = [
     {
@@ -180,24 +225,43 @@ const GuestLookUp = () => {
       key: "action",
       render: (record: string) => {
         // find clicked guest information
+
         const selectedGuestInformation = dataSource?.find(
           (data) => data.key === record
         );
+
         return (
           <div className="flex gap-3 items-center cursor-pointer">
+
+
+            <Button
+              type="link"
+              title={"Show Booking Information"}
+              onClick={() => {
+                setHandleModalOpenbook(true);
+                setcustomerId(record);
+                setGuestID(record);
+              }}
+            >
+              <a href="#"> <span  className="underline">More</span> &gt;</a>
+            </Button>
+
+
+
+
+
+
+
+
+
             <FaRegEdit
               title={"Edit Guest Information"}
               onClick={() => {
                 setHandleModalOpen(true);
                 setGuestID(record);
+
                 // setting the clicked information on modal
-                form.setFieldsValue({
-                  name: selectedGuestInformation?.name,
-                  phone: selectedGuestInformation?.phone,
-                  idNo: selectedGuestInformation?.idNo,
-                  idType: selectedGuestInformation?.idType,
-                  address: selectedGuestInformation?.address,
-                });
+
               }}
             />
 
@@ -231,7 +295,7 @@ const GuestLookUp = () => {
     },
   ];
 
-
+  // console.log(bookingData)
 
   return (
     <>
@@ -321,6 +385,23 @@ const GuestLookUp = () => {
             </button>
           </div>
         </Form>
+      </Modal>
+
+
+      <Modal
+        title="Guest Booking Overview"
+        visible={handleModalOpenbook}
+        onOk={() => setHandleModalOpenbook(false)}
+        onCancel={() => setHandleModalOpenbook(false)}
+        footer={null}
+        centered
+      >
+        <div className="font-bold">
+          <h1>Guest Name: {findGuest?.name}</h1>
+          <h1>Phone Number: {findGuest?.phone}</h1>
+        </div>
+
+        <Table dataSource={bookingData && bookingData.bookings} columns={columns1} />
       </Modal>
     </>
   );
