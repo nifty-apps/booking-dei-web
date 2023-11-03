@@ -87,7 +87,17 @@ const Employees = () => {
   });
   // create employe mutation
   const [createContact] = useMutation(CREATE_CONTACT, {
-    refetchQueries: [{ query: GET_CONTACTS }],
+    refetchQueries: [
+      {
+        query: GET_CONTACTS,
+        variables: {
+          filter: {
+            hotel: user?.hotels[0] || "",
+            type: "EMPLOYEE",
+          } as ContactFilterInput,
+        },
+      },
+    ],
   });
   // update Employee mutation query
   const [updateContact] = useMutation(UPDATE_CONTACT, {
@@ -128,7 +138,6 @@ const Employees = () => {
             idNo: values.idNo,
             hotel: user?.hotels[0] || "",
             type: ContactTypes.Employee,
-            detactivatedAt: dayjs().format("YYYY-MM-DDTHH:mm:ss[Z]"),
           },
         },
       });

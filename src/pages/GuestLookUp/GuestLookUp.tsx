@@ -1,5 +1,6 @@
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useMutation, useQuery } from "@apollo/client";
+import { HiOutlineChevronRight } from "react-icons/hi";
 import {
   Button,
   Form,
@@ -18,17 +19,21 @@ import { FaRegEdit } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
 import {
+  Booking,
   Contact,
   ContactFilterInput,
 } from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
+import { GET_BOOKINGS } from "../../graphql/queries/bookingDetailsQueries";
+import { Link } from "react-router-dom";
 const { confirm } = Modal;
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
+  const [guestBookingModel, setGuestBookingModel] = useState<boolean>(false);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [form] = Form.useForm();
@@ -46,6 +51,17 @@ const GuestLookUp = () => {
       } as ContactFilterInput,
     },
   });
+
+   // fetching all booking data using customerId
+   const {data:guestAllBookings} = useQuery(GET_BOOKINGS, {
+    variables:{
+      bookingFilter:{
+        customer: guestID,
+        hotel: user?.hotels[0] || ""
+      }
+    }
+  })
+
 
   const allGuestData = filterDeactivated
     ? guestData?.contacts?.filter((guestInfo) => {
@@ -184,6 +200,18 @@ const GuestLookUp = () => {
         );
         return (
           <div className="flex gap-3 items-center cursor-pointer">
+            <button
+              className="flex underline text-blue-500 justify-center items-center"
+              onClick={() => {
+                setGuestID(record);
+                setGuestBookingModel(true);
+              }}
+            >
+              More
+              <span className="">
+                <HiOutlineChevronRight />
+              </span>
+            </button>
             <FaRegEdit
               title={"Edit Guest Information"}
               onClick={() => {
@@ -229,6 +257,32 @@ const GuestLookUp = () => {
       },
     },
   ];
+
+  // find single guest information using guestID
+  const guestInfo = allGuestData?.find((guest)=> guest._id === guestID)
+
+  // guest booking
+  const guestBookingColumns = [
+    {
+      title: "Booking ID",
+      dataIndex: "_id",
+      key: "number",
+      render: (_id:string,record:Booking) => {
+        return (
+          <Link to={`/booking-details/${_id}`} className="text-blue-600 underline">
+           SB{record.number}
+          </Link>
+        )
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "paymentStatus",
+      key: "paymentStatus",
+    },
+  ]
+   
+
   return (
     <>
       <div className="mb-5">
@@ -316,6 +370,30 @@ const GuestLookUp = () => {
             </button>
           </div>
         </Form>
+      </Modal>
+      {/* Guest Booking Modal */}
+      <Modal
+        centered
+        open={guestBookingModel}
+        onOk={() => setGuestBookingModel(false)}
+        onCancel={() => setGuestBookingModel(false)}
+        footer={null}
+      >
+        <div>
+          <h2 className="text-lg font-medium">Guest Booking Overview</h2>
+          <div className="my-5">
+            <div className="flex justify-start">
+              <span className="w-36 font-bold">Guest Name:</span>
+              <span>{guestInfo?.name}</span>
+            </div>
+            <div className="flex justify-start">
+              <span className="w-36 font-bold">Phone Number:</span>
+              <span>{guestInfo?.phone}</span>
+            </div>
+          </div>
+          <Table pagination={false} columns={guestBookingColumns} dataSource={guestAllBookings?.bookings}/>
+        </div>
+
       </Modal>
     </>
   );

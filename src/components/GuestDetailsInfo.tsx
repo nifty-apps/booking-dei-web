@@ -43,7 +43,9 @@ const GuestDetailsInfo = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
 
-  const [createContact] = useMutation(CREATE_CONTACT);
+  const [createContact] = useMutation(CREATE_CONTACT,{
+    refetchQueries: [{ query: GET_CONTACTS }],
+  });
   const [updateContact] = useMutation(UPDATE_CONTACT);
 
   const memoizedOnContact = useMemo(() => onSelect, [onSelect]);
