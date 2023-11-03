@@ -17,23 +17,33 @@ import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import TitleText from "../../components/Title";
-import {
-  Contact,
-  ContactFilterInput,
-} from "../../graphql/__generated__/graphql";
+import { Contact, ContactFilterInput } from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
+import { GET_SINGLE_USER_BOOKINGS } from "../../graphql/queries/bookingDetailsQueries";
+import { Link } from "react-router-dom";
 const { confirm } = Modal;
+
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
+  const [handleDetailsModal, setHandleDetailsModal] = useState<boolean>(false);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [form] = Form.useForm();
 
-  // fetching data using Hotel ID
+  // Guest details info
+  const [guestDetails, setGuestDetails] = useState<GuestDetails>({
+    name: "",
+    phone: "",
+  });
+
+  // ID for finding guest data
+  const [id, setId] = useState<string | undefined>("");
+
+  // Fetching data using Hotel ID
   const {
     data: guestData,
     loading,
@@ -48,14 +58,10 @@ const GuestLookUp = () => {
   });
 
   const allGuestData = filterDeactivated
-    ? guestData?.contacts?.filter((guestInfo) => {
-        return guestInfo;
-      })
-    : guestData?.contacts?.filter((guestInfo) => {
-        return guestInfo?.detactivatedAt == null;
-      });
+    ? guestData?.contacts?.filter((guestInfo) => guestInfo)
+    : guestData?.contacts?.filter((guestInfo) => guestInfo?.detactivatedAt == null);
 
-  // filter Guest by name phone ID number
+  // Filter guests by name, phone, ID number, etc.
   const filteredGuestList = allGuestData?.filter((guestInformation) => {
     const lowercaseSearchText = searchText.toLowerCase();
     return (
@@ -67,12 +73,12 @@ const GuestLookUp = () => {
     );
   });
 
-  // update contact mutation query
+  // Update contact mutation query
   const [updateContact] = useMutation(UPDATE_CONTACT, {
     refetchQueries: [{ query: GET_CONTACTS }],
   });
 
-  // update contact function
+  // Update contact function
   const handleUpdate = async (values: Contact, guestID: string) => {
     try {
       await updateContact({
@@ -95,15 +101,11 @@ const GuestLookUp = () => {
     }
   };
 
-  // deactivate function to add deactivateAt field in the database
+  // Deactivate function to add deactivatedAt field in the database
   const handleDeactiveAccount = async (guestID: string, setActive: boolean) => {
-    const selectedGuestInformation = dataSource?.find(
-      (data) => data.key === guestID
-    );
+    const selectedGuestInformation = dataSource?.find((data) => data.key === guestID);
     confirm({
-      title: `Do you want to ${setActive ? "Deactivate" : "Activate"} ${
-        selectedGuestInformation?.name
-      }?`,
+      title: `Do you want to ${setActive ? "Deactivate" : "Activate"} ${selectedGuestInformation?.name}?`,
       icon: <ExclamationCircleFilled />,
       okType: setActive ? "danger" : "default",
       async onOk() {
@@ -118,21 +120,15 @@ const GuestLookUp = () => {
               },
             },
           });
-          message.success(
-            `This Guest Account is ${setActive ? "Deactivated" : "Activated"}.`
-          );
+          message.success(`This Guest Account is ${setActive ? "Deactivated" : "Activated"}.`);
         } catch (error) {
-          message.error(
-            `${
-              setActive ? "Deactivation" : "Activation"
-            } failed, Please try again`
-          );
+          message.error(`${setActive ? "Deactivation" : "Activation"} failed, Please try again`);
         }
       },
     });
   };
 
-  // setting loading and error message on page load
+  // Set loading and error messages on page load
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
@@ -178,18 +174,20 @@ const GuestLookUp = () => {
       dataIndex: "action",
       key: "action",
       render: (record: string) => {
-        // find clicked guest information
-        const selectedGuestInformation = dataSource?.find(
-          (data) => data.key === record
-        );
+        // Find clicked guest information
+        const selectedGuestInformation = dataSource?.find((data) => data.key === record);
         return (
           <div className="flex gap-3 items-center cursor-pointer">
+            <span onClick={() => {
+              setHandleDetailsModal(true);
+              GetBookingOverviewData(selectedGuestInformation?.name, selectedGuestInformation?.phone, selectedGuestInformation?.key);
+            }}>More</span>
             <FaRegEdit
-              title={"Edit Guest Information"}
+              title="Edit Guest Information"
               onClick={() => {
                 setHandleModalOpen(true);
                 setGuestID(record);
-                // setting the clicked information on modal
+                // Set the clicked information on the modal
                 form.setFieldsValue({
                   name: selectedGuestInformation?.name,
                   phone: selectedGuestInformation?.phone,
@@ -199,8 +197,7 @@ const GuestLookUp = () => {
                 });
               }}
             />
-
-            {selectedGuestInformation?.status == "Deactive" ? (
+            {selectedGuestInformation?.status === "Deactive" ? (
               <Button
                 style={{
                   backgroundColor: "transparent",
@@ -221,12 +218,72 @@ const GuestLookUp = () => {
                   handleDeactiveAccount(record, true);
                 }}
               >
-                Deactive
+                Deactivate
               </Button>
             )}
           </div>
         );
       },
+    },
+  ];
+
+  // Get Booking Overview Data
+  type GuestDetails = {
+    name?: string;
+    phone?: string;
+  };
+
+  const {
+    data: singleUserBookingData
+  } = useQuery(GET_SINGLE_USER_BOOKINGS, {
+    variables: {
+      bookingFilter: {
+        hotel: user?.hotels[0] || "",
+        customer: id || "",
+      } as ContactFilterInput,
+    },
+  });
+
+  const GetBookingOverviewData = (name: string | undefined, phone: string | undefined, id: string | undefined) => {
+    setGuestDetails({
+      name: name || "",
+      phone: phone || "",
+    });
+    setId(id)
+  };
+
+  const singlebookingData = singleUserBookingData?.bookings || [];
+
+  const bookingsdataSource = singlebookingData?.map((BookingData) => ({
+    key: BookingData?._id,
+    number: BookingData?.number,
+    paymentStatus: BookingData?.paymentStatus,
+  }));
+
+  const bookingcolumns = [
+    {
+      title: "Booking ID",
+      dataIndex: "key",
+      key: "key",
+      render: (record: string) => {
+        const bookingsofuser = singlebookingData.find((data) => data._id === record);
+        if (bookingsofuser) {
+          return (
+            <Link
+              to={`/booking-details/${bookingsofuser._id}`}
+              className="text-blue-500 hover:text-blue-600 hover:underline"
+            >
+              SB{bookingsofuser.number}
+            </Link>
+          );
+        }
+        return null;
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "paymentStatus",
+      key: "paymentStatus",
     },
   ];
   return (
@@ -316,6 +373,18 @@ const GuestLookUp = () => {
             </button>
           </div>
         </Form>
+      </Modal>
+      <Modal
+        title="Guest Booking Overview"
+        open={handleDetailsModal}
+        onOk={() => setHandleDetailsModal(false)}
+        onCancel={() => setHandleDetailsModal(false)}
+        footer={null}
+        centered
+      >
+        <span className="block font-semibold">Guest Name : {guestDetails.name}</span>
+        <span className="block font-semibold">Phone Number : {guestDetails.phone}</span>
+        <Table dataSource={bookingsdataSource} columns={bookingcolumns} pagination={false} />
       </Modal>
     </>
   );
