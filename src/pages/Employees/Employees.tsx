@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { PlusOutlined, ExclamationCircleFilled } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
@@ -64,7 +64,8 @@ const Employees = () => {
         type: "EMPLOYEE",
       } as ContactFilterInput,
     },
-  });
+  });  
+ 
 
   const allEmployeeData = filterDeactivated
     ? EmployeesData?.contacts?.filter((employeesInfo) => {
@@ -130,17 +131,30 @@ const Employees = () => {
             detactivatedAt: dayjs().format("YYYY-MM-DDTHH:mm:ss[Z]"),
           },
         },
+        refetchQueries: [
+          {
+            query: GET_CONTACTS,
+            variables: {
+              filter: {
+                hotel: user?.hotels[0] || "",
+                type: "EMPLOYEE",
+              } as ContactFilterInput,
+            },
+          },
+        ],
       });
-
+  
       if (response?.data?.createContact) {
         message.success("Employee Added successfully!");
         form.setFieldsValue(response.data.createContact);
         setIsModalOpen(false);
       }
     } catch (err) {
-      message.error(`Something went wrong!`);
+      message.error("Something went wrong!");
     }
   };
+  
+  
 
   // handle Deactivated account
   const handleDeactiveAccount = async (guestID: string, setActive: boolean) => {
