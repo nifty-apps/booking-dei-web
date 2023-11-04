@@ -29,6 +29,8 @@ const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
+  const [guestBookingModalOpen, setGuestBookingModalOpen] =
+    useState<boolean>(false);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [form] = Form.useForm();
@@ -183,22 +185,27 @@ const GuestLookUp = () => {
           (data) => data.key === record
         );
         return (
-          <div className="flex gap-3 items-center cursor-pointer">
-            <FaRegEdit
-              title={"Edit Guest Information"}
-              onClick={() => {
-                setHandleModalOpen(true);
-                setGuestID(record);
-                // setting the clicked information on modal
-                form.setFieldsValue({
-                  name: selectedGuestInformation?.name,
-                  phone: selectedGuestInformation?.phone,
-                  idNo: selectedGuestInformation?.idNo,
-                  idType: selectedGuestInformation?.idType,
-                  address: selectedGuestInformation?.address,
-                });
-              }}
-            />
+          <div className="flex items-center cursor-pointer">
+            <Button type="link" onClick={() => setGuestBookingModalOpen(true)}>
+              <span className="underline mr-1">More</span> {">"}
+            </Button>
+            <div className="mr-3">
+              <FaRegEdit
+                title={"Edit Guest Information"}
+                onClick={() => {
+                  setHandleModalOpen(true);
+                  setGuestID(record);
+                  // setting the clicked information on modal
+                  form.setFieldsValue({
+                    name: selectedGuestInformation?.name,
+                    phone: selectedGuestInformation?.phone,
+                    idNo: selectedGuestInformation?.idNo,
+                    idType: selectedGuestInformation?.idType,
+                    address: selectedGuestInformation?.address,
+                  });
+                }}
+              />
+            </div>
 
             {selectedGuestInformation?.status == "Deactive" ? (
               <Button
@@ -259,6 +266,27 @@ const GuestLookUp = () => {
       </div>
 
       <Table dataSource={dataSource} columns={columns} pagination={false} />
+
+      {/* modal to See guest Booking detail */}
+      <Modal
+        title="Guest Booking Overview"
+        open={guestBookingModalOpen}
+        onOk={() => setGuestBookingModalOpen(false)}
+        onCancel={() => setGuestBookingModalOpen(false)}
+        footer={null}
+        centered
+      >
+        <div className="">
+          <div className="">
+            <h6 className="">
+              <span className="font-semibold">Guest Name:</span>{" "}
+            </h6>
+            <p>
+              <span className="font-semibold">Phone No:</span>{" "}
+            </p>
+          </div>
+        </div>
+      </Modal>
 
       {/* modal to edit guest information  */}
       <Modal
