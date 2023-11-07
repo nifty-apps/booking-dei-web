@@ -41,6 +41,7 @@ query Room($id:ID!) {
 
 `);
 
+
 export const GET_SINGLE_USER_BOOKINGS = gql(`
 query Bookings($bookingFilter: BookingFilter){
     bookings(bookingFilter: $bookingFilter) {
@@ -51,4 +52,17 @@ query Bookings($bookingFilter: BookingFilter){
     }
   }
 `)
+
+
+export const GET_BOOKING_GUEST = gql(`
+   query Bookings($bookingFilter: BookingFilter) {
+    bookings(bookingFilter: $bookingFilter) {
+        _id
+        number
+        customer
+        hotel
+        paymentStatus
+    }
+}
+`);
 

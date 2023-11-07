@@ -57,6 +57,18 @@ const App = () => {
               )
             }
 
+            {/* check user type to show protected route */}
+            {user?.type === "ADMIN" && (
+              <>
+                <Route path="/transactions" element={<Transactions />} />
+                <Route path="/employees" element={<Employees />} />
+                <Route
+                  path="/rooms-overview"
+                  element={<RoomBookingFinancials />}
+                />
+              </>
+            )}
+
             <Route path="*" element={<Error />} />
           </Routes>
         </Content>

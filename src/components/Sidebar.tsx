@@ -115,6 +115,26 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
           }
 
 
+          {/* check user type to show protected route */}
+          {user?.type === "ADMIN" && (
+            <>
+              <Menu.Item key="5" icon={<BsPersonVcard />}>
+                <Link to="/employees" className="menuLink">
+                  Employees
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="6" icon={<TbBrandGoogleAnalytics />}>
+                <Link to="/transactions" className="menuLink">
+                  Transactions
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="7" icon={<AiOutlineBarChart />}>
+                <Link to="/rooms-overview" className="menuLink">
+                  Rooms Overview
+                </Link>
+              </Menu.Item>
+            </>
+          )}
         </Menu>
 
         {/* footer part for sidebar */}
