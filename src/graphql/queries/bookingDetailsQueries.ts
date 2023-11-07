@@ -1,5 +1,16 @@
 import { gql } from "../__generated__";
 
+export const GET_BOOKINGS = gql(`
+query Bookings($bookingFilter: BookingFilter) {
+    bookings(bookingFilter: $bookingFilter) {
+      _id
+      customer
+      number
+      hotel
+      paymentStatus
+    }
+  }
+`);
 export const GET_BOOKING = gql(`
  query Booking($id:ID!) {
       booking(id: $id) {
@@ -40,4 +51,3 @@ query Room($id:ID!) {
 }
 
 `);
-
