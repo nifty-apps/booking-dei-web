@@ -25,6 +25,7 @@ import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
 import { GET_BOOKING_GUEST } from "../../graphql/queries/bookingDetailsQueries";
+import { Link } from "react-router-dom";
 const { confirm } = Modal;
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -270,8 +271,10 @@ const GuestLookUp = () => {
       title: "Booking Id",
       dataIndex: "number",
       key: "number",
-      render: (number: string) => (
-        <span className="text-blue-500 underline">SB{number}</span>
+      render: (number: string, record: { _id: string }) => (
+        <Link to={`/booking-details/${record._id}`}>
+          <span className="text-blue-500 underline">SB{number}</span>
+        </Link>
       ),
     },
     {
