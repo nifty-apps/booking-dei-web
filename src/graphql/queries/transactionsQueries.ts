@@ -56,6 +56,32 @@ export const GET_TRANSACTION_BY_FILTER = gql(`
         }
     }
 `);
+export const GET_TRANSACTION_FILTER = gql(`
+  query GetTransactionFilter($hotelId: ID!, $contactId: ID!) {
+    transactionByFilter(transactionFilter: { hotel: $hotelId, contact: $contactId }) {
+      _id
+      contact {
+        _id
+        name
+        phone
+        idType
+        idNo
+        address
+        hotel
+        type
+      }
+      booking
+      hotel
+      date
+      deletedAt
+      category
+      subCategory
+      method
+      description
+      amount
+    }
+  }
+`);
 
 // transactionsByDateRange
 export const GET_TRANSACTIONS_BY_DATE_RANGE = gql(`

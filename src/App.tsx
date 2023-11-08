@@ -22,6 +22,7 @@ import Transactions from "./pages/Transactions/Transactions";
 import Employees from "./pages/Employees/Employees";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+import EmployeeDetails from "./components/EmployeeDetails";
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -53,6 +54,10 @@ const App = () => {
               <>
                 <Route path="/transactions" element={<Transactions />} />
                 <Route path="/employees" element={<Employees />} />
+                <Route
+                  path="/employee-details/:employeeId"
+                  element={<EmployeeDetails />}
+                />
                 <Route
                   path="/rooms-overview"
                   element={<RoomBookingFinancials />}

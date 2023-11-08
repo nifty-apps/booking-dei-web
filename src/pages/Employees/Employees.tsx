@@ -29,6 +29,7 @@ import {
   UPDATE_CONTACT,
 } from "../../graphql/mutations/contactMutations";
 import { FaEye, FaRegEdit } from "react-icons/fa";
+import { Link } from "react-router-dom";
 const { confirm } = Modal;
 
 // custome interface for employee card modal
@@ -201,14 +202,7 @@ const Employees = () => {
       title: "Employee ID",
       dataIndex: "idNo",
       key: "idNo",
-      render: (idNo: string) => (
-        <span
-          onClick={() => setEmployeeDetailsModalOpen(true)}
-          className="text-blue-500 underline cursor-pointer"
-        >
-          ABC{idNo}
-        </span>
-      ),
+      render: (idNo: string) => <span className=" ">ABC{idNo}</span>,
     },
     {
       title: "NAME",
@@ -249,6 +243,22 @@ const Employees = () => {
         };
         return (
           <div className="flex gap-3 items-center cursor-pointer">
+            <Button
+              type="link"
+              onClick={() => {
+                setEmployeeDetailsModalOpen(true);
+                setEmployeeID(record);
+                form.setFieldsValue({
+                  name: selectedGuestInformation?.name,
+                  phone: selectedGuestInformation?.phone,
+                  idNo: selectedGuestInformation?.idNo,
+                  idType: selectedGuestInformation?.idType,
+                  address: selectedGuestInformation?.address,
+                });
+              }}
+            >
+              <span className="underline mr-1">More</span> {">"}
+            </Button>
             <FaRegEdit
               title={"Edit Employee Information"}
               onClick={() => {
@@ -399,64 +409,44 @@ const Employees = () => {
         footer={null}
         centered
       >
-        <Space direction="vertical" className="w-full">
-          <div className="flex items-center gap-5 w-full">
-            <Form.Item name="id" className="mb-0 w-full">
-              <h3 className="mb-1">Employee ID</h3>
-              <Input autoComplete="off" disabled />
+        <Form form={form}>
+          <Space direction="vertical" className="w-full">
+            <h3>Full Name</h3>
+            <Form.Item name="name" className="mb-0">
+              <Input autoComplete="off" readOnly />
             </Form.Item>
-            <Form.Item name="date" className="mb-0 w-full">
-              <h3 className="mb-1">Date Of Hiring</h3>
-              <Input autoComplete="off" disabled />
+
+            <h3 className="mb-1">ID Type</h3>
+            <Form.Item name="idType" className="mb-0 w-full">
+              <Input autoComplete="off" readOnly />
             </Form.Item>
+            <h3 className="mb-1">ID Number</h3>
+            <Form.Item name="idNo" className="mb-0 w-full">
+              <Input autoComplete="off" readOnly />
+            </Form.Item>
+
+            <h3>Phone Number</h3>
+            <Form.Item name="phone" className="mb-0">
+              <Input autoComplete="off" readOnly />
+            </Form.Item>
+
+            <h3>Address</h3>
+            <Form.Item name="address" className="mb-0">
+              <Input autoComplete="off" readOnly />
+            </Form.Item>
+          </Space>
+
+          <div className="flex justify-center">
+            <Link to={`/employee-details/${employeeID}`}>
+              <button
+                type="submit"
+                className=" mt-6 text-blue-600 hover:bg-blue-500 border border-blue-500 hover:text-white font-semibold py-2 px-20 rounded"
+              >
+                View Details
+              </button>
+            </Link>
           </div>
-
-          <h3>Full Name</h3>
-          <Form.Item name="name" className="mb-0">
-            <Input autoComplete="off" disabled />
-          </Form.Item>
-
-          <div className="flex items-center gap-5 w-full">
-            <Form.Item name="id" className="mb-0 w-full">
-              <h3 className="mb-1">Designation</h3>
-              <Input autoComplete="off" disabled />
-            </Form.Item>
-            <Form.Item name="date" className="mb-0 w-full">
-              <h3 className="mb-1">Department</h3>
-              <Input autoComplete="off" disabled />
-            </Form.Item>
-          </div>
-
-          <div className="flex items-center gap-5 w-full">
-            <Form.Item name="id" className="mb-0 w-full">
-              <h3 className="mb-1">ID Type</h3>
-              <Input autoComplete="off" disabled />
-            </Form.Item>
-            <Form.Item name="date" className="mb-0 w-full">
-              <h3 className="mb-1">ID Number</h3>
-              <Input autoComplete="off" disabled />
-            </Form.Item>
-          </div>
-
-          <h3>Phone Number</h3>
-          <Form.Item name="idType" className="mb-0">
-            <Input autoComplete="off" disabled />
-          </Form.Item>
-
-          <h3>Address</h3>
-          <Form.Item name="address" className="mb-0">
-            <Input autoComplete="off" disabled />
-          </Form.Item>
-        </Space>
-
-        <div className="flex justify-center">
-          <button
-            type="submit"
-            className=" mt-6 text-blue-600 hover:bg-blue-500 border border-blue-600 hover:text-white font-semibold py-2 px-20 rounded"
-          >
-            View Details
-          </button>
-        </div>
+        </Form>
       </Modal>
 
       {/* modal to edit guest information  */}
