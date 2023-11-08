@@ -200,6 +200,8 @@ export type CreateRoomBookingInput = {
 };
 
 export type CreateRoomInput = {
+  /** Date of deactivation */
+  detactivatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   /** Floor where the room is located */
   floor: Scalars['String']['input'];
   /** Hotel where the room is located */
@@ -210,6 +212,15 @@ export type CreateRoomInput = {
   position: Scalars['String']['input'];
   /** Type of the room */
   type: Scalars['ID']['input'];
+};
+
+export type CreateRoomTypeInput = {
+  /** Hotel where the room is located */
+  hotel: Scalars['ID']['input'];
+  /** Rent of the room type */
+  rent: Scalars['Float']['input'];
+  /** Title of the room type */
+  title: Scalars['String']['input'];
 };
 
 export type CreateTransactionInput = {
@@ -236,14 +247,20 @@ export type CreateTransactionInput = {
 };
 
 export type CreateUserInput = {
+  /** Date of deactivation */
+  detactivatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   /** Email of the user */
   email?: InputMaybe<Scalars['String']['input']>;
+  /** Hotels of the user */
+  hotels: Array<Scalars['ID']['input']>;
   /** Name of the user */
   name: Scalars['String']['input'];
   /** Password of the user */
   password: Scalars['String']['input'];
   /** Phone number of the user */
   phone: Scalars['String']['input'];
+  /** Type of the user */
+  type: UserType;
 };
 
 export type Guest = {
@@ -290,22 +307,23 @@ export type Mutation = {
   createHotel: Hotel;
   createRoom: Room;
   createRoomBooking: RoomBooking;
+  createRoomType: RoomType;
   createTransaction: Transaction;
   /** Create user */
   createUser: User;
   login: LoginResponseDto;
   removeBooking: Booking;
   removeHotel: Hotel;
-  removeRoom: Room;
   removeRoomBooking: RoomBooking;
   removeTransaction: Transaction;
-  removeUser: User;
+  signup: SignUpResponseDto;
   softDeleteTransaction: Transaction;
   updateBooking: Booking;
   updateContact: Contact;
   updateHotel: Hotel;
   updateRoom: Room;
   updateRoomBooking: RoomBooking;
+  updateRoomType: RoomType;
   /** Update transaction */
   updateTransaction: Transaction;
   updateUser: User;
@@ -337,6 +355,11 @@ export type MutationCreateRoomBookingArgs = {
 };
 
 
+export type MutationCreateRoomTypeArgs = {
+  createRoomTypeInput: CreateRoomTypeInput;
+};
+
+
 export type MutationCreateTransactionArgs = {
   createTransactionInput: CreateTransactionInput;
 };
@@ -363,11 +386,6 @@ export type MutationRemoveHotelArgs = {
 };
 
 
-export type MutationRemoveRoomArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
 export type MutationRemoveRoomBookingArgs = {
   id: Scalars['ID']['input'];
 };
@@ -378,8 +396,10 @@ export type MutationRemoveTransactionArgs = {
 };
 
 
-export type MutationRemoveUserArgs = {
-  id: Scalars['ID']['input'];
+export type MutationSignupArgs = {
+  name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  phone: Scalars['String']['input'];
 };
 
 
@@ -413,13 +433,17 @@ export type MutationUpdateRoomBookingArgs = {
 };
 
 
+export type MutationUpdateRoomTypeArgs = {
+  updateRoomTypeInput: UpdateRoomTypeInput;
+};
+
+
 export type MutationUpdateTransactionArgs = {
   updateTransactionInput: UpdateTransactionInput;
 };
 
 
 export type MutationUpdateUserArgs = {
-  id: Scalars['ID']['input'];
   updateUserInput: UpdateUserInput;
 };
 
@@ -443,6 +467,7 @@ export type Query = {
   roomBookingFinancials: Array<RoomBookingsOverview>;
   roomBookings: Array<RoomBookingResponse>;
   roomType: RoomType;
+  roomTypes: Array<RoomType>;
   rooms: Array<Room>;
   roomsByFloor: Array<RoomsByFloorResponse>;
   transaction: Transaction;
@@ -480,7 +505,7 @@ export type QueryContactsArgs = {
 
 
 export type QueryHotelArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -503,6 +528,11 @@ export type QueryRoomBookingsArgs = {
 
 export type QueryRoomTypeArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryRoomTypesArgs = {
+  findByFilter: RoomTypeFilterInput;
 };
 
 
@@ -540,10 +570,17 @@ export type QueryUserArgs = {
   id: Scalars['ID']['input'];
 };
 
+
+export type QueryUsersArgs = {
+  filter: UserFilterInput;
+};
+
 export type Room = {
   __typename?: 'Room';
   /** Unique identifier of the room */
   _id: Scalars['ID']['output'];
+  /** Date of deactivation */
+  detactivatedAt?: Maybe<Scalars['DateTime']['output']>;
   /** Floor where the room is located */
   floor: Scalars['String']['output'];
   /** Hotel where the room is located */
@@ -695,6 +732,8 @@ export type RoomBookingsOverview = {
 export type RoomFilterInput = {
   /** Unique identifier of the room */
   _id?: InputMaybe<Scalars['ID']['input']>;
+  /** Date of deactivation */
+  detactivatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   /** Floor where the room is located */
   floor?: InputMaybe<Scalars['String']['input']>;
   hotel: Scalars['ID']['input'];
@@ -736,6 +775,16 @@ export type RoomTypeDetails = {
   title: Scalars['String']['output'];
 };
 
+export type RoomTypeFilterInput = {
+  /** Unique identifier of the room */
+  _id?: InputMaybe<Scalars['ID']['input']>;
+  hotel: Scalars['ID']['input'];
+  /** Rent of the room type */
+  rent?: InputMaybe<Scalars['Float']['input']>;
+  /** Title of the room type */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type RoomTypeResponse = {
   __typename?: 'RoomTypeResponse';
   /** Unique identifier of the room */
@@ -751,6 +800,22 @@ export type RoomsByFloorResponse = {
   __typename?: 'RoomsByFloorResponse';
   floor: Scalars['String']['output'];
   rooms: Array<RoomBookingsOverview>;
+};
+
+export type SignUpResponseDto = {
+  __typename?: 'SignUpResponseDto';
+  /** Date of deactivation */
+  detactivatedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** Email of the user */
+  email?: Maybe<Scalars['String']['output']>;
+  /** Name of the user */
+  name: Scalars['String']['output'];
+  /** Password of the user */
+  password: Scalars['String']['output'];
+  /** Phone number of the user */
+  phone: Scalars['String']['output'];
+  /** Type of the user */
+  type: UserType;
 };
 
 export type Transaction = {
@@ -867,9 +932,9 @@ export type UpdateContactInput = {
 };
 
 export type UpdateHotelInput = {
+  _id: Scalars['ID']['input'];
   /** Address of the hotel */
   address?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['Int']['input'];
   /** Name of the hotel */
   name?: InputMaybe<Scalars['String']['input']>;
 };
@@ -901,6 +966,8 @@ export type UpdateRoomBookingInput = {
 
 export type UpdateRoomInput = {
   _id: Scalars['ID']['input'];
+  /** Date of deactivation */
+  detactivatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   /** Floor where the room is located */
   floor?: InputMaybe<Scalars['String']['input']>;
   /** Hotel where the room is located */
@@ -911,6 +978,16 @@ export type UpdateRoomInput = {
   position?: InputMaybe<Scalars['String']['input']>;
   /** Type of the room */
   type?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type UpdateRoomTypeInput = {
+  _id: Scalars['ID']['input'];
+  /** Hotel where the room is located */
+  hotel?: InputMaybe<Scalars['ID']['input']>;
+  /** Rent of the room type */
+  rent?: InputMaybe<Scalars['Float']['input']>;
+  /** Title of the room type */
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateTransactionInput = {
@@ -941,32 +1018,60 @@ export type UpdateTransactionInput = {
 };
 
 export type UpdateUserInput = {
+  _id: Scalars['ID']['input'];
+  /** Date of deactivation */
+  detactivatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   /** Email of the user */
   email?: InputMaybe<Scalars['String']['input']>;
-  /** User ID */
-  id: Scalars['ID']['input'];
+  /** Hotels of the user */
+  hotels?: InputMaybe<Array<Scalars['ID']['input']>>;
   /** Name of the user */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Password of the user */
   password?: InputMaybe<Scalars['String']['input']>;
   /** Phone number of the user */
   phone?: InputMaybe<Scalars['String']['input']>;
+  /** Type of the user */
+  type?: InputMaybe<UserType>;
 };
 
 export type User = {
   __typename?: 'User';
   /** Unique identifier of the user */
   _id: Scalars['ID']['output'];
+  /** Date of deactivation */
+  detactivatedAt?: Maybe<Scalars['DateTime']['output']>;
   /** Email of the user */
   email?: Maybe<Scalars['String']['output']>;
   /** Hotels of the user */
   hotels: Array<Scalars['ID']['output']>;
   /** Name of the user */
   name: Scalars['String']['output'];
+  /** Password of the user */
+  password: Scalars['String']['output'];
   /** Phone number of the user */
   phone: Scalars['String']['output'];
   /** Type of the user */
   type: UserType;
+};
+
+export type UserFilterInput = {
+  /** Unique identifier of the user */
+  _id?: InputMaybe<Scalars['ID']['input']>;
+  /** Date of deactivation */
+  detactivatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Email of the user */
+  email?: InputMaybe<Scalars['String']['input']>;
+  /** Hotels of the user */
+  hotels?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Name of the user */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Password of the user */
+  password?: InputMaybe<Scalars['String']['input']>;
+  /** Phone number of the user */
+  phone?: InputMaybe<Scalars['String']['input']>;
+  /** Type of the user */
+  type?: InputMaybe<UserType>;
 };
 
 /** Type of the user */

@@ -71,4 +71,4 @@ mutation RemoveRoomBooking($id:ID!) {
 
 `);
 
-// bookingId: 6544b236a6251434b00f0440
+// bookingId: 654b14c565918b7a24898b74
