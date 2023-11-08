@@ -4,12 +4,12 @@ import {
   AiOutlineCalendar,
   AiOutlineHome,
 } from "react-icons/ai";
-import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
 import { BsPersonVcard } from "react-icons/bs";
+import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import version from "../../package.json";
 import logo from "../assets/logo.png";
-import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
 const { Sider } = Layout;
@@ -92,8 +92,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               Guest Look-up
             </Link>
           </Menu.Item>
-
-          {/* check user type to show protected route */}
+          {/* if user type is not admin, he can not see bellow routes on the sidebar  */}
           {user?.type === "ADMIN" && (
             <>
               <Menu.Item key="5" icon={<BsPersonVcard />}>

@@ -87,7 +87,17 @@ const Employees = () => {
   });
   // create employe mutation
   const [createContact] = useMutation(CREATE_CONTACT, {
-    refetchQueries: [{ query: GET_CONTACTS }],
+    refetchQueries: [
+      {
+        query: GET_CONTACTS,
+        variables: {
+          filter: {
+            hotel: user?.hotels[0] || "",
+            type: "EMPLOYEE",
+          } as ContactFilterInput,
+        },
+      },
+    ],
   });
   // update Employee mutation query
   const [updateContact] = useMutation(UPDATE_CONTACT, {
@@ -127,18 +137,18 @@ const Employees = () => {
             idNo: values.idNo,
             hotel: user?.hotels[0] || "",
             type: ContactTypes.Employee,
-            detactivatedAt: dayjs().format("YYYY-MM-DDTHH:mm:ss[Z]"),
           },
         },
       });
 
       if (response?.data?.createContact) {
         message.success("Employee Added successfully!");
-        form.setFieldsValue(response.data.createContact);
+        form.resetFields();
         setIsModalOpen(false);
       }
-    } catch (err) {
-      message.error(`Something went wrong!`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      message.error(err.message);
     }
   };
 
@@ -180,7 +190,7 @@ const Employees = () => {
   };
 
   // handle loading and error
-  if (loading) return <p>Loading</p>;
+  if (loading) return <p>Loading...</p>;
   if (error) return <p>{error?.message}</p>;
 
   const dataSource = filteredEmployeeData?.map((employeeData) => ({
@@ -339,7 +349,7 @@ const Employees = () => {
         }}
         footer={null}
       >
-        <Form onFinish={onFinish}>
+        <Form form={form} onFinish={onFinish}>
           <Space direction="vertical" className="w-full">
             <h3>Full Name</h3>
             <Form.Item name="name" className="mb-0">
