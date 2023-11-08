@@ -51,6 +51,9 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     case "/booking-overview":
       selectedKey = "8";
       break;
+    case "/room-setting":
+      selectedKey = "9";
+      break;
 
     default:
       selectedKey = "1";
@@ -114,7 +117,18 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               <Link to="/booking-overview" className="menuLink">
                Booking Overview
               </Link>
-            </Menu.Item> </>}
+            </Menu.Item>
+            <Menu.Item key="9" icon={<AiOutlineBarChart />}>
+              <Link to="/room-setting" className="menuLink">
+               Room Setting
+              </Link>
+            </Menu.Item>
+            
+            
+             </>
+            
+            
+            }
       
          
         </Menu>

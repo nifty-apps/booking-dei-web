@@ -41,6 +41,8 @@ const BookingOverview = () => {
     refetch({ startDate: selectedDate, endDate: selectedDate });
   }, [refetch, selectedDate]);
 
+  console.log(data)
+
   if (loading) return <div style={loadingStyles}>
     <Spin size="large" tip="Loading..." style={loadingStyles} />
   </div>

@@ -65,7 +65,7 @@ const Employees = () => {
       } as ContactFilterInput,
     },
   });
-
+ console.log(EmployeesData?.contacts)
   const allEmployeeData = filterDeactivated
     ? EmployeesData?.contacts?.filter((employeesInfo) => {
         return employeesInfo;
