@@ -24,8 +24,7 @@ const RoomSetting = () => {
     },
   });
 
-  if (loading) return <p>Loading</p>;
-  if (error) return <p>{error?.message}</p>;
+
 
   // roomtypes data get 
   const dataSource = RoomsTypeData?.roomTypes.map((roomData) => ({
@@ -112,7 +111,8 @@ const RoomSetting = () => {
       message.error(`Something went wrong!`);
     }
   };
-
+  if (loading) return <p>Loading</p>;
+  if (error) return <p>{error?.message}</p>;
   return (
     <>
       <div className="mb-5  ">

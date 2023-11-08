@@ -26,8 +26,7 @@ const Rooms = () => {
             refetchQueries: [{ query: GET_ROOMS }],
       });
 
-      if (loading) return <p>Loading</p>;
-      if (error) return <p>{error?.message}</p>;
+ 
       //   console.log(RoomsData?.rooms)
       const dataSource = RoomsData?.rooms.map((roomData) => ({
             key: roomData?._id,
@@ -84,7 +83,8 @@ const Rooms = () => {
       };
 
 
-
+      if (loading) return <p>Loading</p>;
+      if (error) return <p>{error?.message}</p>;
 
       return (
             <>
