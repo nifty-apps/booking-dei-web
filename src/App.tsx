@@ -22,6 +22,7 @@ import Transactions from "./pages/Transactions/Transactions";
 import Employees from "./pages/Employees/Employees";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+import RoomSetting from "./pages/RoomSetting/RoomSetting";
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -57,6 +58,7 @@ const App = () => {
                   path="/rooms-overview"
                   element={<RoomBookingFinancials />}
                 />
+                 <Route path="/room-setting" element={<RoomSetting/>} />
               </>
             )}
 
