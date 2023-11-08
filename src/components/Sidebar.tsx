@@ -1,4 +1,6 @@
 import { Layout, Menu } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
+
 import {
   AiOutlineBarChart,
   AiOutlineCalendar,
@@ -114,14 +116,13 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
                   Rooms Overview
                 </Link>
               </Menu.Item>
+              <Menu.Item key="8" icon={<SettingOutlined />}>
+                <Link to="/room-settings" className="menuLink">
+                  Room Settings
+                </Link>
+              </Menu.Item>
             </>
           )}
-
-          <Menu.Item key="8" icon={<TbUsers />}>
-            <Link to="/room-settings" className="menuLink">
-              Room Settings
-            </Link>
-          </Menu.Item>
         </Menu>
 
         {/* footer part for sidebar */}

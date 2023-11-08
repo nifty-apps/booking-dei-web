@@ -1,11 +1,22 @@
-import { Input, Switch, Tooltip } from "antd";
+import { Tabs, TabsProps } from "antd";
 import TitleText from "../../components/Title";
 import { PlusOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import Rooms from "../../components/Rooms";
 
 const RoomSettings = () => {
-    const [searchText, setSearchText] = useState<string>("");
-    const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
+
+    const items: TabsProps['items'] = [
+        {
+          key: '1',
+          label: <p className="text-xl text-center outline-none">Rooms</p>,
+          children: <Rooms />,
+        },
+        {
+          key: '2',
+          label: <p className="text-xl outline-none">Rooms Types</p>,
+          children: 'Content of Tab Pane 2',
+        },
+      ];
   return (
     <>
       <div className="mb-5 flex justify-between">
@@ -15,30 +26,8 @@ const RoomSettings = () => {
           Add Room
         </button>
       </div>
-      <div className="flex items-center justify-between mb-3">
-        <div className="w-3/12">
-          <Input
-            placeholder="Search here.."
-            allowClear
-            size="middle"
-            onChange={(e) => setSearchText(e.target.value)}
-            value={searchText}
-          />
-        </div>
 
-        <Tooltip
-          title={`See ${filterDeactivated ? "Active" : "Deactivated"} Employees`}
-          placement="bottomRight"
-          className="cursor-pointer flex justify-center gap-1"
-        >
-          <Switch
-            className={`${filterDeactivated ? "" : "bg-gray-400"}`}
-            defaultChecked={false}
-            onChange={() => setFilterDeactivated(!filterDeactivated)}
-          />
-          Deactivated
-        </Tooltip>
-      </div>
+      <Tabs className=" outline-none" defaultActiveKey="1" items={items} />
     </>
   );
 };

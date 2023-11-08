@@ -48,7 +48,6 @@ const App = () => {
             />
             <Route path="/calender" element={<Calender />} />
             <Route path="/guest-lookup" element={<GuestLookUp />} />
-            <Route path="/room-settings" element={<RoomSettings />} />
             {/* check user type to show protected route */}
             {user?.type === "ADMIN" && (
               <>
@@ -58,6 +57,7 @@ const App = () => {
                   path="/rooms-overview"
                   element={<RoomBookingFinancials />}
                 />
+                 <Route path="/room-settings" element={<RoomSettings />} />
               </>
             )}
             <Route path="*" element={<Error />} />
