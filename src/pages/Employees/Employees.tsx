@@ -48,6 +48,8 @@ const Employees = () => {
   const [employeeID, setEmployeeID] = useState<string | null>(null);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [employeeDetailsModalOpen, setEmployeeDetailsModalOpen] =
+    useState<boolean>(false);
   const [informationModalOpen, setInformationModalOpen] = useState(false);
   const [information, setInformation] = useState<employee>();
 
@@ -196,6 +198,19 @@ const Employees = () => {
 
   const columns = [
     {
+      title: "Employee ID",
+      dataIndex: "idNo",
+      key: "idNo",
+      render: (idNo: string) => (
+        <span
+          onClick={() => setEmployeeDetailsModalOpen(true)}
+          className="text-blue-500 underline cursor-pointer"
+        >
+          ABC{idNo}
+        </span>
+      ),
+    },
+    {
       title: "NAME",
       dataIndex: "name",
       key: "name",
@@ -204,11 +219,6 @@ const Employees = () => {
       title: "PHONE",
       dataIndex: "phone",
       key: "phone",
-    },
-    {
-      title: "ADDRESS",
-      dataIndex: "address",
-      key: "address",
     },
     {
       title: "ID TYPE",
@@ -329,6 +339,7 @@ const Employees = () => {
           />
         </Tooltip>
       </div>
+
       {/* modal for create new employee  */}
       <Modal
         title="Create New Employee"
@@ -378,6 +389,75 @@ const Employees = () => {
       </Modal>
 
       <Table dataSource={dataSource} columns={columns} pagination={false} />
+
+      {/* modal to View Employee details  */}
+      <Modal
+        title="Employee"
+        open={employeeDetailsModalOpen}
+        onOk={() => setEmployeeDetailsModalOpen(false)}
+        onCancel={() => setEmployeeDetailsModalOpen(false)}
+        footer={null}
+        centered
+      >
+        <Space direction="vertical" className="w-full">
+          <div className="flex items-center gap-5 w-full">
+            <Form.Item name="id" className="mb-0 w-full">
+              <h3 className="mb-1">Employee ID</h3>
+              <Input autoComplete="off" disabled />
+            </Form.Item>
+            <Form.Item name="date" className="mb-0 w-full">
+              <h3 className="mb-1">Date Of Hiring</h3>
+              <Input autoComplete="off" disabled />
+            </Form.Item>
+          </div>
+
+          <h3>Full Name</h3>
+          <Form.Item name="name" className="mb-0">
+            <Input autoComplete="off" disabled />
+          </Form.Item>
+
+          <div className="flex items-center gap-5 w-full">
+            <Form.Item name="id" className="mb-0 w-full">
+              <h3 className="mb-1">Designation</h3>
+              <Input autoComplete="off" disabled />
+            </Form.Item>
+            <Form.Item name="date" className="mb-0 w-full">
+              <h3 className="mb-1">Department</h3>
+              <Input autoComplete="off" disabled />
+            </Form.Item>
+          </div>
+
+          <div className="flex items-center gap-5 w-full">
+            <Form.Item name="id" className="mb-0 w-full">
+              <h3 className="mb-1">ID Type</h3>
+              <Input autoComplete="off" disabled />
+            </Form.Item>
+            <Form.Item name="date" className="mb-0 w-full">
+              <h3 className="mb-1">ID Number</h3>
+              <Input autoComplete="off" disabled />
+            </Form.Item>
+          </div>
+
+          <h3>Phone Number</h3>
+          <Form.Item name="idType" className="mb-0">
+            <Input autoComplete="off" disabled />
+          </Form.Item>
+
+          <h3>Address</h3>
+          <Form.Item name="address" className="mb-0">
+            <Input autoComplete="off" disabled />
+          </Form.Item>
+        </Space>
+
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className=" mt-6 text-blue-600 hover:bg-blue-500 border border-blue-600 hover:text-white font-semibold py-2 px-20 rounded"
+          >
+            View Details
+          </button>
+        </div>
+      </Modal>
 
       {/* modal to edit guest information  */}
       <Modal
