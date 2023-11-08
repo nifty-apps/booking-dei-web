@@ -49,6 +49,9 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     case "/rooms-overview":
       selectedKey = "7";
       break;
+    case "/room-settings":
+      selectedKey = "8";
+      break;
 
     default:
       selectedKey = "1";
@@ -113,6 +116,12 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               </Menu.Item>
             </>
           )}
+
+          <Menu.Item key="8" icon={<TbUsers />}>
+            <Link to="/room-settings" className="menuLink">
+              Room Settings
+            </Link>
+          </Menu.Item>
         </Menu>
 
         {/* footer part for sidebar */}

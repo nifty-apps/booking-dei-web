@@ -18,6 +18,7 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import NewBooking from "./pages/NewBooking/NewBooking";
 import RoomBookingFinancials from "./pages/RoomBookingFinancials/RoomBookingFinancials";
+import RoomSettings from "./pages/RoomSettings/RoomSettings";
 import Transactions from "./pages/Transactions/Transactions";
 import Employees from "./pages/Employees/Employees";
 import { useSelector } from "react-redux";
@@ -47,7 +48,7 @@ const App = () => {
             />
             <Route path="/calender" element={<Calender />} />
             <Route path="/guest-lookup" element={<GuestLookUp />} />
-
+            <Route path="/room-settings" element={<RoomSettings />} />
             {/* check user type to show protected route */}
             {user?.type === "ADMIN" && (
               <>
@@ -59,7 +60,6 @@ const App = () => {
                 />
               </>
             )}
-
             <Route path="*" element={<Error />} />
           </Routes>
         </Content>
