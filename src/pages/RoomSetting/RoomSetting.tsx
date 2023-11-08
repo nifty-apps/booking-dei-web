@@ -143,7 +143,7 @@ const RoomSetting = () => {
                 />
                 {/* modal for add Rooms */}
                 <Modal
-                  title="Create New Employee"
+                  title="Create New Room Type"
                   open={isModalOpen}
                   onOk={() => setIsModalOpen(false)}
                   onCancel={() => {
@@ -171,7 +171,7 @@ const RoomSetting = () => {
                       type="submit"
                       className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
                     >
-                      Add type Room
+                      Add  RoomTpe
                     </button>
                   </Form>
                 </Modal>
