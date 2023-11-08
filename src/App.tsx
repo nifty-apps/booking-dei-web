@@ -22,6 +22,8 @@ import Transactions from "./pages/Transactions/Transactions";
 import Employees from "./pages/Employees/Employees";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+import Registration from "./pages/Registration/Registration";
+import CreateHotel from "./pages/CreateHotel/CreateHotel";
 
 const App = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -36,6 +38,8 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/registration" element={<Registration />} />
+            <Route path="/create-hotel" element={<CreateHotel />} />
             <Route path="/new-booking" element={<NewBooking />} />
             <Route
               path="/booking-details/:bookingId"
