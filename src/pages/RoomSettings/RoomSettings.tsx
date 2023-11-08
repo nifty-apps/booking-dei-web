@@ -43,7 +43,7 @@ const RoomSettings = () => {
 
   console.log(roomType)
 
-  const onFinish = async (values) => {console.log(values)};
+  const onFinish = async (values:string) => {console.log(values)};
   const columns = [
     {
       title: "ROOM NUMBER",
@@ -57,12 +57,12 @@ const RoomSettings = () => {
     },
     {
       title: "ROOM RENT",
-      dataIndex: "address",
+      dataIndex: "rent",
       key: "address",
     },
     {
       title: "STATUS",
-      dataIndex: "idType",
+      dataIndex: "status",
       key: "idType",
     },
     {
