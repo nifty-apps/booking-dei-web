@@ -8,22 +8,22 @@ import { Route, Routes } from "react-router-dom";
 // components
 import Sidebar from "./components/Sidebar";
 // pages
+import { useSelector } from "react-redux";
 import Toolbar from "./components/Toolbar";
 import BookingDetails from "./pages/BookingDetails/BookingDetails";
 import Calender from "./pages/Calender/Calender";
+import CreateHotel from "./pages/CreateHotel/CreateHotel";
 import EditRoomBooking from "./pages/EditRoomBooking/EditRoomBooking";
+import Employees from "./pages/Employees/Employees";
 import Error from "./pages/Error/Error";
 import GuestLookUp from "./pages/GuestLookUp/GuestLookUp";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import NewBooking from "./pages/NewBooking/NewBooking";
+import Registration from "./pages/Registration/Registration";
 import RoomBookingFinancials from "./pages/RoomBookingFinancials/RoomBookingFinancials";
 import Transactions from "./pages/Transactions/Transactions";
-import Employees from "./pages/Employees/Employees";
-import { useSelector } from "react-redux";
 import { RootState } from "./store";
-import Registration from "./pages/Registration/Registration";
-import CreateHotel from "./pages/CreateHotel/CreateHotel";
 
 const App = () => {
   const { user } = useSelector((state: RootState) => state.auth);
