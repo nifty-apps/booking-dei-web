@@ -22,6 +22,8 @@ import Transactions from "./pages/Transactions/Transactions";
 import Employees from "./pages/Employees/Employees";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+import Vendors from "./pages/Vendors/Vendors";
+import VendorDetails from "./pages/VendorDetails/VendorDetails";
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -47,6 +49,8 @@ const App = () => {
             />
             <Route path="/calender" element={<Calender />} />
             <Route path="/guest-lookup" element={<GuestLookUp />} />
+            <Route path="/vendors" element={<Vendors />} />
+            <Route path="/vendor-details/:userid" element={<VendorDetails />} />
 
             {/* check user type to show protected route */}
             {user?.type === "ADMIN" && (
