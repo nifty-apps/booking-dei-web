@@ -22,6 +22,8 @@ import Transactions from "./pages/Transactions/Transactions";
 import Employees from "./pages/Employees/Employees";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+import Vendor from "./pages/Vendor/Vendor";
+import SingleTransactions from "./pages/SingleTransaction/SingleTransaction";
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -52,11 +54,16 @@ const App = () => {
             {user?.type === "ADMIN" && (
               <>
                 <Route path="/transactions" element={<Transactions />} />
+                <Route
+                  path="/transactions/:transactionID"
+                  element={<SingleTransactions />}
+                />
                 <Route path="/employees" element={<Employees />} />
                 <Route
                   path="/rooms-overview"
                   element={<RoomBookingFinancials />}
                 />
+                <Route path="/vendors" element={<Vendor />} />
               </>
             )}
 

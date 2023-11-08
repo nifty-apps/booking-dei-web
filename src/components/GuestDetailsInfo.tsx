@@ -65,6 +65,7 @@ const GuestDetailsInfo = ({
       } as ContactFilterInput,
     },
   });
+  console.log(data);
 
   // create contact
   const onFinish = async (values: CreateContactInput) => {

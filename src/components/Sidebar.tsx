@@ -6,6 +6,7 @@ import {
 } from "react-icons/ai";
 import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
 import { BsPersonVcard } from "react-icons/bs";
+import { PiUserFocusThin } from "react-icons/pi";
 import { Link, useLocation } from "react-router-dom";
 import version from "../../package.json";
 import logo from "../assets/logo.png";
@@ -48,6 +49,9 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
       break;
     case "/rooms-overview":
       selectedKey = "7";
+      break;
+    case "/vendors":
+      selectedKey = "8";
       break;
 
     default:
@@ -109,6 +113,11 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               <Menu.Item key="7" icon={<AiOutlineBarChart />}>
                 <Link to="/rooms-overview" className="menuLink">
                   Rooms Overview
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="8" icon={<PiUserFocusThin />}>
+                <Link to="/vendors" className="menuLink">
+                  Vendors
                 </Link>
               </Menu.Item>
             </>
