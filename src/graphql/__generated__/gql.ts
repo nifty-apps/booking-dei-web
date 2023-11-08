@@ -26,6 +26,7 @@ const documents = {
     "\n query Booking($id:ID!) {\n      booking(id: $id) {\n        _id\n        customer\n        hotel\n        paymentStatus\n     }\n }\n\n": types.BookingDocument,
     "\n query Contact($id:ID!) {\n    contact(id: $id) {\n        _id\n        name\n        phone\n        idType\n        idNo\n        address\n        hotel\n        type\n    }\n}\n": types.ContactDocument,
     "\nquery Room($id:ID!) {\n    room(id:$id) {\n        _id\n        number\n        floor\n        position\n        type\n        hotel\n    }\n}\n\n": types.RoomDocument,
+    "\n   query Bookings($bookingFilter: BookingFilter) {\n    bookings(bookingFilter: $bookingFilter) {\n        _id\n        number\n        customer\n        hotel\n        paymentStatus\n    }\n}\n": types.BookingsDocument,
     "\n  query Contacts($filter: ContactFilterInput!) {\n    contacts(filter: $filter) {\n        _id\n        name\n        phone\n        idType\n        idNo\n        address\n        hotel\n        type\n        detactivatedAt\n    }\n }\n": types.ContactsDocument,
     "\n  query RoomBookingFinancials(\n    $hotel: ID!,\n    $startDate: DateTime!,\n    $endDate: DateTime!\n  ) {\n    roomBookingFinancials(\n      hotel: $hotel, \n      startDate: $startDate,\n      endDate: $endDate\n    ) {\n      _id\n      number\n      type {\n        title\n        rent\n      }\n      floor\n      position\n      roombookings {\n        checkIn\n        checkOut\n        rent\n        discount\n        booking\n        status\n        bookingCustomer\n        bookingPayment\n        bookingRent\n        bookingDue\n        _id\n      }\n    }\n  }\n\n": types.RoomBookingFinancialsDocument,
     "\n query RoomBookings($roomBookingFilter: RoomBookingFilter!) {\n    roomBookings(roomBookingFilter: $roomBookingFilter) {\n    _id\n    checkIn\n    checkOut\n    rent\n    discount\n    extraBed\n    extraBreakfast\n    booking\n    hotel\n    status\n    room {\n      _id\n      number\n      type {\n        _id\n        title\n       }\n     }\n    }\n}\n": types.RoomBookingsDocument,
@@ -101,6 +102,10 @@ export function gql(source: "\n query Contact($id:ID!) {\n    contact(id: $id) {
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\nquery Room($id:ID!) {\n    room(id:$id) {\n        _id\n        number\n        floor\n        position\n        type\n        hotel\n    }\n}\n\n"): (typeof documents)["\nquery Room($id:ID!) {\n    room(id:$id) {\n        _id\n        number\n        floor\n        position\n        type\n        hotel\n    }\n}\n\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n   query Bookings($bookingFilter: BookingFilter) {\n    bookings(bookingFilter: $bookingFilter) {\n        _id\n        number\n        customer\n        hotel\n        paymentStatus\n    }\n}\n"): (typeof documents)["\n   query Bookings($bookingFilter: BookingFilter) {\n    bookings(bookingFilter: $bookingFilter) {\n        _id\n        number\n        customer\n        hotel\n        paymentStatus\n    }\n}\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

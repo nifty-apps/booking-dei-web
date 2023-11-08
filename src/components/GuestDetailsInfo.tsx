@@ -73,7 +73,7 @@ const GuestDetailsInfo = ({
         variables: {
           createContactInput: {
             ...values,
-            idNo: Number(values.idNo),
+            idNo: values.idNo,
             hotel: user?.hotels[0] || "",
             type: ContactTypes.Customer,
           },
@@ -101,7 +101,7 @@ const GuestDetailsInfo = ({
             _id: contact._id,
             name: values.name || "",
             phone: values.phone || "",
-            idNo: Number(values.idNo),
+            idNo: values.idNo,
             type: ContactTypes.Customer,
           },
         },
@@ -130,7 +130,10 @@ const GuestDetailsInfo = ({
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  const contacts = data?.contacts ?? [];
+  const contacts =
+    data?.contacts?.filter((guestInfo) => {
+      return guestInfo?.detactivatedAt == null;
+    }) ?? [];
 
   return (
     <>

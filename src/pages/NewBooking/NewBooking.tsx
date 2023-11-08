@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa";
 import { FaEllipsisVertical, FaXmark } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import AdditionalGuests from "../../components/AdditionalGuests";
 import BookingSummary from "../../components/BookingSummary";
 import FloorPlan, { Room } from "../../components/FloorPlan";
 import GuestDetailsInfo from "../../components/GuestDetailsInfo";
@@ -310,7 +311,7 @@ const NewBooking = () => {
           />
 
           {/* Additional Guest details info */}
-          {/* <AdditionalGuests /> */}
+          <AdditionalGuests />
         </div>
         {/* booking summary || Payment flow */}
         <BookingSummary
