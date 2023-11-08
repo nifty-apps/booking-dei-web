@@ -14,6 +14,7 @@ import Calender from "./pages/Calender/Calender";
 import EditRoomBooking from "./pages/EditRoomBooking/EditRoomBooking";
 import Error from "./pages/Error/Error";
 import GuestLookUp from "./pages/GuestLookUp/GuestLookUp";
+
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import NewBooking from "./pages/NewBooking/NewBooking";
@@ -22,6 +23,7 @@ import Transactions from "./pages/Transactions/Transactions";
 import Employees from "./pages/Employees/Employees";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+import EmployeeDetails from "./pages/EmployeeDetails/EmployeeDetails";
 
 const App = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -47,6 +49,7 @@ const App = () => {
             />
             <Route path="/calender" element={<Calender />} />
             <Route path="/guest-lookup" element={<GuestLookUp />} />
+
             {user?.type === "ADMIN" && (
               <>
                 <Route path="/transactions" element={<Transactions />} />
@@ -54,6 +57,10 @@ const App = () => {
                 <Route
                   path="/rooms-overview"
                   element={<RoomBookingFinancials />}
+                />
+                <Route
+                  path="/employee-Details/:userid"
+                  element={<EmployeeDetails/>}
                 />
               </>
             )}
