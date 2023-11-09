@@ -4,6 +4,7 @@ import {
   AiOutlineCalendar,
   AiOutlineHome,
 } from "react-icons/ai";
+import {PiUsersThreeBold} from 'react-icons/pi'
 import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
 import { BsPersonVcard } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
@@ -114,7 +115,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
                   Rooms Overview
                 </Link>
               </Menu.Item>
-              <Menu.Item key="8" icon={<AiOutlineBarChart />}>
+              <Menu.Item key="8" icon={<PiUsersThreeBold />}>
                 <Link to="/vendors" className="menuLink">
                   Vendors
                 </Link>

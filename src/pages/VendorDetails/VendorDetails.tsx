@@ -21,6 +21,7 @@ const VendorDetails = () => {
     const { userid } = useParams();
     const { user } = useSelector((state: RootState) => state.auth);
     const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
+    const [searchText, setSearchText] = useState<string>("");
 
     // fetching data using User ID
 
@@ -32,6 +33,18 @@ const VendorDetails = () => {
             },
         },
     });
+
+    const filteredGuestList = vendorData?.transactionByFilter?.filter((guestInformation) => {
+        const lowercaseSearchText = searchText.toLowerCase();
+        return (
+          guestInformation?.date?.toLowerCase().includes(lowercaseSearchText) ||
+          guestInformation?.subCategory?.toLowerCase().includes(lowercaseSearchText) ||
+          guestInformation?.method?.toLowerCase().includes(lowercaseSearchText) ||
+          guestInformation?.amount?.toString().includes(lowercaseSearchText)
+        );
+      });
+
+
     const { data: contactData} = useQuery(GET_CONTACTS, {
         variables: {
             filter: {
@@ -44,9 +57,9 @@ const VendorDetails = () => {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
 
-    const dataSource = vendorData?.transactionByFilter?.map((guestInformation) => ({
+    const dataSource = filteredGuestList?.map((guestInformation) => ({
         key: guestInformation?._id,
-        name: guestInformation?.date,
+        name: guestInformation?.date.split("T")[0],
         phone: guestInformation?.subCategory,
         idType: guestInformation?.method,
         idNo: guestInformation?.amount,
@@ -119,6 +132,7 @@ const VendorDetails = () => {
                         placeholder="Search here.."
                         allowClear
                         size="middle"
+                        onChange={(e) => setSearchText(e.target.value)}
                     />
                 </div>
                 <Tooltip
