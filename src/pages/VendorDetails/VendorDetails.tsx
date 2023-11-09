@@ -28,7 +28,7 @@ const VendorDetails = () => {
         variables: {
             transactionFilter: {
                 hotel: user?.hotels[0] || "",
-                user: userid,
+                contact: userid,
             },
         },
     });
