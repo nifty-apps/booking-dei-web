@@ -4,7 +4,6 @@ import {
   AiOutlineCalendar,
   AiOutlineHome,
 } from "react-icons/ai";
-import { BsPersonVcard } from "react-icons/bs";
 import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
@@ -98,7 +97,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
           {/* if user type is not admin, he can not see bellow routes on the sidebar  */}
           {user?.type === "ADMIN" && (
             <>
-              <Menu.Item key="5" icon={<BsPersonVcard />}>
+              <Menu.Item key="5" icon={<TbBrandGoogleAnalytics />}>
                 <Link to="/employees" className="menuLink">
                   Employees
                 </Link>
@@ -114,8 +113,8 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
                 </Link>
               </Menu.Item>
               <Menu.Item key="8" icon={<AiOutlineBarChart />}>
-                <Link to="/room-setting" className="menuLink">
-                  Room Setting
+                <Link to="/vendors" className="menuLink">
+                  Vendors
                 </Link>
               </Menu.Item>
             </>
