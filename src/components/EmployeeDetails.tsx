@@ -7,6 +7,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useParams } from "react-router-dom";
 import { GET_TRANSACTION_FILTER } from "../graphql/queries/transactionsQueries";
+import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
+import { UserOutlined } from "@ant-design/icons";
+import { GET_CONTACTS } from "../graphql/queries/contactQueries";
+
 const { RangePicker } = DatePicker;
 
 const EmployeeDetails = () => {
@@ -22,6 +26,7 @@ const EmployeeDetails = () => {
   // Ensure that employeeId is always a string
   const employeeIdAsString = String(employeeId);
 
+  // fetch employee transactions data
   const {
     data: transactionsData,
     loading,
@@ -32,11 +37,30 @@ const EmployeeDetails = () => {
       contactId: employeeIdAsString,
     },
   });
-  console.log(transactionsData?.transactionByFilter);
 
-  //   show loading state
+  // fetch employee details
+  const {
+    data: employeeInfoData,
+    loading: loadingEmployeeInfo,
+    error: errorEmployeeInfo,
+  } = useQuery(GET_CONTACTS, {
+    variables: {
+      filter: {
+        hotel: user?.hotels[0] || "",
+        _id: employeeId, // filter by employee id
+      },
+    },
+  });
+
+  console.log(employeeInfoData?.contacts[0]);
+
+  //   show loading state for employee transactions data
   if (loading) return <p>Loading</p>;
   if (error) return <p>{error.message}</p>;
+
+  // show loading state for employee info data
+  if (loadingEmployeeInfo) return <p>Loading</p>;
+  if (errorEmployeeInfo) return <p>{errorEmployeeInfo.message}</p>;
 
   const dataSource = transactionsData?.transactionByFilter?.map(
     (employeeInformation) => ({
@@ -51,24 +75,21 @@ const EmployeeDetails = () => {
 
   const columns = [
     {
-      title: "NAME",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
       title: "DATE",
       dataIndex: "date",
       key: "date",
-    },
-    {
-      title: "CATEGORY",
-      dataIndex: "category",
-      key: "category",
-    },
-    {
-      title: "SUB CATEGORY",
-      dataIndex: "subCategory",
-      key: "subCategory",
+      render: (date: string) => {
+        const parsedDate = new Date(date);
+        if (isNaN(parsedDate.getTime())) {
+          return "Invalid Date";
+        }
+        const year = parsedDate.getFullYear();
+        const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+        const day = String(parsedDate.getDate()).padStart(2, "0");
+
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate;
+      },
     },
     {
       title: "SUB-CATEGORY",
@@ -85,12 +106,41 @@ const EmployeeDetails = () => {
       dataIndex: "amount",
       key: "amount",
     },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      render: () => {
+        return (
+          <div className="flex gap-4">
+            <div className="flex items-center gap-3 cursor-pointer">
+              <FaRegEdit />
+              <FaRegTrashAlt />
+            </div>
+          </div>
+        );
+      },
+    },
   ];
 
   return (
     <>
-      <div className="mb-5">
+      <div className="mb-7">
         <TitleText text="Employee Details" />
+      </div>
+      <div className="mb-7 flex items-center gap-4">
+        <UserOutlined
+          size={60}
+          className="border-2 border-gray-500 text-gray-500 bg-gray-200/80 rounded-full w-16 h-16 text-5xl"
+        />
+        <div>
+          <h3 className="text-2xl font-semibold text-gray-700 mb-1">
+            {employeeInfoData?.contacts[0]?.name || "Loading..."}
+          </h3>
+          <p className=" text-gray-600 font-medium text-lg">
+            {employeeInfoData?.contacts[0]?.phone || "Loading..."}
+          </p>
+        </div>
       </div>
       <div className="flex align-middle justify-between mb-3">
         <div className="w-3/12">
