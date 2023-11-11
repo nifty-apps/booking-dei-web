@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { RootState } from '../../store';
-import { GET_ROOMS, GET_ROOM_TYPES } from '../../graphql/queries/roomQueries';
+import { GET_ROOM_TYPES } from '../../graphql/queries/roomQueries';
 import { Table, Input, Button, Popconfirm, Tabs, Form, Space, Modal, message } from 'antd';
 import { SearchOutlined, DeleteOutlined } from '@ant-design/icons';
 import TitleText from '../../components/Title';
