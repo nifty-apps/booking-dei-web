@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { RootState } from '../../store';
-import { GET_ROOMS } from '../../graphql/queries/roomQueries';
+import { GET_ROOMS, GET_ROOM_TYPES } from '../../graphql/queries/roomQueries';
 import { Table, Input, Modal, message, Form, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
@@ -10,8 +10,13 @@ import { CREATE_ROOM } from '../../graphql/mutations/contactMutations';
 import { CreateRoomInput } from '../../graphql/__generated__/graphql';
 import { useState } from 'react';
 
+import { GET_ROOM_BOOKING } from '../../graphql/queries/roomBookingQueries';
+
+
 const Rooms = () => {
+
       const { user } = useSelector((state: RootState) => state.auth);
+      const [searchText, setSearchText] = useState<string>('');
 
       const [isModalOpen, setIsModalOpen] = useState(false);
       const { data: RoomsData, loading, error } = useQuery(GET_ROOMS, {
@@ -21,19 +26,54 @@ const Rooms = () => {
                   },
             },
       });
+      console.log({RoomsData})
 
+      const { data: RoomsTypeData } = useQuery(GET_ROOM_TYPES, {
+            variables: {
+              findByFilter: {
+                hotel: user?.hotels[0] || '',
+              },
+            },
+          });
+        
+
+          const { data:roomBookingsData} = useQuery(GET_ROOM_BOOKING, {
+            variables: {
+              roomBookingFilter: {
+                hotel: '64d0a1d008291a484b015d0b', // Replace with your hotel ID
+              },
+            },
+          });
+
+      //     console.log(roomBookingsData?.roomBookings
+      //     )
       const [createRoom] = useMutation(CREATE_ROOM, {
             refetchQueries: [{ query: GET_ROOMS }],
       });
 
  
-      //   console.log(RoomsData?.rooms)
-      const dataSource = RoomsData?.rooms.map((roomData) => ({
-            key: roomData?._id,
-            hotel: roomData?.hotel,
-            roomNumber: roomData.number,
-      }));
 
+      const dataSource = RoomsData?.rooms.map((roomData) => {
+            const foundRoomType = RoomsTypeData?.roomTypes.find(
+              (roomtype) => roomtype._id=== roomData.type
+            );
+            const FoundRoomStatus = roomBookingsData?.roomBookings.find((data) => {
+                  return data.room._id === roomData._id;
+                });
+                
+            //     console.log(FoundRoomStatus);
+                
+            return {
+                  key: roomData?._id,
+                  hotel: roomData?.hotel,
+                  roomNumber: roomData.number,
+                  type:roomData?.type,
+                  roomtype:foundRoomType?.title,
+                  roomRent:foundRoomType?.rent,
+                  status:FoundRoomStatus?.status
+            };
+          });
+          console.log({dataSource})
 
       const columns = [
             {
@@ -43,14 +83,47 @@ const Rooms = () => {
             },
             {
                   title: 'ROOM TYPE',
-                  dataIndex: '',
-                  key: '',
+                  dataIndex: 'roomtype',
+                  key: 'title',
             },
             {
                   title: 'ROOM RENT',
-                  dataIndex: '',
-                  key: '',
-            }
+                  dataIndex: 'roomRent',
+                  key: 'title',
+            },
+            {
+                  title: 'STATUS',
+                  dataIndex: 'status',
+                  key: 'title',
+            },
+            // {
+            //       title: 'ROOM TYPE',
+            //       dataIndex: 'type',
+            //       key: 'type',
+            //       render: (record: string) => {
+            //         const Single = RoomsTypeData?.roomTypes.find(data => data._id === record);
+            
+            //         if (Single) {
+            //           return <div>{Single.title}</div>; // Display the room type name (adjust 'name' to your actual property)
+            //         } else {
+            //           return <div>Not Found</div>; // Handle the case where the room type is not found
+            //         }
+            //       }
+            //     },
+                
+            //     {
+            //       title: 'ROOM TYPE',
+            //       dataIndex: 'type',
+            //       key: 'type',
+            //       render: (record: string) => {
+            //         const Single = RoomsTypeData?.roomTypes.find(data => data._id === record);
+            //         if (Single) {
+            //           return <div>{Single.rent}</div>; // Display the room type name (adjust 'name' to your actual property)
+            //         } else {
+            //           return <div>Not Found</div>; // Handle the case where the room type is not found
+            //         }
+            //       }
+            //     },
 
 
       ];
@@ -81,7 +154,20 @@ const Rooms = () => {
                   message.error(`Something went wrong!`);
             }
       };
+      const onSearch = (value: string) => {
+            setSearchText(value);
+          };
+          const filteredDataSource = dataSource?.filter((item) => {
 
+            return (
+              item.roomNumber.toLowerCase().includes(searchText.toLowerCase()) ||
+              item.status?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+              item.roomRent?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+              item.roomRent?.toString().toLowerCase().includes(searchText.toLowerCase())
+        
+            )
+        
+          });
 
       if (loading) return <p>Loading</p>;
       if (error) return <p>{error?.message}</p>;
@@ -98,13 +184,13 @@ const Rooms = () => {
                                     Add Room
                               </button></div>
                               <div>
-                                    <Input
-                                          placeholder="Search by Title"
-                                          prefix={<SearchOutlined />}
-                                          allowClear
-                                          onChange={() => ''}
-                                          style={{ width: 300, marginBottom: 16 }}
-                                    />
+                              <Input
+                  placeholder="Search by Title"
+                  prefix={<SearchOutlined />}
+                  allowClear
+                  onChange={(e) => onSearch(e.target.value)}
+                  style={{ width: 300, marginBottom: 16 }}
+                />
                                     <Modal
                                           title="Create New Room Type"
                                           visible={isModalOpen}
@@ -168,7 +254,7 @@ const Rooms = () => {
 
                                           </Form>
                                     </Modal>
-                                    <Table dataSource={dataSource} columns={columns} pagination={false} />
+                                    <Table dataSource={filteredDataSource} columns={columns} pagination={false} />
                               </div>
                         </div>
                   </div>

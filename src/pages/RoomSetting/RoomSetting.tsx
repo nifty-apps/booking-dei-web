@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { RootState } from '../../store';
-import { GET_ROOM_TYPES } from '../../graphql/queries/roomQueries';
+import { GET_ROOMS, GET_ROOM_TYPES } from '../../graphql/queries/roomQueries';
 import { Table, Input, Button, Popconfirm, Tabs, Form, Space, Modal, message } from 'antd';
 import { SearchOutlined, DeleteOutlined } from '@ant-design/icons';
 import TitleText from '../../components/Title';
@@ -27,12 +27,16 @@ const RoomSetting = () => {
 
 
   // roomtypes data get 
+
   const dataSource = RoomsTypeData?.roomTypes.map((roomData) => ({
     key: roomData?._id,
     hotel: roomData?.hotel,
     rent: roomData?.rent,
     title: roomData.title,
+
+
   }));
+  console.log({ dataSource })
 
   // creat roomtype mutation are added
   const [createRoomType] = useMutation(CREATE_ROOM_TYPE, {
@@ -71,17 +75,17 @@ const RoomSetting = () => {
   const onSearch = (value: string) => {
     setSearchText(value);
   };
-// global filter search implemets 
-  const filteredDataSource = dataSource?.filter((item) => { 
-    
-    return(
+  // global filter search implemets 
+  const filteredDataSource = dataSource?.filter((item) => {
+
+    return (
       item.title.toLowerCase().includes(searchText.toLowerCase()) ||
       item.rent.toString().toLowerCase().includes(searchText.toLowerCase())
-     
-  )
 
-    } );
-// handle delte 
+    )
+
+  });
+  // handle delte 
   const handleDelete = (key: string) => {
     alert('no delete mutation from bacend')
     console.log(`Deleting room type with key: ${key}`);
@@ -120,9 +124,11 @@ const RoomSetting = () => {
 
           <TitleText text="Room Setting " />
           <Tabs activeKey={selectedTab} onChange={handleTabChange}>
+          <TabPane tab="Rooms" key="tab1">
 
-
-            <TabPane tab="Room Types" key="tab1">
+<Rooms />
+</TabPane>
+  <TabPane tab="Room Types" key="tab2">
 
               <div className=''>
                 <div className='flex justify-end'>
@@ -130,7 +136,7 @@ const RoomSetting = () => {
                     onClick={() => setIsModalOpen(true)}
                     className="hover:text-blue-700 px-20 py-2 rounded-md mb-2 font-semibold capitalize flex items-center gap-2 border border-blue-900 bg-blue-700 text-white hover:bg-white duration-200"
                   >
-                   
+
                     Add Room Type
                   </button>
                 </div>
@@ -178,9 +184,8 @@ const RoomSetting = () => {
                 <Table dataSource={filteredDataSource} columns={columns} pagination={false} />
               </div>
             </TabPane>
-            <TabPane tab="Rooms" key="tab2">
-              <Rooms />
-            </TabPane>
+          
+          
           </Tabs>
         </div>
 

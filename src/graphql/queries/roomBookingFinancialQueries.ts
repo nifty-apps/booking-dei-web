@@ -36,3 +36,23 @@ export const GET_ROOM_BOOKING_FINANCIALS = gql(`
   }
 
 `);
+export const GET_ROOM_BOOKINGS = gql(`
+query RoomBookings($roomBookingFilter: RoomBookingFilter!) {
+  roomBookings(roomBookingFilter: $roomBookingFilter) {
+    _id
+    checkIn
+    checkOut
+    rent
+    discount
+    extraBed
+    extraBreakfast
+    booking
+    hotel
+    status
+    room {
+      _id
+      number
+    }
+  }
+}
+`);
