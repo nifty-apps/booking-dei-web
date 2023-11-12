@@ -198,12 +198,7 @@ const Employees = () => {
   }));
 
   const columns = [
-    {
-      title: "EMPLOYEE ID",
-      dataIndex: "idNo",
-      key: "idNo",
-    },
-   
+
     {
       title: "NAME",
       dataIndex: "name",
