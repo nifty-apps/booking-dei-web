@@ -109,6 +109,7 @@ const RoomSetting = () => {
 
       if (response?.data?.createRoomType) {
         message.success("Room Type Added successfully!");
+        setIsModalOpen(false)
 
       }
     } catch (err) {
