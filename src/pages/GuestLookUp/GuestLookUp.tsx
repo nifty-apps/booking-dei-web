@@ -32,7 +32,7 @@ const GuestLookUp = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
   const [guestBookingModalOpen, setGuestBookingModalOpen] =
-    useState<boolean>(false);
+  useState<boolean>(false);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [customerID, setCustomerID] = useState<string | null>(null);

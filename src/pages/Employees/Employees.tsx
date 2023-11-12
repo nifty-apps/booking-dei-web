@@ -45,6 +45,7 @@ const Employees = () => {
 
   const [searchText, setSearchText] = useState<string>("");
   const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
+  
   const [employeeID, setEmployeeID] = useState<string | null>(null);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);

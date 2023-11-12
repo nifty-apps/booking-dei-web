@@ -11,3 +11,27 @@ export const CREATE_ROOM =
         type  
     }
   }`);
+
+export const CREATE_ROOM_TYPE =
+  gql(`mutation Mutation($createRoomTypeInput: CreateRoomTypeInput!) {
+    createRoomType(createRoomTypeInput: $createRoomTypeInput) {
+      _id
+      hotel
+      rent
+      title
+    }
+  }`);
+
+export const UPDATE_ROOM =
+  gql(`mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {
+    updateRoom(updateRoomInput: $updateRoomInput) {
+    _id
+    detactivatedAt
+    floor
+    floor
+    hotel
+    number
+    position
+    type
+    }
+  }`);

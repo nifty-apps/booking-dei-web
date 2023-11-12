@@ -37,6 +37,7 @@ query Rooms($findByFilter: RoomFilterInput!) {
   number
   position
   type  
+  detactivatedAt
   }
 }
 `);
