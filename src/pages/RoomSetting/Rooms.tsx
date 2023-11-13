@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { RootState } from '../../store';
 import { GET_ROOMS, GET_ROOM_TYPES } from '../../graphql/queries/roomQueries';
-import { Table, Input, Modal, message, Form, Space, Select } from 'antd';
+import { Table, Input, Modal, message, Form, Space, Select, } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 
@@ -11,14 +11,16 @@ import { CreateRoomInput } from '../../graphql/__generated__/graphql';
 import { useState } from 'react';
 
 import { GET_ROOM_BOOKING } from '../../graphql/queries/roomBookingQueries';
+import { FaRegEdit } from 'react-icons/fa';
+// import { UPDATE_ROOM_BOOKING } from '../../graphql/mutations/bookingMutations';
 const roomTypes = [
       'Honeymoon Suite (AC)',
       'Family Deluxe Suite (AC)',
       'Super Deluxe Couple Bed (AC)',
       'Super Deluxe Tripple Bed (Non-AC)',
-     'Super Deluxe Tripple Bed (AC)',
-    'Super Deluxe Couple Bed (Non-AC)',
-     'Super Deluxe Twin Bed (AC)',
+      'Super Deluxe Tripple Bed (AC)',
+      'Super Deluxe Couple Bed (Non-AC)',
+      'Super Deluxe Twin Bed (AC)',
 ];
 
 const Rooms = () => {
@@ -29,6 +31,9 @@ const Rooms = () => {
       const [isModalOpen, setIsModalOpen] = useState(false);
       const [selectedRoomType, setSelectedRoomType] = useState<string>("");
       const [selectedRoomTypeId, setSelectedRoomTypeId] = useState<string>("");
+      // const [guestID, setGuestID] = useState<string | null>(null);
+      const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
+      const [form] = Form.useForm();
 
 
       const { data: RoomsData, loading, error } = useQuery(GET_ROOMS, {
@@ -56,8 +61,9 @@ const Rooms = () => {
                   },
             },
       });
+
       // roomBookingsData?.roomBookings?.map((data) => console.log(data.room.type._id))
-      //     console.log(roomBookingsData?.roomBookings )
+
       const [createRoom] = useMutation(CREATE_ROOM, {
             refetchQueries: [{ query: GET_ROOMS }],
       });
@@ -68,77 +74,27 @@ const Rooms = () => {
             const foundRoomType = RoomsTypeData?.roomTypes.find(
                   (roomtype) => roomtype._id === roomData.type
             );
-                  // console.log({foundRoomType});
-            const FoundRoomStatus = roomBookingsData?.roomBookings.find((data) => data.room._id === roomData._id );
-           
-             
+
+            const FoundRoomStatus = roomBookingsData?.roomBookings.find((data) => data.room._id === roomData._id);
+
+
 
             return {
-                
+
                   key: roomData?._id,
                   hotel: roomData?.hotel,
                   roomNumber: roomData.number,
                   type: roomData?.type,
                   roomtype: foundRoomType?.title,
                   roomRent: foundRoomType?.rent,
-                  status: FoundRoomStatus?.status
+                  status: FoundRoomStatus?.status,
+                  roomTypesId: foundRoomType?._id,
+                  roombookingsId: FoundRoomStatus?._id,
+                  room_id: roomData?._id,
             };
       });
-      // console.log({ roomBookingsData})
 
-      const columns = [
-            {
-                  title: 'ROOM NUMBER',
-                  dataIndex: 'roomNumber',
-                  key: 'title',
-            },
-            {
-                  title: 'ROOM TYPE',
-                  dataIndex: 'roomtype',
-                  key: 'title',
-            },
-            {
-                  title: 'ROOM RENT',
-                  dataIndex: 'roomRent',
-                  key: 'title',
-            },
-            {
-                  title: 'STATUS',
-                  dataIndex: 'status',
-                  key: 'title',
-            },
-            // {
-            //       title: 'ROOM TYPE',
-            //       dataIndex: 'type',
-            //       key: 'type',
-            //       render: (record: string) => {
-            //         const Single = RoomsTypeData?.roomTypes.find(data => data._id === record);
-
-            //         if (Single) {
-            //           return <div>{Single.title}</div>; // Display the room type name (adjust 'name' to your actual property)
-            //         } else {
-            //           return <div>Not Found</div>; // Handle the case where the room type is not found
-            //         }
-            //       }
-            //     },
-
-            //     {
-            //       title: 'ROOM TYPE',
-            //       dataIndex: 'type',
-            //       key: 'type',
-            //       render: (record: string) => {
-            //         const Single = RoomsTypeData?.roomTypes.find(data => data._id === record);
-            //         if (Single) {
-            //           return <div>{Single.rent}</div>; // Display the room type name (adjust 'name' to your actual property)
-            //         } else {
-            //           return <div>Not Found</div>; // Handle the case where the room type is not found
-            //         }
-            //       }
-            //     },
-
-
-      ];
-
+      //  console.log(roomBookingsData)
 
       const onFinish = async (values: CreateRoomInput) => {
             try {
@@ -149,7 +105,7 @@ const Rooms = () => {
                                     floor: values.floor,
                                     position: values.position,
                                     type: selectedRoomTypeId,
-                                    hotel: '64d0a1d008291a484b015d0b', // Hardcoded hotel ID or use a dynamic value
+                                    hotel: user?.hotels[0] || '', // Hardcoded hotel ID or use a dynamic value
                                     detactivatedAt: values.detactivatedAt,
                               }
                         }
@@ -167,9 +123,9 @@ const Rooms = () => {
       const handleRoomTypeChange = (value: string) => {
             setSelectedRoomType(value);
             const findRoomBookinTypeId = roomBookingsData?.roomBookings?.find(
-                  (data) => data?.room?.type.title === value
-                );
-                setSelectedRoomTypeId(findRoomBookinTypeId?.room?.type?._id!)
+                  (data) => data?.room?.type?.title === value
+            );
+            setSelectedRoomTypeId(findRoomBookinTypeId?.room?.type?._id!)
             //     console.log(findRoomBookinTypeId?.room?.type?._id)
       };
       const onSearch = (value: string) => {
@@ -181,11 +137,106 @@ const Rooms = () => {
                   item.roomNumber.toLowerCase().includes(searchText.toLowerCase()) ||
                   item.status?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
                   item.roomRent?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
-                  item.roomRent?.toString().toLowerCase().includes(searchText.toLowerCase())
+                  item.roomtype?.toString().toLowerCase().includes(searchText.toLowerCase())
 
             )
 
       });
+
+      // console.log(filteredDataSource)
+      const columns = [
+            {
+                  title: 'ROOM NUMBER',
+                  dataIndex: 'roomNumber',
+                  key: 'roomNumber',
+            },
+            {
+                  title: 'ROOM TYPE',
+                  dataIndex: 'roomtype',
+                  key: 'roomtype',
+            },
+            {
+                  title: 'ROOM RENT',
+                  dataIndex: 'roomRent',
+                  key: 'roomRent',
+            },
+            {
+                  title: 'STATUS',
+                  dataIndex: 'status',
+                  key: 'status',
+            },
+            {
+                  title: "ACTION",
+                  dataIndex: "room_id",
+                  key: "room_id",
+                  render: (record: string) => {
+                        // find clicked guest information
+                        // console.log(record)
+                        const selectedInformation = dataSource?.find(
+                              (data) => data.room_id === record
+                        );
+                        // console.log(selectedInformation)
+                        return (
+                              <div className="flex items-center cursor-pointer">
+
+                                    <div className="mr-3">
+                                          <FaRegEdit
+                                                title={"Edit Guest Information"}
+                                                onClick={() => {
+                                                      setHandleModalOpen(true);
+                                                      // setGuestID(record);
+                                                      // setting the clicked information on modal
+                                                   
+                                                      form.setFieldsValue({
+                                                            roomNumber: selectedInformation?.roomNumber,
+                                                            roomtype: selectedInformation?.roomtype,
+                                                            roomRent: selectedInformation?.roomRent,
+                                                            status: selectedInformation?.status
+
+
+
+                                                      });
+                                                }}
+                                          />
+                                    </div>
+
+
+                              </div>
+                        );
+                  },
+            },
+
+         
+      ];
+      // const [updateRoomBooking] = useMutation(UPDATE_ROOM_BOOKING);
+
+      const handleUpdate = async () => {
+            // try {
+            //       const updatedRoomBooking = await updateRoomBooking({
+            //             variables: {
+            //                   updateRoomBookingInput: {
+            //                         _id: guestID,
+
+            //                   },
+            //             },
+            //       });
+
+            //       // Handle the updated room booking data or display a success message
+            //       // console.log("Room booking updated:", updatedRoomBooking);
+            //       message.success("Room booking information updated successfully.");
+            //       setHandleModalOpen(false); // Close the modal after a successful update
+            // } catch (error) {
+            //       console.error("Failed to update room booking information:", error);
+            //       message.error("Failed to update room booking information. Please try again.");
+            // }
+      };
+
+
+
+
+
+
+
 
       if (loading) return <p>Loading</p>;
       if (error) return <p>{error?.message}</p>;
@@ -249,7 +300,7 @@ const Rooms = () => {
                                                       <Form.Item
                                                             name="type"
                                                             className="mb-0"
-                                                            // rules={[{ required: true, message: "Please enter the room type" }]}
+                                                      // rules={[{ required: true, message: "Please enter the room type" }]}
                                                       >
                                                             <div>
                                                                   <h3>Select Room Type:</h3>
@@ -287,6 +338,55 @@ const Rooms = () => {
                                                       Add Room
                                                 </button>
 
+                                          </Form>
+                                    </Modal>
+
+
+                                    {/* for edit  */}
+                                    <Modal
+                                          title="Edit Guest Information"
+                                          open={handleModalOpen}
+                                          onOk={() => setHandleModalOpen(false)}
+                                          onCancel={() => setHandleModalOpen(false)}
+                                          footer={null}
+                                          centered
+                                    >
+                                          <Form
+                                                form={form}
+                                                onFinish={() => handleUpdate()}
+                                          >
+                                                <Space direction="vertical" className="w-full">
+                                                      <h3>ROOM NUMBER</h3>
+                                                      <Form.Item name="roomNumber" className="mb-0">
+                                                            <Input placeholder="roomNumber" autoComplete="off" />
+                                                      </Form.Item>
+
+                                                      <h3>ROOM TYPE</h3>
+                                                      <Form.Item name="roomtype" className="mb-0">
+                                                            <Input placeholder="roomtype" autoComplete="off" />
+                                                      </Form.Item>
+
+                                                      <h3>ROOM RENT</h3>
+                                                      <Form.Item name="roomRent" className="mb-0">
+                                                            <Input placeholder="Address" autoComplete="off" />
+                                                      </Form.Item>
+
+
+
+                                                      <h3>STATUS</h3>
+                                                      <Form.Item name="status" className="mb-0">
+                                                            <Input placeholder="status" autoComplete="off" />
+                                                      </Form.Item>
+                                                </Space>
+
+                                                <div className="flex justify-end">
+                                                      <button
+                                                            type="submit"
+                                                            className=" mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-8 rounded"
+                                                      >
+                                                            Confirm
+                                                      </button>
+                                                </div>
                                           </Form>
                                     </Modal>
                                     <Table dataSource={filteredDataSource} columns={columns} pagination={false} />
