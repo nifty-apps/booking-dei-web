@@ -6,12 +6,13 @@ import {
   AiOutlineCalendar,
   AiOutlineHome,
 } from "react-icons/ai";
-import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
 import { BsPersonVcard } from "react-icons/bs";
+import { PiUsersThreeBold } from "react-icons/pi";
+import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import version from "../../package.json";
 import logo from "../assets/logo.png";
-import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
 const { Sider } = Layout;
@@ -52,6 +53,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
       selectedKey = "7";
       break;
     case "/room-settings":
+    case "/vendors":
       selectedKey = "8";
       break;
 
@@ -97,8 +99,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               Guest Look-up
             </Link>
           </Menu.Item>
-
-          {/* check user type to show protected route */}
+          {/* if user type is not admin, he can not see bellow routes on the sidebar  */}
           {user?.type === "ADMIN" && (
             <>
               <Menu.Item key="5" icon={<BsPersonVcard />}>
@@ -119,6 +120,9 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               <Menu.Item key="8" icon={<SettingOutlined />}>
                 <Link to="/room-settings" className="menuLink">
                   Room Settings
+              <Menu.Item key="8" icon={<PiUsersThreeBold />}>
+                <Link to="/vendors" className="menuLink">
+                  Vendors
                 </Link>
               </Menu.Item>
             </>
