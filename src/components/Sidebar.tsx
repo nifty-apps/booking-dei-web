@@ -5,6 +5,7 @@ import {
   AiOutlineHome,
 } from "react-icons/ai";
 import { BsPersonVcard } from "react-icons/bs";
+import { PiUsersThreeBold } from "react-icons/pi";
 import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
@@ -48,6 +49,9 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
       break;
     case "/rooms-overview":
       selectedKey = "7";
+      break;
+    case "/vendors":
+      selectedKey = "8";
       break;
 
     default:
@@ -108,6 +112,11 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               <Menu.Item key="7" icon={<AiOutlineBarChart />}>
                 <Link to="/rooms-overview" className="menuLink">
                   Rooms Overview
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="8" icon={<PiUsersThreeBold />}>
+                <Link to="/vendors" className="menuLink">
+                  Vendors
                 </Link>
               </Menu.Item>
             </>

@@ -863,7 +863,8 @@ export type TransactionFilter = {
   /** Description of the transaction */
   description?: InputMaybe<Scalars['String']['input']>;
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
-  hotel: Scalars['ID']['input'];
+  /** Hotel where the transaction were made */
+  hotel?: InputMaybe<Scalars['ID']['input']>;
   /** Method of the transaction */
   method?: InputMaybe<TransactionMethod>;
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
