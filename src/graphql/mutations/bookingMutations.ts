@@ -47,6 +47,10 @@ mutation UpdateBooking($updateBookingInput: UpdateBookingInput!) {
         hotel
         paymentStatus
         number
+        guests{
+          name
+          phone
+        }
   }
 }
 `);
