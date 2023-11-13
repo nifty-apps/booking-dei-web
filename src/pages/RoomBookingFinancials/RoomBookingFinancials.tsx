@@ -27,6 +27,7 @@ const RoomBookingFinancials = () => {
       },
     }
   );
+  console.log(data);
 
   useEffect(() => {
     refetch({ startDate: selectedDate, endDate: selectedDate });

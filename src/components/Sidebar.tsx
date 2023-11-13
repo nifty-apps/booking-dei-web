@@ -50,7 +50,11 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     case "/rooms-overview":
       selectedKey = "7";
       break;
+<<<<<<< HEAD
     case "/vendors":
+=======
+    case "/room-setting":
+>>>>>>> pr/ekram2d/51
       selectedKey = "8";
       break;
 
@@ -114,9 +118,15 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
                   Rooms Overview
                 </Link>
               </Menu.Item>
+<<<<<<< HEAD
               <Menu.Item key="8" icon={<PiUsersThreeBold />}>
                 <Link to="/vendors" className="menuLink">
                   Vendors
+=======
+              <Menu.Item key="8" icon={<AiOutlineBarChart />}>
+                <Link to="/room-setting" className="menuLink">
+                  Room Setting
+>>>>>>> pr/ekram2d/51
                 </Link>
               </Menu.Item>
             </>
