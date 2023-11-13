@@ -60,8 +60,6 @@ const GuestLookUp = () => {
       } as ContactFilterInput,
     },
   });
-  
-
 
   // fetching guest data using hotel ID and customer id
   const {
