@@ -215,20 +215,21 @@ const Rooms = ({ isModalOpen, setIsModalOpen }: RoomsProps) => {
         const selectedRoomInformation = dataSource?.find(
           (data) => data.key === roomId
         );
+
+        form.setFieldsValue({
+          number: selectedRoomInformation?.number,
+          floor: selectedRoomInformation?.floor,
+          position: selectedRoomInformation?.position,
+          rent:selectedRoomInformation?.rent,
+          type: selectedRoomInformation?.type,
+        });
         return (
           <div className="flex items-center gap-3 cursor-pointer">
             <FaRegEdit
               title={"Edit Room Information"}
-              onClick={() => {
+                onClick={() => {
                 setRoomId(record);
                 setUpdateModalOpen(true);
-                // setting the clicked information on modal
-                form.setFieldsValue({
-                  number: selectedRoomInformation?.number,
-                  floor: selectedRoomInformation?.floor,
-                  position: selectedRoomInformation?.position,
-                  type: selectedRoomInformation?.type,
-                });
               }}
             />
             <FaRegTrashAlt />
@@ -362,14 +363,9 @@ const Rooms = ({ isModalOpen, setIsModalOpen }: RoomsProps) => {
                 }))}
               />
             </Form.Item>
-            <h3>Room Rent</h3>
-            <Form.Item className="mb-0">
-              <Input
-                type="text"
-                disabled
-                className="placeholder:text-black"
-                placeholder={String(rent)}
-              />
+            <h3>Rent</h3>
+            <Form.Item name="rent" className="mb-0">
+              <Input placeholder="Enter Room Number" autoComplete="off" />
             </Form.Item>
           </Space>
 
