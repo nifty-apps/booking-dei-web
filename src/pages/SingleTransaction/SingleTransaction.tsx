@@ -12,7 +12,7 @@ import {
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
@@ -49,6 +49,9 @@ const SingleTransactions = () => {
   const [editingTransactionId, setEditingTransactionId] = useState<
     string | null
   >(null);
+  const [vendorInformation, setVendorInformation] = useState<
+    null | (typeof dataSource)[0]
+  >(null);
 
   const [form] = Form.useForm();
 
@@ -62,7 +65,7 @@ const SingleTransactions = () => {
     variables: {
       transactionFilter: {
         hotel: user?.hotels[0] || "",
-        _id: transactionID,
+        contact: transactionID,
       } as TransactionFilter,
     },
   });
@@ -152,13 +155,11 @@ const SingleTransactions = () => {
   const transactionsByDateRange =
     transactionsByDateRangeData?.transactionsByDateRange || [];
 
-  console.log(transactions);
   // Combine the data from both queries based on date range
   const combinedTransactions = selectedDateRange[0]
     ? transactionsByDateRange
     : transactions;
 
-  console.log(combinedTransactions);
   // Filter transactions based on search text
   const filteredTransactions = combinedTransactions?.filter((transaction) => {
     const lowercaseSearchText = searchText.toLowerCase();
@@ -170,7 +171,6 @@ const SingleTransactions = () => {
       transaction?.method.toLowerCase().includes(lowercaseSearchText)
     );
   });
-  console.log(filteredTransactions);
 
   const dataSource = filteredTransactions.map((transaction) => ({
     key: transaction._id,
@@ -181,10 +181,15 @@ const SingleTransactions = () => {
     method: transaction.method,
     amount: transaction.amount,
     description: transaction.description,
+    phone: transaction.contact.phone,
     action: transaction.booking || transaction._id,
   }));
 
-  console.log(dataSource);
+  useEffect(() => {
+    if (dataSource.length > 0) {
+      setVendorInformation(dataSource[0]);
+    }
+  }, [dataSource]);
 
   const columns = [
     {
@@ -268,7 +273,22 @@ const SingleTransactions = () => {
   return (
     <>
       <div className="mb-5">
-        <TitleText text="Transactions" />
+        <TitleText text="Vendor Details" />
+      </div>
+      <div className="flex items-center justify-start gap-5 my-10">
+        <div>
+          <img
+            src="https://www.w3schools.com/howto/img_avatar.png"
+            alt="Avatar"
+            className="rounded-full w-20 h-20"
+          />
+        </div>
+        <div>
+          <h3 className="text-xl font-semibold">
+            {vendorInformation?.contact}
+          </h3>
+          <p className="text-lg text-gray-700">{vendorInformation?.phone}</p>
+        </div>
       </div>
       <div className="flex align-middle justify-between mb-3">
         <div className="w-3/12">

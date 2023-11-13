@@ -31,6 +31,7 @@ import {
 import { FaEye } from "react-icons/fa";
 import { GoPencil } from "react-icons/go";
 import { Link } from "react-router-dom";
+import { GET_TRANSACTION_BY_FILTER } from "../../graphql/queries/transactionsQueries";
 const { confirm } = Modal;
 
 // custome interface for employee card modal
@@ -56,7 +57,7 @@ const Vendors = () => {
   const [form] = Form.useForm();
 
   const {
-    data: EmployeesData,
+    data: VendorsData,
     loading,
     error,
   } = useQuery(GET_CONTACTS, {
@@ -67,31 +68,39 @@ const Vendors = () => {
       } as ContactFilterInput,
     },
   });
+  const { data: TransactionData } = useQuery(GET_TRANSACTION_BY_FILTER, {
+    variables: {
+      transactionFilter: {
+        hotel: user?.hotels[0] || "",
+      },
+    },
+  });
+  console.log(TransactionData);
 
-  const allEmployeeData = filterDeactivated
-    ? EmployeesData?.contacts?.filter((employeesInfo: any) => {
+  const allVendorsData = filterDeactivated
+    ? VendorsData?.contacts?.filter((employeesInfo: any) => {
         return employeesInfo;
       })
-    : EmployeesData?.contacts?.filter((employeesInfo: any) => {
+    : VendorsData?.contacts?.filter((employeesInfo: any) => {
         return employeesInfo?.detactivatedAt == null;
       });
 
   // filter Employee by name phone ID number
-  const filteredEmployeeData = allEmployeeData?.filter((employeeData: any) => {
+  const filteredVendorsData = allVendorsData?.filter((vendorsData: any) => {
     const lowercaseSearchText = searchText.toLowerCase();
     return (
-      employeeData?.name?.toLowerCase().includes(lowercaseSearchText) ||
-      employeeData?.phone?.toLowerCase().includes(lowercaseSearchText) ||
-      employeeData?.address?.toLowerCase().includes(lowercaseSearchText) ||
-      employeeData?.idType?.toLowerCase().includes(lowercaseSearchText) ||
-      employeeData?.idNo?.toLowerCase().includes(lowercaseSearchText)
+      vendorsData?.name?.toLowerCase().includes(lowercaseSearchText) ||
+      vendorsData?.phone?.toLowerCase().includes(lowercaseSearchText) ||
+      vendorsData?.address?.toLowerCase().includes(lowercaseSearchText) ||
+      vendorsData?.idType?.toLowerCase().includes(lowercaseSearchText) ||
+      vendorsData?.idNo?.toLowerCase().includes(lowercaseSearchText)
     );
   });
-  // create employe mutation
+  // create vendor mutation
   const [createContact] = useMutation(CREATE_CONTACT, {
     refetchQueries: [{ query: GET_CONTACTS }],
   });
-  // update Employee mutation query
+  // update Vendor mutation query
   const [updateContact] = useMutation(UPDATE_CONTACT, {
     refetchQueries: [{ query: GET_CONTACTS }],
   });
@@ -146,12 +155,12 @@ const Vendors = () => {
 
   // handle Deactivated account
   const handleDeactiveAccount = async (guestID: string, setActive: boolean) => {
-    const selectedGuestInformation = dataSource?.find(
+    const selectedVendorInformation = dataSource?.find(
       (data) => data.key === guestID
     );
     confirm({
       title: `Do you want to ${setActive ? "Deactivate" : "Activate"} ${
-        selectedGuestInformation?.name
+        selectedVendorInformation?.name
       }?`,
       icon: <ExclamationCircleFilled />,
       okType: setActive ? "danger" : "default",
@@ -185,15 +194,16 @@ const Vendors = () => {
   if (loading) return <p>Loading</p>;
   if (error) return <p>{error?.message}</p>;
 
-  const dataSource = filteredEmployeeData?.map((employeeData: any) => ({
-    key: employeeData?._id,
-    name: employeeData?.name,
-    phone: employeeData?.phone,
-    idType: employeeData?.idType || null,
-    idNo: employeeData?.idNo || null,
-    address: employeeData?.address || null,
-    action: employeeData?._id,
-    status: employeeData?.detactivatedAt ? "Deactive" : "Active",
+  const dataSource = filteredVendorsData?.map((vendorsData) => ({
+    key: vendorsData?._id,
+    name: vendorsData?.name,
+    phone: vendorsData?.phone,
+    subCategory: vendorsData?._id,
+    idType: vendorsData?.idType || null,
+    idNo: vendorsData?.idNo || null,
+    address: vendorsData?.address || null,
+    action: vendorsData?._id,
+    status: vendorsData?.detactivatedAt ? "Deactive" : "Active",
   }));
 
   const columns = [
@@ -202,15 +212,24 @@ const Vendors = () => {
       dataIndex: "name",
       key: "name",
     },
+
     {
       title: "SUB-CATEGORY",
       dataIndex: "subCategory",
       key: "subCategory",
-    },
-    {
-      title: "ADDRESS",
-      dataIndex: "address",
-      key: "address",
+      render: (record: string) => {
+        const filerTransactionCategory =
+          TransactionData?.transactionByFilter?.find(
+            (data) => data?.contact._id === record
+          );
+        return (
+          <p>
+            {filerTransactionCategory?.subCategory
+              ? filerTransactionCategory?.subCategory
+              : "N/A"}
+          </p>
+        );
+      },
     },
 
     {
@@ -219,21 +238,26 @@ const Vendors = () => {
       key: "phone",
     },
     {
+      title: "ID-TYPE",
+      dataIndex: "idType",
+      key: "idType",
+    },
+    {
       title: "ACTION",
       dataIndex: "action",
       key: "action",
       render: (record: string) => {
         // find clicked guest information
-        const selectedGuestInformation = dataSource?.find(
+        const selectedVendorInformation = dataSource?.find(
           (data) => data.key === record
         );
 
-        const EmployeeDetails = {
-          name: selectedGuestInformation?.name,
-          phone: selectedGuestInformation?.phone,
-          idNo: selectedGuestInformation?.idNo,
-          idType: selectedGuestInformation?.idType,
-          address: selectedGuestInformation?.address,
+        const VendorDetails = {
+          name: selectedVendorInformation?.name,
+          phone: selectedVendorInformation?.phone,
+          idNo: selectedVendorInformation?.idNo,
+          idType: selectedVendorInformation?.idType,
+          address: selectedVendorInformation?.address,
         };
         return (
           <div className="flex gap-3 items-center cursor-pointer">
@@ -257,11 +281,11 @@ const Vendors = () => {
                 setEmployeeID(record);
                 // setting the clicked information on modal
                 form.setFieldsValue({
-                  name: selectedGuestInformation?.name,
-                  phone: selectedGuestInformation?.phone,
-                  idNo: selectedGuestInformation?.idNo,
-                  idType: selectedGuestInformation?.idType,
-                  address: selectedGuestInformation?.address,
+                  name: selectedVendorInformation?.name,
+                  phone: selectedVendorInformation?.phone,
+                  idNo: selectedVendorInformation?.idNo,
+                  idType: selectedVendorInformation?.idType,
+                  address: selectedVendorInformation?.address,
                 });
               }}
             />
@@ -270,11 +294,11 @@ const Vendors = () => {
                 title={"View Employee Card"}
                 onClick={() => {
                   setInformationModalOpen(true);
-                  setInformation(EmployeeDetails);
+                  setInformation(VendorDetails);
                 }}
               />
             </div>
-            {selectedGuestInformation?.status == "Deactive" ? (
+            {selectedVendorInformation?.status == "Deactive" ? (
               <Button
                 style={{
                   backgroundColor: "transparent",
@@ -340,9 +364,9 @@ const Vendors = () => {
           />
         </Tooltip>
       </div>
-      {/* modal for create new employee  */}
+      {/* modal for create new vendor  */}
       <Modal
-        title="Create New Employee"
+        title="Create New Vendor"
         open={isModalOpen}
         onOk={() => setIsModalOpen(false)}
         onCancel={() => {

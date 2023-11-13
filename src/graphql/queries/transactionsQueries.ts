@@ -28,25 +28,6 @@ export const GET_TRANSACTIONS = gql(`
   }
 `);
 
-// get single transaction
-// export const GET_TRANSACTION = gql(`
-//   query Transaction  ($transactionId: ID!) {
-//   transaction(id: $transactionId) {
-//     transaction {
-//       _id
-//       booking
-//       hotel
-//       date
-//       deletedAt
-//       category
-//       subCategory
-//       method
-//       description
-//       amount
-//     }
-//   }
-//   }
-// `);
 // transaction filter
 export const GET_TRANSACTION_BY_FILTER = gql(`
     query Transaction($transactionFilter: TransactionFilter!){
