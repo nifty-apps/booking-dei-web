@@ -5,7 +5,6 @@ import {
   AiOutlineHome,
 } from "react-icons/ai";
 import { BsPersonVcard } from "react-icons/bs";
-import { PiUsersThreeBold } from "react-icons/pi";
 import { TbBed, TbBrandGoogleAnalytics, TbUsers } from "react-icons/tb";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
@@ -50,11 +49,7 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     case "/rooms-overview":
       selectedKey = "7";
       break;
-<<<<<<< HEAD
-    case "/vendors":
-=======
     case "/room-setting":
->>>>>>> pr/ekram2d/51
       selectedKey = "8";
       break;
 
@@ -118,15 +113,9 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
                   Rooms Overview
                 </Link>
               </Menu.Item>
-<<<<<<< HEAD
-              <Menu.Item key="8" icon={<PiUsersThreeBold />}>
-                <Link to="/vendors" className="menuLink">
-                  Vendors
-=======
               <Menu.Item key="8" icon={<AiOutlineBarChart />}>
                 <Link to="/room-setting" className="menuLink">
                   Room Setting
->>>>>>> pr/ekram2d/51
                 </Link>
               </Menu.Item>
             </>
