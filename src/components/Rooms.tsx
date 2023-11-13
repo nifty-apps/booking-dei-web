@@ -364,8 +364,13 @@ const Rooms = ({ isModalOpen, setIsModalOpen }: RoomsProps) => {
               />
             </Form.Item>
             <h3>Rent</h3>
-            <Form.Item name="rent" className="mb-0">
-              <Input placeholder="Enter Room Number" autoComplete="off" />
+            <Form.Item className="mb-0">
+            <Input
+                type="text"
+                disabled
+                className="placeholder:text-black"
+                placeholder={String(rent)}
+              />
             </Form.Item>
           </Space>
 
