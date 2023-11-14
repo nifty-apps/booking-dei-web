@@ -52,3 +52,13 @@ export const GET_BOOKING_GUEST = gql(`
     }
 }
 `);
+// export const GET_VENDORS_LIST = gql(`
+// query Vendorslist($transactionFilter: TransactionFilter!) {
+//     transactionByFilter(transactionFilter: $transactionFilter) {    
+//       subCategory
+//       user
+//       amount   
+//       hotel 
+//     }
+//   }
+// `);

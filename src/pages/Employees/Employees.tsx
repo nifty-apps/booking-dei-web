@@ -29,6 +29,8 @@ import {
   UPDATE_CONTACT,
 } from "../../graphql/mutations/contactMutations";
 import { FaEye, FaRegEdit } from "react-icons/fa";
+import { HiOutlineChevronRight } from "react-icons/hi";
+import { Link } from "react-router-dom";
 const { confirm } = Modal;
 
 // custome interface for employee card modal
@@ -48,6 +50,8 @@ const Employees = () => {
   const [employeeID, setEmployeeID] = useState<string | null>(null);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [employeeDetailsModel, setemployeeDetailsModel] =
+    useState<boolean>(false);
   const [informationModalOpen, setInformationModalOpen] = useState(false);
   const [information, setInformation] = useState<employee>();
 
@@ -239,6 +243,25 @@ const Employees = () => {
         };
         return (
           <div className="flex gap-3 items-center cursor-pointer">
+            <button
+              className="flex underline text-blue-500 justify-center items-center"
+              onClick={() => {
+                setemployeeDetailsModel(true);
+                setEmployeeID(record);
+                form.setFieldsValue({
+                  name: selectedGuestInformation?.name,
+                  phone: selectedGuestInformation?.phone,
+                  idNo: selectedGuestInformation?.idNo,
+                  idType: selectedGuestInformation?.idType,
+                  address: selectedGuestInformation?.address,
+                });
+              }}
+            >
+              More
+              <span className="">
+                <HiOutlineChevronRight />
+              </span>
+            </button>
             <FaRegEdit
               title={"Edit Employee Information"}
               onClick={() => {
@@ -465,6 +488,48 @@ const Employees = () => {
             </div>
           </div>
         </div>
+      </Modal>
+      {/* more */}
+      <Modal
+        centered
+        open={employeeDetailsModel}
+        onOk={() => setemployeeDetailsModel(false)}
+        onCancel={() => setemployeeDetailsModel(false)}
+        footer={null}
+      >
+        <Form form={form}>
+          <Space direction="vertical" className="w-full">
+            <h3>Full Name</h3>
+            <Form.Item name="name" className="mb-0">
+              <Input autoComplete="off" readOnly />
+            </Form.Item>
+            <h3>ID Type</h3>
+            <Form.Item name="idType" className="mb-0">
+              <Input autoComplete="off" readOnly />
+            </Form.Item>
+
+            <h3>ID Number</h3>
+            <Form.Item name="idNo" className="mb-0">
+              <Input autoComplete="off" readOnly />
+            </Form.Item>
+            <h3>Phone Number</h3>
+            <Form.Item name="phone" className="mb-0">
+              <Input autoComplete="off" readOnly />
+            </Form.Item>
+            <h3>Adress</h3>
+            <Form.Item name="address" className="mb-0">
+              <Input autoComplete="off" readOnly />
+            </Form.Item>
+          </Space>
+
+          <div className="flex justify-center">
+            <Link to={`/employee-Details/${employeeID}`}>
+              <button className=" mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-8 rounded">
+                View Employee Details
+              </button>
+            </Link>
+          </div>
+        </Form>
       </Modal>
     </>
   );
