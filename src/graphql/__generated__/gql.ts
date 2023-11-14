@@ -18,10 +18,10 @@ const documents = {
     "\nmutation UpdateBooking($updateBookingInput: UpdateBookingInput!) {\n    updateBooking(updateBookingInput: $updateBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n  }\n}\n": types.UpdateBookingDocument,
     "\nmutation RemoveRoomBooking($id:ID!) {\n    removeRoomBooking(id: $id) {\n        _id\n        checkIn\n        checkOut\n        rent\n        discount\n        extraBed\n        extraBreakfast\n        booking\n        hotel\n        status\n        room\n    }\n}\n\n": types.RemoveRoomBookingDocument,
     "\n  mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {\n    updateRoom(updateRoomInput: $updateRoomInput) {\n      _id\n      number\n      floor\n      position\n      type\n      hotel\n      detactivatedAt\n    }\n  }\n": types.UpdateRoomDocument,
-    "\n   mutation CreateContact ($createContactInput: CreateContactInput!) {\n       createContact (createContactInput: $createContactInput) {\n            _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n      }\n  \n}\n\n": types.CreateContactDocument,
-    "\nmutation UpdateContact($updateContactInput: UpdateContactInput!) {\n    updateContact(updateContactInput:$updateContactInput){\n      _id\n      name\t\n      phone\n      idType\n      idNo\n      address\n      type\n      detactivatedAt\n  }\n}\n\n\n": types.UpdateContactDocument,
     "\n  mutation CreateRoomType($createRoomTypeInput: CreateRoomTypeInput!) {\n    createRoomType(createRoomTypeInput: $createRoomTypeInput) {\n      _id\n      title\n      rent\n      hotel\n    }\n  }\n": types.CreateRoomTypeDocument,
     "\n  mutation CreateRoom($createRoomInput: CreateRoomInput!) {\n    createRoom(createRoomInput: $createRoomInput) {\n      _id\n      number\n      floor\n      position\n      type\n      hotel\n      detactivatedAt\n    }\n  }\n": types.CreateRoomDocument,
+    "\n   mutation CreateContact ($createContactInput: CreateContactInput!) {\n       createContact (createContactInput: $createContactInput) {\n            _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n      }\n  \n}\n\n": types.CreateContactDocument,
+    "\nmutation UpdateContact($updateContactInput: UpdateContactInput!) {\n    updateContact(updateContactInput:$updateContactInput){\n      _id\n      name\t\n      phone\n      idType\n      idNo\n      address\n      type\n      detactivatedAt\n  }\n}\n\n\n": types.UpdateContactDocument,
     "\nmutation CreateHotel($createHotelInput: CreateHotelInput!) {\n    createHotel(createHotelInput: $createHotelInput) {\n      name\n      _id\n    }\n  }\n": types.CreateHotelDocument,
     "\nmutation Login($phone: String!, $password: String!) {\n    login(phone: $phone, password: $password) {\n      access_token\n      user {\n        _id\n        name\n        email\n        phone\n        hotels\n        type\n      }\n    }\n  }\n\n": types.LoginDocument,
     "\nmutation Signup($phone: String!, $name: String!, $password: String!) {\n  signup(phone: $phone, name: $name, password: $password) {\n    name\n    password\n    phone\n  }\n}\n": types.SignupDocument,
@@ -81,19 +81,19 @@ export function gql(source: "\n  mutation UpdateRoom($updateRoomInput: UpdateRoo
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n   mutation CreateContact ($createContactInput: CreateContactInput!) {\n       createContact (createContactInput: $createContactInput) {\n            _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n      }\n  \n}\n\n"): (typeof documents)["\n   mutation CreateContact ($createContactInput: CreateContactInput!) {\n       createContact (createContactInput: $createContactInput) {\n            _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n      }\n  \n}\n\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\nmutation UpdateContact($updateContactInput: UpdateContactInput!) {\n    updateContact(updateContactInput:$updateContactInput){\n      _id\n      name\t\n      phone\n      idType\n      idNo\n      address\n      type\n      detactivatedAt\n  }\n}\n\n\n"): (typeof documents)["\nmutation UpdateContact($updateContactInput: UpdateContactInput!) {\n    updateContact(updateContactInput:$updateContactInput){\n      _id\n      name\t\n      phone\n      idType\n      idNo\n      address\n      type\n      detactivatedAt\n  }\n}\n\n\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function gql(source: "\n  mutation CreateRoomType($createRoomTypeInput: CreateRoomTypeInput!) {\n    createRoomType(createRoomTypeInput: $createRoomTypeInput) {\n      _id\n      title\n      rent\n      hotel\n    }\n  }\n"): (typeof documents)["\n  mutation CreateRoomType($createRoomTypeInput: CreateRoomTypeInput!) {\n    createRoomType(createRoomTypeInput: $createRoomTypeInput) {\n      _id\n      title\n      rent\n      hotel\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation CreateRoom($createRoomInput: CreateRoomInput!) {\n    createRoom(createRoomInput: $createRoomInput) {\n      _id\n      number\n      floor\n      position\n      type\n      hotel\n      detactivatedAt\n    }\n  }\n"): (typeof documents)["\n  mutation CreateRoom($createRoomInput: CreateRoomInput!) {\n    createRoom(createRoomInput: $createRoomInput) {\n      _id\n      number\n      floor\n      position\n      type\n      hotel\n      detactivatedAt\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n   mutation CreateContact ($createContactInput: CreateContactInput!) {\n       createContact (createContactInput: $createContactInput) {\n            _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n      }\n  \n}\n\n"): (typeof documents)["\n   mutation CreateContact ($createContactInput: CreateContactInput!) {\n       createContact (createContactInput: $createContactInput) {\n            _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n      }\n  \n}\n\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\nmutation UpdateContact($updateContactInput: UpdateContactInput!) {\n    updateContact(updateContactInput:$updateContactInput){\n      _id\n      name\t\n      phone\n      idType\n      idNo\n      address\n      type\n      detactivatedAt\n  }\n}\n\n\n"): (typeof documents)["\nmutation UpdateContact($updateContactInput: UpdateContactInput!) {\n    updateContact(updateContactInput:$updateContactInput){\n      _id\n      name\t\n      phone\n      idType\n      idNo\n      address\n      type\n      detactivatedAt\n  }\n}\n\n\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

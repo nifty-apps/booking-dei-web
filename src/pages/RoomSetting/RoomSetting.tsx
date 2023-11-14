@@ -8,8 +8,9 @@ import { SearchOutlined, DeleteOutlined } from '@ant-design/icons';
 import TitleText from '../../components/Title';
 import TabPane from 'antd/es/tabs/TabPane';
 import { CreateRoomTypeInput } from '../../graphql/__generated__/graphql';
-import { CREATE_ROOM_TYPE } from '../../graphql/mutations/contactMutations';
+
 import Rooms from './Rooms';
+import { CREATE_ROOM_TYPE } from '../../graphql/mutations/bookingMutations';
 
 const RoomSetting = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -27,7 +28,7 @@ const RoomSetting = () => {
 
 
   // roomtypes data get 
-  // console.log(RoomsTypeData)
+
   const dataSource = RoomsTypeData?.roomTypes?.map((roomData) => ({
     key: roomData?._id,
     hotel: roomData?.hotel,

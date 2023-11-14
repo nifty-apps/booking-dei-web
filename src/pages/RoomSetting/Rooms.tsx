@@ -6,13 +6,13 @@ import { Table, Input, Modal, message, Form, Space, Select, } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 
-import { CREATE_ROOM } from '../../graphql/mutations/contactMutations';
+
 import { CreateRoomInput, UpdateRoomInput } from '../../graphql/__generated__/graphql';
 import { useState } from 'react';
 
 import { GET_ROOM_BOOKING } from '../../graphql/queries/roomBookingQueries';
 import { FaRegEdit } from 'react-icons/fa';
-import { UPDATE_ROOM } from '../../graphql/mutations/bookingMutations';
+import { CREATE_ROOM, UPDATE_ROOM } from '../../graphql/mutations/bookingMutations';
 // import { UPDATE_ROOM_BOOKING } from '../../graphql/mutations/bookingMutations';
 const roomTypes = [
       'Honeymoon Suite (AC)',
@@ -66,7 +66,11 @@ const Rooms = () => {
       // roomBookingsData?.roomBookings?.map((data) => console.log(data.room.type._id))
 
       const [createRoom] = useMutation(CREATE_ROOM, {
-            refetchQueries: [{ query: GET_ROOMS }],
+            refetchQueries: [
+                  { query: GET_ROOMS },
+                  { query: GET_ROOM_TYPES },
+                  { query: GET_ROOM_BOOKING }
+                ],
       });
 
 
@@ -144,7 +148,7 @@ const Rooms = () => {
 
       });
 
-      console.log(RoomsData)
+      // console.log(RoomsData)
       const columns = [
             {
                   title: 'ROOM NUMBER',
