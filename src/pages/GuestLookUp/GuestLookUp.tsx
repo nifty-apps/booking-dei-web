@@ -16,17 +16,24 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import TitleText from "../../components/Title";
 import {
   Contact,
   ContactFilterInput,
 } from "../../graphql/__generated__/graphql";
 import { UPDATE_CONTACT } from "../../graphql/mutations/contactMutations";
+import { GET_BOOKING_GUEST } from "../../graphql/queries/bookingDetailsQueries";
 import { GET_CONTACTS } from "../../graphql/queries/contactQueries";
 import { RootState } from "../../store";
-import { GET_BOOKING_GUEST } from "../../graphql/queries/bookingDetailsQueries";
-import { Link } from "react-router-dom";
 const { confirm } = Modal;
+
+export interface guestInfoType {
+  id: string;
+  name: string | undefined;
+  phone: string | undefined;
+}
+
 const GuestLookUp = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [searchText, setSearchText] = useState<string>("");
@@ -34,6 +41,8 @@ const GuestLookUp = () => {
   const [guestBookingModalOpen, setGuestBookingModalOpen] =
     useState<boolean>(false);
   const [filterDeactivated, setFilterDeactivated] = useState<boolean>(false);
+  const [bookingHistoryModal, setBookingHistoryModal] =
+    useState<boolean>(false);
   const [guestID, setGuestID] = useState<string | null>(null);
   const [customerID, setCustomerID] = useState<string | null>(null);
   const [form] = Form.useForm();
@@ -51,8 +60,6 @@ const GuestLookUp = () => {
       } as ContactFilterInput,
     },
   });
-  
-
 
   // fetching guest data using hotel ID and customer id
   const {
@@ -152,7 +159,6 @@ const GuestLookUp = () => {
       },
     });
   };
-
   // setting loading and error message on page load
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -410,6 +416,18 @@ const GuestLookUp = () => {
             </button>
           </div>
         </Form>
+      </Modal>
+
+      {/* modal to show guests booking information */}
+      <Modal
+        title="Guest Booking Overview"
+        open={bookingHistoryModal}
+        onOk={() => setBookingHistoryModal(false)}
+        onCancel={() => setBookingHistoryModal(false)}
+        footer={null}
+        centered
+      >
+        {/* <GuestBookingsModal guestInfoState={guestInfoState} /> */}
       </Modal>
     </>
   );
