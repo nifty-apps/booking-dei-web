@@ -143,7 +143,7 @@ const Rooms = () => {
 
       });
 
-      // console.log(filteredDataSource)
+      console.log(RoomsData)
       const columns = [
             {
                   title: 'ROOM NUMBER',
