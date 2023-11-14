@@ -65,3 +65,19 @@ mutation RemoveRoomBooking($id:ID!) {
 }
 
 `);
+
+
+// update Room 
+export const UPDATE_ROOM = gql(`
+  mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {
+    updateRoom(updateRoomInput: $updateRoomInput) {
+      _id
+      number
+      floor
+      position
+      type
+      hotel
+      detactivatedAt
+    }
+  }
+`);

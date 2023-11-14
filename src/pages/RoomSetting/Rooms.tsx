@@ -7,11 +7,12 @@ import { SearchOutlined } from '@ant-design/icons';
 
 
 import { CREATE_ROOM } from '../../graphql/mutations/contactMutations';
-import { CreateRoomInput } from '../../graphql/__generated__/graphql';
+import { CreateRoomInput, UpdateRoomInput } from '../../graphql/__generated__/graphql';
 import { useState } from 'react';
 
 import { GET_ROOM_BOOKING } from '../../graphql/queries/roomBookingQueries';
 import { FaRegEdit } from 'react-icons/fa';
+import { UPDATE_ROOM } from '../../graphql/mutations/bookingMutations';
 // import { UPDATE_ROOM_BOOKING } from '../../graphql/mutations/bookingMutations';
 const roomTypes = [
       'Honeymoon Suite (AC)',
@@ -31,7 +32,7 @@ const Rooms = () => {
       const [isModalOpen, setIsModalOpen] = useState(false);
       const [selectedRoomType, setSelectedRoomType] = useState<string>("");
       const [selectedRoomTypeId, setSelectedRoomTypeId] = useState<string>("");
-      // const [guestID, setGuestID] = useState<string | null>(null);
+      const [RoomtID, setGuestID] = useState<string | null>(null);
       const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
       const [form] = Form.useForm();
 
@@ -172,8 +173,8 @@ const Rooms = () => {
                   render: (record: string) => {
                         // find clicked guest information
                         // console.log(record)
-                        const selectedInformation = dataSource?.find(
-                              (data) => data.room_id === record
+                        const selectedInformation = RoomsData?.rooms?.find(
+                              (data) => data?._id === record
                         );
                         // console.log(selectedInformation)
                         return (
@@ -184,14 +185,14 @@ const Rooms = () => {
                                                 title={"Edit Guest Information"}
                                                 onClick={() => {
                                                       setHandleModalOpen(true);
-                                                      // setGuestID(record);
+                                                      setGuestID(record);
                                                       // setting the clicked information on modal
                                                    
                                                       form.setFieldsValue({
-                                                            roomNumber: selectedInformation?.roomNumber,
-                                                            roomtype: selectedInformation?.roomtype,
-                                                            roomRent: selectedInformation?.roomRent,
-                                                            status: selectedInformation?.status
+                                                            floor: selectedInformation?.floor,
+                                                             number: selectedInformation?.number,
+                                                             position:selectedInformation?.position
+
 
 
 
@@ -209,32 +210,28 @@ const Rooms = () => {
          
       ];
       // const [updateRoomBooking] = useMutation(UPDATE_ROOM_BOOKING);
+    
+      const [updateRoom] = useMutation(UPDATE_ROOM,{
+            refetchQueries: [{ query: GET_ROOMS }],
+      });
+      const handleUpdate = async (values:UpdateRoomInput, roomID:string) => {
+            try {
+              await updateRoom({
+                variables: {
+                  updateRoomInput: {
+                    ...values, // Include other fields from your 'values' object
+                    _id: roomID, // Assuming roomID is the ID of the room to update
+                  },
+                },
+              });
+              message.success('Room information updated successfully.');
+              setHandleModalOpen(false);
+            } catch (error) {
+              message.error('Failed to update room information. Please try again.');
+            }
+          };
 
-      const handleUpdate = async () => {
-            // try {
-            //       const updatedRoomBooking = await updateRoomBooking({
-            //             variables: {
-            //                   updateRoomBookingInput: {
-            //                         _id: guestID,
-
-            //                   },
-            //             },
-            //       });
-
-            //       // Handle the updated room booking data or display a success message
-            //       // console.log("Room booking updated:", updatedRoomBooking);
-            //       message.success("Room booking information updated successfully.");
-            //       setHandleModalOpen(false); // Close the modal after a successful update
-            // } catch (error) {
-            //       console.error("Failed to update room booking information:", error);
-            //       message.error("Failed to update room booking information. Please try again.");
-            // }
-      };
-
-
-
-
-
+// console.log(roomBookingsData)
 
 
 
@@ -353,29 +350,21 @@ const Rooms = () => {
                                     >
                                           <Form
                                                 form={form}
-                                                onFinish={() => handleUpdate()}
+                                                onFinish={(values) => handleUpdate(values, RoomtID || "")}
                                           >
                                                 <Space direction="vertical" className="w-full">
-                                                      <h3>ROOM NUMBER</h3>
-                                                      <Form.Item name="roomNumber" className="mb-0">
-                                                            <Input placeholder="roomNumber" autoComplete="off" />
+                                                      <h3>floor</h3>
+                                                      <Form.Item name="floor" className="mb-0">
+                                                            <Input placeholder="floor" autoComplete="off" />
+                                                      </Form.Item>
+                                                      <h3>number</h3>
+                                                      <Form.Item name="number" className="mb-0">
+                                                            <Input placeholder="number" autoComplete="off" />
                                                       </Form.Item>
 
-                                                      <h3>ROOM TYPE</h3>
-                                                      <Form.Item name="roomtype" className="mb-0">
-                                                            <Input placeholder="roomtype" autoComplete="off" />
-                                                      </Form.Item>
-
-                                                      <h3>ROOM RENT</h3>
-                                                      <Form.Item name="roomRent" className="mb-0">
-                                                            <Input placeholder="Address" autoComplete="off" />
-                                                      </Form.Item>
-
-
-
-                                                      <h3>STATUS</h3>
-                                                      <Form.Item name="status" className="mb-0">
-                                                            <Input placeholder="status" autoComplete="off" />
+                                                      <h3>position</h3>
+                                                      <Form.Item name="position" className="mb-0">
+                                                            <Input placeholder="position" autoComplete="off" />
                                                       </Form.Item>
                                                 </Space>
 

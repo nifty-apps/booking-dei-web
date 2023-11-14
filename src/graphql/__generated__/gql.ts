@@ -17,6 +17,7 @@ const documents = {
     "\n mutation UpdateRoomBooking(\n    $updateRoomBookingInput: UpdateRoomBookingInput!\n  ) {\n    updateRoomBooking(updateRoomBookingInput: $updateRoomBookingInput) {\n      _id\n      room\n      checkIn\n      checkOut\n      rent\n      discount\n      extraBed\n      extraBreakfast\n      booking\n      hotel\n      status\n    }\n  }\n\n": types.UpdateRoomBookingDocument,
     "\nmutation UpdateBooking($updateBookingInput: UpdateBookingInput!) {\n    updateBooking(updateBookingInput: $updateBookingInput){\n        _id\n        customer\n        hotel\n        paymentStatus\n  }\n}\n": types.UpdateBookingDocument,
     "\nmutation RemoveRoomBooking($id:ID!) {\n    removeRoomBooking(id: $id) {\n        _id\n        checkIn\n        checkOut\n        rent\n        discount\n        extraBed\n        extraBreakfast\n        booking\n        hotel\n        status\n        room\n    }\n}\n\n": types.RemoveRoomBookingDocument,
+    "\n  mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {\n    updateRoom(updateRoomInput: $updateRoomInput) {\n      _id\n      number\n      floor\n      position\n      type\n      hotel\n      detactivatedAt\n    }\n  }\n": types.UpdateRoomDocument,
     "\n   mutation CreateContact ($createContactInput: CreateContactInput!) {\n       createContact (createContactInput: $createContactInput) {\n            _id\n            name\n            phone\n            idType\n            idNo\n            address\n            hotel\n            type\n      }\n  \n}\n\n": types.CreateContactDocument,
     "\nmutation UpdateContact($updateContactInput: UpdateContactInput!) {\n    updateContact(updateContactInput:$updateContactInput){\n      _id\n      name\t\n      phone\n      idType\n      idNo\n      address\n      type\n      detactivatedAt\n  }\n}\n\n\n": types.UpdateContactDocument,
     "\n  mutation CreateRoomType($createRoomTypeInput: CreateRoomTypeInput!) {\n    createRoomType(createRoomTypeInput: $createRoomTypeInput) {\n      _id\n      title\n      rent\n      hotel\n    }\n  }\n": types.CreateRoomTypeDocument,
@@ -73,6 +74,10 @@ export function gql(source: "\nmutation UpdateBooking($updateBookingInput: Updat
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\nmutation RemoveRoomBooking($id:ID!) {\n    removeRoomBooking(id: $id) {\n        _id\n        checkIn\n        checkOut\n        rent\n        discount\n        extraBed\n        extraBreakfast\n        booking\n        hotel\n        status\n        room\n    }\n}\n\n"): (typeof documents)["\nmutation RemoveRoomBooking($id:ID!) {\n    removeRoomBooking(id: $id) {\n        _id\n        checkIn\n        checkOut\n        rent\n        discount\n        extraBed\n        extraBreakfast\n        booking\n        hotel\n        status\n        room\n    }\n}\n\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {\n    updateRoom(updateRoomInput: $updateRoomInput) {\n      _id\n      number\n      floor\n      position\n      type\n      hotel\n      detactivatedAt\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {\n    updateRoom(updateRoomInput: $updateRoomInput) {\n      _id\n      number\n      floor\n      position\n      type\n      hotel\n      detactivatedAt\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
