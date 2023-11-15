@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { RootState } from '../../store';
 import { GET_ROOMS, GET_ROOM_TYPES } from '../../graphql/queries/roomQueries';
-import { Table, Input, Modal, message, Form, Space, Select, } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Table, Input, Modal, message, Form, Space, Select, Popconfirm, Button, Switch, } from 'antd';
+import { SearchOutlined, DeleteOutlined } from '@ant-design/icons';
 
 
 
@@ -35,7 +35,7 @@ const Rooms = () => {
       const [RoomtID, setGuestID] = useState<string | null>(null);
       const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
       const [form] = Form.useForm();
-
+      const [isDetectedRoom, setIsDetectedRoom] = useState(true);
 
       const { data: RoomsData, loading, error } = useQuery(GET_ROOMS, {
             variables: {
@@ -70,7 +70,7 @@ const Rooms = () => {
                   { query: GET_ROOMS },
                   { query: GET_ROOM_TYPES },
                   { query: GET_ROOM_BOOKING }
-                ],
+            ],
       });
 
 
@@ -92,7 +92,7 @@ const Rooms = () => {
                   type: roomData?.type,
                   roomtype: foundRoomType?.title,
                   roomRent: foundRoomType?.rent,
-                  status: FoundRoomStatus?.status,
+                  status: FoundRoomStatus?.status ? FoundRoomStatus?.status : "N/A",
                   roomTypesId: foundRoomType?._id,
                   roombookingsId: FoundRoomStatus?._id,
                   room_id: roomData?._id,
@@ -147,7 +147,11 @@ const Rooms = () => {
             )
 
       });
-
+      // handle delte 
+      const handleDelete = (key: string) => {
+            alert('no delete mutation from bacend')
+            console.log(`Deleting room type with key: ${key}`);
+      };
       // console.log(RoomsData)
       const columns = [
             {
@@ -175,69 +179,72 @@ const Rooms = () => {
                   dataIndex: "room_id",
                   key: "room_id",
                   render: (record: string) => {
-                        // find clicked guest information
-                        // console.log(record)
+
                         const selectedInformation = RoomsData?.rooms?.find(
                               (data) => data?._id === record
                         );
-                        // console.log(selectedInformation)
-                        return (
-                              <div className="flex items-center cursor-pointer">
 
+                        return (
+                              <div className="flex items-center">
                                     <div className="mr-3">
                                           <FaRegEdit
-                                                title={"Edit Guest Information"}
+                                                title="Edit new Room"
                                                 onClick={() => {
                                                       setHandleModalOpen(true);
                                                       setGuestID(record);
                                                       // setting the clicked information on modal
-                                                   
                                                       form.setFieldsValue({
                                                             floor: selectedInformation?.floor,
-                                                             number: selectedInformation?.number,
-                                                             position:selectedInformation?.position
-
-
-
-
+                                                            number: selectedInformation?.number,
+                                                            position: selectedInformation?.position
                                                       });
                                                 }}
                                           />
                                     </div>
-
-
+                                    <Popconfirm
+                                          title="Are you sure to delete this room type?"
+                                          onConfirm={() => handleDelete(record)}
+                                    >
+                                          <Button type="link" icon={<DeleteOutlined />} danger />
+                                    </Popconfirm>
                               </div>
                         );
-                  },
+                  }
             },
 
-         
+
+
       ];
       // const [updateRoomBooking] = useMutation(UPDATE_ROOM_BOOKING);
-    
-      const [updateRoom] = useMutation(UPDATE_ROOM,{
+
+      const [updateRoom] = useMutation(UPDATE_ROOM, {
             refetchQueries: [{ query: GET_ROOMS }],
       });
-      const handleUpdate = async (values:UpdateRoomInput, roomID:string) => {
+      const handleUpdate = async (values: UpdateRoomInput, roomID: string) => {
             try {
-              await updateRoom({
-                variables: {
-                  updateRoomInput: {
-                    ...values, // Include other fields from your 'values' object
-                    _id: roomID, // Assuming roomID is the ID of the room to update
-                  },
-                },
-              });
-              message.success('Room information updated successfully.');
-              setHandleModalOpen(false);
+                  await updateRoom({
+                        variables: {
+                              updateRoomInput: {
+                                    ...values, // Include other fields from your 'values' object
+                                    _id: roomID, // Assuming roomID is the ID of the room to update
+                              },
+                        },
+                  });
+                  message.success('Room information updated successfully.');
+                  setHandleModalOpen(false);
             } catch (error) {
-              message.error('Failed to update room information. Please try again.');
+                  message.error('Failed to update room information. Please try again.');
             }
-          };
+      };
 
-// console.log(roomBookingsData)
+      // console.log(roomBookingsData)
 
 
+
+      const handleToggle = (checked: boolean) => {
+            setIsDetectedRoom(checked);
+            // Add logic here based on the toggled state (checked or not)
+      };
 
       if (loading) return <p>Loading</p>;
       if (error) return <p>{error?.message}</p>;
@@ -254,15 +261,22 @@ const Rooms = () => {
                                     Add Room
                               </button></div>
                               <div>
-                                    <Input
-                                          placeholder="Search by Title"
-                                          prefix={<SearchOutlined />}
-                                          allowClear
-                                          onChange={(e) => onSearch(e.target.value)}
-                                          style={{ width: 300, marginBottom: 16 }}
-                                    />
+                                    <div className='flex justify-between'>
+                                          <Input
+                                                placeholder="Search by Title"
+                                                prefix={<SearchOutlined />}
+                                                allowClear
+                                                onChange={(e) => onSearch(e.target.value)}
+                                                style={{ width: 300, marginBottom: 16 }}
+                                          />
+
+                                        <div className='flex justify-center items-center gap-2'>
+                                        <Switch checked={isDetectedRoom} onChange={handleToggle} />
+                                          <p className='p-2 text-xl'>Detected Rooms</p>
+                                        </div>
+                                    </div>
                                     <Modal
-                                          title="Create New Room Type"
+                                          title="Create New Room"
                                           visible={isModalOpen}
                                           onCancel={() => setIsModalOpen(false)}
                                           footer={null}
@@ -345,7 +359,7 @@ const Rooms = () => {
 
                                     {/* for edit  */}
                                     <Modal
-                                          title="Edit Guest Information"
+                                          title="Edit new  Room"
                                           open={handleModalOpen}
                                           onOk={() => setHandleModalOpen(false)}
                                           onCancel={() => setHandleModalOpen(false)}
