@@ -65,3 +65,45 @@ mutation RemoveRoomBooking($id:ID!) {
 }
 
 `);
+
+
+// update Room 
+export const UPDATE_ROOM = gql(`
+  mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {
+    updateRoom(updateRoomInput: $updateRoomInput) {
+      _id
+      number
+      floor
+      position
+      type
+      hotel
+      detactivatedAt
+    }
+  }
+`);
+
+//create Room type
+export const CREATE_ROOM_TYPE = gql(`
+  mutation CreateRoomType($createRoomTypeInput: CreateRoomTypeInput!) {
+    createRoomType(createRoomTypeInput: $createRoomTypeInput) {
+      _id
+      title
+      rent
+      hotel
+    }
+  }
+`);
+// create room
+export const CREATE_ROOM = gql(`
+  mutation CreateRoom($createRoomInput: CreateRoomInput!) {
+    createRoom(createRoomInput: $createRoomInput) {
+      _id
+      number
+      floor
+      position
+      type
+      hotel
+      detactivatedAt
+    }
+  }
+`);

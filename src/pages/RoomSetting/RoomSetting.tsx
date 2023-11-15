@@ -8,8 +8,9 @@ import { SearchOutlined, DeleteOutlined } from '@ant-design/icons';
 import TitleText from '../../components/Title';
 import TabPane from 'antd/es/tabs/TabPane';
 import { CreateRoomTypeInput } from '../../graphql/__generated__/graphql';
-import { CREATE_ROOM_TYPE } from '../../graphql/mutations/contactMutations';
+
 import Rooms from './Rooms';
+import { CREATE_ROOM_TYPE } from '../../graphql/mutations/bookingMutations';
 
 const RoomSetting = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -28,15 +29,15 @@ const RoomSetting = () => {
 
   // roomtypes data get 
 
-  const dataSource = RoomsTypeData?.roomTypes.map((roomData) => ({
+  const dataSource = RoomsTypeData?.roomTypes?.map((roomData) => ({
     key: roomData?._id,
     hotel: roomData?.hotel,
     rent: roomData?.rent,
-    title: roomData.title,
+    title: roomData?.title,
 
 
   }));
-  console.log({ dataSource })
+  // console.log(dataSource)
 
   // creat roomtype mutation are added
   const [createRoomType] = useMutation(CREATE_ROOM_TYPE, {
@@ -79,8 +80,8 @@ const RoomSetting = () => {
   const filteredDataSource = dataSource?.filter((item) => {
 
     return (
-      item.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.rent.toString().toLowerCase().includes(searchText.toLowerCase())
+      item?.title?.toLowerCase().includes(searchText.toLowerCase()) ||
+      item?.rent?.toString().toLowerCase().includes(searchText.toLowerCase())
 
     )
 
@@ -98,7 +99,7 @@ const RoomSetting = () => {
         variables: {
           createRoomTypeInput: {
             ...values,
-            title: values.title,
+            title: values?.title,
             rent: Number(values.rent),
             hotel: user?.hotels[0] || "",
 
@@ -125,11 +126,11 @@ const RoomSetting = () => {
 
           <TitleText text="Room Setting " />
           <Tabs activeKey={selectedTab} onChange={handleTabChange}>
-          <TabPane tab="Rooms" key="tab1">
+            <TabPane tab="Rooms" key="tab1">
 
-<Rooms />
-</TabPane>
-  <TabPane tab="Room Types" key="tab2">
+              <Rooms />
+            </TabPane>
+            <TabPane tab="Room Types" key="tab2">
 
               <div className=''>
                 <div className='flex justify-end'>
@@ -185,8 +186,8 @@ const RoomSetting = () => {
                 <Table dataSource={filteredDataSource} columns={columns} pagination={false} />
               </div>
             </TabPane>
-          
-          
+
+
           </Tabs>
         </div>
 

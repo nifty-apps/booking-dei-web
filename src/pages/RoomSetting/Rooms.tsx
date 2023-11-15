@@ -2,23 +2,26 @@ import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { RootState } from '../../store';
 import { GET_ROOMS, GET_ROOM_TYPES } from '../../graphql/queries/roomQueries';
-import { Table, Input, Modal, message, Form, Space, Select } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Table, Input, Modal, message, Form, Space, Select, Popconfirm, Button, Switch, } from 'antd';
+import { SearchOutlined, DeleteOutlined } from '@ant-design/icons';
 
 
-import { CREATE_ROOM } from '../../graphql/mutations/contactMutations';
-import { CreateRoomInput } from '../../graphql/__generated__/graphql';
+
+import { CreateRoomInput, UpdateRoomInput } from '../../graphql/__generated__/graphql';
 import { useState } from 'react';
 
 import { GET_ROOM_BOOKING } from '../../graphql/queries/roomBookingQueries';
+import { FaRegEdit } from 'react-icons/fa';
+import { CREATE_ROOM, UPDATE_ROOM } from '../../graphql/mutations/bookingMutations';
+// import { UPDATE_ROOM_BOOKING } from '../../graphql/mutations/bookingMutations';
 const roomTypes = [
       'Honeymoon Suite (AC)',
       'Family Deluxe Suite (AC)',
       'Super Deluxe Couple Bed (AC)',
       'Super Deluxe Tripple Bed (Non-AC)',
-     'Super Deluxe Tripple Bed (AC)',
-    'Super Deluxe Couple Bed (Non-AC)',
-     'Super Deluxe Twin Bed (AC)',
+      'Super Deluxe Tripple Bed (AC)',
+      'Super Deluxe Couple Bed (Non-AC)',
+      'Super Deluxe Twin Bed (AC)',
 ];
 
 const Rooms = () => {
@@ -29,7 +32,10 @@ const Rooms = () => {
       const [isModalOpen, setIsModalOpen] = useState(false);
       const [selectedRoomType, setSelectedRoomType] = useState<string>("");
       const [selectedRoomTypeId, setSelectedRoomTypeId] = useState<string>("");
-
+      const [RoomtID, setGuestID] = useState<string | null>(null);
+      const [handleModalOpen, setHandleModalOpen] = useState<boolean>(false);
+      const [form] = Form.useForm();
+      const [isDetectedRoom, setIsDetectedRoom] = useState(true);
 
       const { data: RoomsData, loading, error } = useQuery(GET_ROOMS, {
             variables: {
@@ -56,10 +62,15 @@ const Rooms = () => {
                   },
             },
       });
+
       // roomBookingsData?.roomBookings?.map((data) => console.log(data.room.type._id))
-      //     console.log(roomBookingsData?.roomBookings )
+
       const [createRoom] = useMutation(CREATE_ROOM, {
-            refetchQueries: [{ query: GET_ROOMS }],
+            refetchQueries: [
+                  { query: GET_ROOMS },
+                  { query: GET_ROOM_TYPES },
+                  { query: GET_ROOM_BOOKING }
+            ],
       });
 
 
@@ -68,77 +79,27 @@ const Rooms = () => {
             const foundRoomType = RoomsTypeData?.roomTypes.find(
                   (roomtype) => roomtype._id === roomData.type
             );
-                  // console.log({foundRoomType});
-            const FoundRoomStatus = roomBookingsData?.roomBookings.find((data) => data.room._id === roomData._id );
-           
-             
+
+            const FoundRoomStatus = roomBookingsData?.roomBookings.find((data) => data.room._id === roomData._id);
+
+
 
             return {
-                
+
                   key: roomData?._id,
                   hotel: roomData?.hotel,
                   roomNumber: roomData.number,
                   type: roomData?.type,
                   roomtype: foundRoomType?.title,
                   roomRent: foundRoomType?.rent,
-                  status: FoundRoomStatus?.status
+                  status: FoundRoomStatus?.status ? FoundRoomStatus?.status : "N/A",
+                  roomTypesId: foundRoomType?._id,
+                  roombookingsId: FoundRoomStatus?._id,
+                  room_id: roomData?._id,
             };
       });
-      // console.log({ roomBookingsData})
 
-      const columns = [
-            {
-                  title: 'ROOM NUMBER',
-                  dataIndex: 'roomNumber',
-                  key: 'title',
-            },
-            {
-                  title: 'ROOM TYPE',
-                  dataIndex: 'roomtype',
-                  key: 'title',
-            },
-            {
-                  title: 'ROOM RENT',
-                  dataIndex: 'roomRent',
-                  key: 'title',
-            },
-            {
-                  title: 'STATUS',
-                  dataIndex: 'status',
-                  key: 'title',
-            },
-            // {
-            //       title: 'ROOM TYPE',
-            //       dataIndex: 'type',
-            //       key: 'type',
-            //       render: (record: string) => {
-            //         const Single = RoomsTypeData?.roomTypes.find(data => data._id === record);
-
-            //         if (Single) {
-            //           return <div>{Single.title}</div>; // Display the room type name (adjust 'name' to your actual property)
-            //         } else {
-            //           return <div>Not Found</div>; // Handle the case where the room type is not found
-            //         }
-            //       }
-            //     },
-
-            //     {
-            //       title: 'ROOM TYPE',
-            //       dataIndex: 'type',
-            //       key: 'type',
-            //       render: (record: string) => {
-            //         const Single = RoomsTypeData?.roomTypes.find(data => data._id === record);
-            //         if (Single) {
-            //           return <div>{Single.rent}</div>; // Display the room type name (adjust 'name' to your actual property)
-            //         } else {
-            //           return <div>Not Found</div>; // Handle the case where the room type is not found
-            //         }
-            //       }
-            //     },
-
-
-      ];
-
+      //  console.log(roomBookingsData)
 
       const onFinish = async (values: CreateRoomInput) => {
             try {
@@ -149,7 +110,7 @@ const Rooms = () => {
                                     floor: values.floor,
                                     position: values.position,
                                     type: selectedRoomTypeId,
-                                    hotel: '64d0a1d008291a484b015d0b', // Hardcoded hotel ID or use a dynamic value
+                                    hotel: user?.hotels[0] || '', // Hardcoded hotel ID or use a dynamic value
                                     detactivatedAt: values.detactivatedAt,
                               }
                         }
@@ -167,9 +128,9 @@ const Rooms = () => {
       const handleRoomTypeChange = (value: string) => {
             setSelectedRoomType(value);
             const findRoomBookinTypeId = roomBookingsData?.roomBookings?.find(
-                  (data) => data?.room?.type.title === value
-                );
-                setSelectedRoomTypeId(findRoomBookinTypeId?.room?.type?._id!)
+                  (data) => data?.room?.type?.title === value
+            );
+            setSelectedRoomTypeId(findRoomBookinTypeId?.room?.type?._id!)
             //     console.log(findRoomBookinTypeId?.room?.type?._id)
       };
       const onSearch = (value: string) => {
@@ -181,11 +142,109 @@ const Rooms = () => {
                   item.roomNumber.toLowerCase().includes(searchText.toLowerCase()) ||
                   item.status?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
                   item.roomRent?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
-                  item.roomRent?.toString().toLowerCase().includes(searchText.toLowerCase())
+                  item.roomtype?.toString().toLowerCase().includes(searchText.toLowerCase())
 
             )
 
       });
+      // handle delte 
+      const handleDelete = (key: string) => {
+            alert('no delete mutation from bacend')
+            console.log(`Deleting room type with key: ${key}`);
+      };
+      // console.log(RoomsData)
+      const columns = [
+            {
+                  title: 'ROOM NUMBER',
+                  dataIndex: 'roomNumber',
+                  key: 'roomNumber',
+            },
+            {
+                  title: 'ROOM TYPE',
+                  dataIndex: 'roomtype',
+                  key: 'roomtype',
+            },
+            {
+                  title: 'ROOM RENT',
+                  dataIndex: 'roomRent',
+                  key: 'roomRent',
+            },
+            {
+                  title: 'STATUS',
+                  dataIndex: 'status',
+                  key: 'status',
+            },
+            {
+                  title: "ACTION",
+                  dataIndex: "room_id",
+                  key: "room_id",
+                  render: (record: string) => {
+
+                        const selectedInformation = RoomsData?.rooms?.find(
+                              (data) => data?._id === record
+                        );
+
+                        return (
+                              <div className="flex items-center">
+                                    <div className="mr-3">
+                                          <FaRegEdit
+                                                title="Edit new Room"
+                                                onClick={() => {
+                                                      setHandleModalOpen(true);
+                                                      setGuestID(record);
+                                                      // setting the clicked information on modal
+                                                      form.setFieldsValue({
+                                                            floor: selectedInformation?.floor,
+                                                            number: selectedInformation?.number,
+                                                            position: selectedInformation?.position
+                                                      });
+                                                }}
+                                          />
+                                    </div>
+                                    <Popconfirm
+                                          title="Are you sure to delete this room type?"
+                                          onConfirm={() => handleDelete(record)}
+                                    >
+                                          <Button type="link" icon={<DeleteOutlined />} danger />
+                                    </Popconfirm>
+                              </div>
+                        );
+                  }
+            },
+
+
+
+      ];
+      // const [updateRoomBooking] = useMutation(UPDATE_ROOM_BOOKING);
+
+      const [updateRoom] = useMutation(UPDATE_ROOM, {
+            refetchQueries: [{ query: GET_ROOMS }],
+      });
+      const handleUpdate = async (values: UpdateRoomInput, roomID: string) => {
+            try {
+                  await updateRoom({
+                        variables: {
+                              updateRoomInput: {
+                                    ...values, // Include other fields from your 'values' object
+                                    _id: roomID, // Assuming roomID is the ID of the room to update
+                              },
+                        },
+                  });
+                  message.success('Room information updated successfully.');
+                  setHandleModalOpen(false);
+            } catch (error) {
+                  message.error('Failed to update room information. Please try again.');
+            }
+      };
+
+      // console.log(roomBookingsData)
+
+
+
+      const handleToggle = (checked: boolean) => {
+            setIsDetectedRoom(checked);
+            // Add logic here based on the toggled state (checked or not)
+      };
 
       if (loading) return <p>Loading</p>;
       if (error) return <p>{error?.message}</p>;
@@ -202,15 +261,22 @@ const Rooms = () => {
                                     Add Room
                               </button></div>
                               <div>
-                                    <Input
-                                          placeholder="Search by Title"
-                                          prefix={<SearchOutlined />}
-                                          allowClear
-                                          onChange={(e) => onSearch(e.target.value)}
-                                          style={{ width: 300, marginBottom: 16 }}
-                                    />
+                                    <div className='flex justify-between'>
+                                          <Input
+                                                placeholder="Search by Title"
+                                                prefix={<SearchOutlined />}
+                                                allowClear
+                                                onChange={(e) => onSearch(e.target.value)}
+                                                style={{ width: 300, marginBottom: 16 }}
+                                          />
+
+                                        <div className='flex justify-center items-center gap-2'>
+                                        <Switch checked={isDetectedRoom} onChange={handleToggle} />
+                                          <p className='p-2 text-xl'>Detected Rooms</p>
+                                        </div>
+                                    </div>
                                     <Modal
-                                          title="Create New Room Type"
+                                          title="Create New Room"
                                           visible={isModalOpen}
                                           onCancel={() => setIsModalOpen(false)}
                                           footer={null}
@@ -249,7 +315,7 @@ const Rooms = () => {
                                                       <Form.Item
                                                             name="type"
                                                             className="mb-0"
-                                                            // rules={[{ required: true, message: "Please enter the room type" }]}
+                                                      // rules={[{ required: true, message: "Please enter the room type" }]}
                                                       >
                                                             <div>
                                                                   <h3>Select Room Type:</h3>
@@ -287,6 +353,47 @@ const Rooms = () => {
                                                       Add Room
                                                 </button>
 
+                                          </Form>
+                                    </Modal>
+
+
+                                    {/* for edit  */}
+                                    <Modal
+                                          title="Edit new  Room"
+                                          open={handleModalOpen}
+                                          onOk={() => setHandleModalOpen(false)}
+                                          onCancel={() => setHandleModalOpen(false)}
+                                          footer={null}
+                                          centered
+                                    >
+                                          <Form
+                                                form={form}
+                                                onFinish={(values) => handleUpdate(values, RoomtID || "")}
+                                          >
+                                                <Space direction="vertical" className="w-full">
+                                                      <h3>floor</h3>
+                                                      <Form.Item name="floor" className="mb-0">
+                                                            <Input placeholder="floor" autoComplete="off" />
+                                                      </Form.Item>
+                                                      <h3>number</h3>
+                                                      <Form.Item name="number" className="mb-0">
+                                                            <Input placeholder="number" autoComplete="off" />
+                                                      </Form.Item>
+
+                                                      <h3>position</h3>
+                                                      <Form.Item name="position" className="mb-0">
+                                                            <Input placeholder="position" autoComplete="off" />
+                                                      </Form.Item>
+                                                </Space>
+
+                                                <div className="flex justify-end">
+                                                      <button
+                                                            type="submit"
+                                                            className=" mt-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-8 rounded"
+                                                      >
+                                                            Confirm
+                                                      </button>
+                                                </div>
                                           </Form>
                                     </Modal>
                                     <Table dataSource={filteredDataSource} columns={columns} pagination={false} />

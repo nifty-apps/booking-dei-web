@@ -72,6 +72,7 @@ const App = () => {
                   element={<RoomBookingFinancials />}
                 />
                 <Route path="/room-setting" element={<RoomSetting />} />
+                {/* <Route path="/room-setting" element={<RoomSetting />} /> */}
               </>
             )}
 

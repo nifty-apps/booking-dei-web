@@ -48,8 +48,11 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
     case "/rooms-overview":
       selectedKey = "7";
       break;
-    case "/room-setting":
+    case "/vemdor":
       selectedKey = "8";
+      break;
+    case "/room-setting":
+      selectedKey = "9";
       break;
 
     default:
@@ -115,6 +118,11 @@ const Sidebar = ({ collapsed }: SidebarProps) => {
               <Menu.Item key="8" icon={<AiOutlineBarChart />}>
                 <Link to="/vendors" className="menuLink">
                   Vendors
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="9" icon={<AiOutlineBarChart />}>
+                <Link to="/room-setting" className="menuLink">
+                  Room Setting
                 </Link>
               </Menu.Item>
             </>
