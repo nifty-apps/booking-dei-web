@@ -26,8 +26,8 @@ import Transactions from "./pages/Transactions/Transactions";
 import VendorDetails from "./pages/VendorDetails/VendorDetails";
 import Vendors from "./pages/Vendors/Vendors";
 import { RootState } from "./store";
-import RoomSetting from "./pages/RoomSetting/RoomSetting";
 import EmployeeDetails from "./pages/EmployeeDetails/EmployeeDetails";
+import RoomSettings from "./pages/RoomSetting/RoomSettings";
 
 const App = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -71,7 +71,7 @@ const App = () => {
                   path="/rooms-overview"
                   element={<RoomBookingFinancials />}
                 />
-                <Route path="/room-setting" element={<RoomSetting />} />
+                <Route path="/rooms-setting" element={<RoomSettings />} />
               </>
             )}
 
